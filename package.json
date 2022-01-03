@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-development",
+  "version": "0.0.0-development",
   "license": "MIT",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -15,12 +15,13 @@
     "build": "tsdx build",
     "lint": "tsdx lint",
     "test": "tsdx test --passWithNoTests",
+    "commit": "cz",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "semantic-release": "semantic-release --branches main"
+    "semantic-release": "semantic-release"
   },
   "peerDependencies": {
     "react": ">=16"
@@ -39,7 +40,7 @@
   "name": "@maherunlocker/custom-react-table",
   "author": "M@HeR",
   "module": "dist/react-table-component.esm.js",
-  "homepage": "https://github.com/MaherUnlocker/custom-react-table-component",
+  "homepage": "https://github.com/MaherUnlocker/custum-react-table",
   "size-limit": [
     {
       "path": "dist/react-table-component.cjs.production.min.js",
@@ -74,11 +75,11 @@
     "react-dom": "^17.0.2",
     "react-is": "^17.0.2",
     "rollup-plugin-postcss": "^4.0.2",
-    "semantic-release": "^18.0.1",
     "size-limit": "^7.0.4",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "semantic-release": "^18.0.1"
   },
   "dependencies": {
     "@ggascoigne/namor": "^2.0.2",
@@ -93,7 +94,8 @@
     "pretty-checkbox": "^3.0.3",
     "react-bootstrap": "2.0.3",
     "react-json-view": "^1.21.3",
-    "react-table": "^7.7.0"
+    "react-table": "^7.7.0",
+    "semantic-release": "^18.0.1"
   },
   "repository": {
     "type": "git",
