@@ -1,0 +1,14 @@
+.arrowRight {
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  width: 8px;
+  height: 8px;
+  transform: rotate(320deg);
+}
+.arrowDown {
+  border-bottom: 1px solid #000;
+  border-right: 1px solid #000;
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+}
