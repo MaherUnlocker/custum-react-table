@@ -1,16 +1,22 @@
-import { Checkbox, Theme, createStyles, makeStyles, styled } from '@material-ui/core'
-import MuiTableTable from '@material-ui/core/Table'
-import { TableTypeMap } from '@material-ui/core/Table/Table'
-import MuiTableBody from '@material-ui/core/TableBody'
-import { TableBodyTypeMap } from '@material-ui/core/TableBody/TableBody'
-import MuiTableCell from '@material-ui/core/TableCell'
-import { TableCellProps } from '@material-ui/core/TableCell/TableCell'
-import MuiTableHead from '@material-ui/core/TableHead'
-import { TableHeadTypeMap } from '@material-ui/core/TableHead/TableHead'
-import MuiTableRow from '@material-ui/core/TableRow'
-import { TableRowTypeMap } from '@material-ui/core/TableRow/TableRow'
-import cx from 'classnames'
-import React, { CSSProperties } from 'react'
+import {
+  Checkbox,
+  Theme,
+  createStyles,
+  makeStyles,
+  styled,
+} from '@material-ui/core';
+import MuiTableTable from '@material-ui/core/Table';
+import { TableTypeMap } from '@material-ui/core/Table/Table';
+import MuiTableBody from '@material-ui/core/TableBody';
+import { TableBodyTypeMap } from '@material-ui/core/TableBody/TableBody';
+import MuiTableCell from '@material-ui/core/TableCell';
+import { TableCellProps } from '@material-ui/core/TableCell/TableCell';
+import MuiTableHead from '@material-ui/core/TableHead';
+import { TableHeadTypeMap } from '@material-ui/core/TableHead/TableHead';
+import MuiTableRow from '@material-ui/core/TableRow';
+import { TableRowTypeMap } from '@material-ui/core/TableRow/TableRow';
+import cx from 'classnames';
+import React, { CSSProperties } from 'react';
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,7 +73,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     tableCell: {
       padding: '8px 16px',
       fontSize: '0.875rem',
-      textAlign: 'left',
+      textAlign: 'center',
       fontWeight: 300,
       lineHeight: 1.3,
       verticalAlign: 'inherit',
@@ -129,84 +135,113 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
   })
-)
+);
 
 const areEqual = (prevProps: any, nextProps: any) =>
-  prevProps.checked === nextProps.checked && prevProps.indeterminate === nextProps.indeterminate
+  prevProps.checked === nextProps.checked &&
+  prevProps.indeterminate === nextProps.indeterminate;
 
-type CN = { className?: string; style?: CSSProperties }
+type CN = { className?: string; style?: CSSProperties };
 
-export const TableTable: React.FC<Partial<TableTypeMap> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableTable: React.FC<Partial<TableTypeMap> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableTable className={cx(className, classes.tableTable)} {...rest}>
       {children}
     </MuiTableTable>
-  )
-}
+  );
+};
 
-export const TableBody: React.FC<Partial<TableBodyTypeMap> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableBody: React.FC<Partial<TableBodyTypeMap> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableBody className={cx(className, classes.tableBody)} {...rest}>
       {children}
     </MuiTableBody>
-  )
-}
+  );
+};
 
-export const TableHead: React.FC<Partial<TableHeadTypeMap> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableHead: React.FC<Partial<TableHeadTypeMap> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableHead className={cx(className, classes.tableHead)} {...rest}>
       {children}
     </MuiTableHead>
-  )
-}
+  );
+};
 
-export const TableHeadRow: React.FC<Partial<TableRowTypeMap> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableHeadRow: React.FC<Partial<TableRowTypeMap> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableRow className={cx(className, classes.tableHeadRow)} {...rest}>
       {children}
     </MuiTableRow>
-  )
-}
+  );
+};
 
-export const TableHeadCell: React.FC<Partial<TableCellProps> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableHeadCell: React.FC<Partial<TableCellProps> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableCell className={cx(className, classes.tableHeadCell)} {...rest}>
       {children}
     </MuiTableCell>
-  )
-}
+  );
+};
 
-export const TableRow: React.FC<Partial<TableRowTypeMap> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableRow: React.FC<Partial<TableRowTypeMap> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableRow className={cx(className, classes.tableRow)} {...rest}>
       {children}
     </MuiTableRow>
-  )
-}
+  );
+};
 
-export const TableCell: React.FC<Partial<TableCellProps> & CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+export const TableCell: React.FC<Partial<TableCellProps> & CN> = ({
+  children,
+  className,
+  ...rest
+}) => {
+  const classes = useStyles();
   return (
     <MuiTableCell className={cx(className, classes.tableCell)} {...rest}>
       {children}
     </MuiTableCell>
-  )
-}
+  );
+};
 
 export const TableLabel: React.FC<CN> = ({ children, className, ...rest }) => {
-  const classes = useStyles()
+  const classes = useStyles();
   return (
     <div className={cx(className, classes.tableLabel)} {...rest}>
       {children}
     </div>
-  )
-}
+  );
+};
 
 export const HeaderCheckbox = React.memo(
   styled(Checkbox)({
@@ -222,7 +257,7 @@ export const HeaderCheckbox = React.memo(
     },
   }),
   areEqual
-)
+);
 
 export const RowCheckbox = React.memo(
   styled(Checkbox)({
@@ -238,4 +273,4 @@ export const RowCheckbox = React.memo(
     },
   }),
   areEqual
-)
+);

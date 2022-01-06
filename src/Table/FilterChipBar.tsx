@@ -5,10 +5,7 @@ import {
   FilterValue,
   IdType,
   TableInstance,
-  UseGlobalFiltersInstanceProps,
 } from 'react-table';
-
-import GlobalFilter from './filters/Global-Filter';
 
 const useStyles = makeStyles(
   createStyles({
@@ -56,8 +53,6 @@ export function FilterChipBar<T extends Record<string, unknown>>({
   const {
     allColumns,
     setFilter,
-    setGlobalFilter,
-    preGlobalFilteredRows,
     state: { filters },
   } = instance;
 

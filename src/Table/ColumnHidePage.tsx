@@ -1,3 +1,6 @@
+import React, { ReactElement } from 'react';
+import { TableInstance } from 'react-table';
+
 import {
   Checkbox,
   FormControlLabel,
@@ -6,13 +9,37 @@ import {
   makeStyles,
   Popover,
 } from '@material-ui/core';
-import React, { ReactElement } from 'react';
-import { TableInstance } from 'react-table';
-
+// const useStyles = makeStyles(
+//   createStyles({
+//     columnsPopOver: {
+//       padding: 24,
+//     },
+//     popoverTitle: {
+//       fontWeight: 500,
+//       padding: '0 24px 24px 0',
+//       textTransform: 'uppercase',
+//     },
+//     grid: {
+//       display: 'grid',
+//       gridTemplateColumns: 'repeat(2, 198px)',
+//       '@media (max-width: 600px)': {
+//         gridTemplateColumns: 'repeat(1, 160px)',
+//       },
+//       gridColumnGap: 6,
+//       gridRowGap: 6,
+//     },
+//   })
+// );
 const useStyles = makeStyles(
   createStyles({
     columnsPopOver: {
       padding: 24,
+      display: 'flex',
+    },
+    filtersResetButton: {
+      position: 'absolute',
+      top: 18,
+      right: 21,
     },
     popoverTitle: {
       fontWeight: 500,
@@ -21,16 +48,23 @@ const useStyles = makeStyles(
     },
     grid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(2, 198px)',
+      gridTemplateColumns: 'repeat(2, 218px)',
       '@media (max-width: 600px)': {
-        gridTemplateColumns: 'repeat(1, 160px)',
+        gridTemplateColumns: 'repeat(1, 180px)',
       },
-      gridColumnGap: 6,
-      gridRowGap: 6,
+      gridColumnGap: 24,
+      gridRowGap: 24,
+    },
+    cell: {
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    hidden: {
+      display: 'none',
     },
   })
 );
-
 type ColumnHidePageProps<T extends Record<string, unknown>> = {
   instance: TableInstance<T>;
   anchorEl?: Element;
@@ -47,7 +81,10 @@ export function ColumnHidePage<T extends Record<string, unknown>>({
   const classes = useStyles({});
   const { allColumns, toggleHideColumn } = instance;
   const hideableColumns = allColumns.filter(
-    (column) => !(column.id === '_selector') && !(column.id === 'expander')
+    (column) =>
+      !(column.id === '_selector') &&
+      !(column.id === 'expander') &&
+      !(column.id === 'hidecolumns')
   );
   const checkedCount = hideableColumns.reduce(
     (acc, val) => acc + (val.isVisible ? 0 : 1),
@@ -60,15 +97,24 @@ export function ColumnHidePage<T extends Record<string, unknown>>({
     <div>
       <Popover
         anchorEl={anchorEl}
-        style={{ padding: 24 }}
+        id={'popover-filters'}
         onClose={onClose}
         open={show}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        style={{ padding: 24 }}
       >
-        <div className={classes.columnsPopOver}>
+        <div className={(classes.columnsPopOver, classes.grid, classes.cell)}>
           <Typography className={classes.popoverTitle}>
             Visible Columns
           </Typography>
-          <div>
+          <div style={{ display: 'grid' }}>
             {hideableColumns.map((column) => (
               <FormControlLabel
                 key={column.id}

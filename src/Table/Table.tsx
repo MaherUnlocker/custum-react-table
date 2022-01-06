@@ -132,7 +132,6 @@ const getStyles = (props: any, disableResizing = false, align = 'left') => [
 
 const selectionHook = (hooks: Hooks<any>) => {
   hooks.allColumns.push((columns) => [
-    ...columns,
     // Let's make a column for selection
 
     {
@@ -154,6 +153,7 @@ const selectionHook = (hooks: Hooks<any>) => {
         <RowCheckbox {...row.getToggleRowSelectedProps()} />
       ),
     },
+    ...columns,
   ]);
   hooks.useInstanceBeforeDimensions.push(({ headerGroups }) => {
     // fix the parent group of the selection button to not be resizable
@@ -217,7 +217,12 @@ export function Table<T extends Record<string, unknown>>({
     hooks.allColumns.push((columns) => [
       ...columns,
       {
-        id: 'Edit',
+        id: 'hidecolumns',
+        disableResizing: true,
+        disableGroupBy: true,
+        minWidth: 60,
+        width: 60,
+        maxWidth: 100,
         Header: () => {
           return (
             <div className="dropdown">
