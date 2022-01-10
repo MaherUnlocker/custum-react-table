@@ -45,13 +45,14 @@ This loads the stories from `./stories`.
 > NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
 
 ### How to use
-import `Dynamictable` from @maherunlocker/react-table-component
 
 ```jsx
+import { Dynamictable } from @maherunlocker/react-table-component
+
 <DynamicTable
-    //put your backend api url
+    // put your backend api url
     url={apiUrl}
-    //optionnal props
+    // optional props
     actionColumn={<div>put your component</div>}
     canGroupBy
     canSort
