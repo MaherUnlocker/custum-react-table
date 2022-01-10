@@ -148,19 +148,21 @@ export default function Dynamictable({
 
   return (
     <React.Fragment>
-      <Table
-        name={'myTable'}
-        columns={columns}
-        data={apiResult}
-        canGroupBy={canGroupBy}
-        canSort={canSort}
-        canSelect={canSelect}
-        canResize={canResize}
-        actionColumn={actionColumn}
-        showGlobalFilter={showGlobalFilter}
-        showFilterbyColomn={showFilterbyColomn}
-        showColomnIcon={showColomnIcon}
-      />
+      <div className="table-responsive">
+        <Table
+          name={'myTable'}
+          columns={columns}
+          data={apiResult}
+          canGroupBy={canGroupBy}
+          canSort={canSort}
+          canSelect={canSelect}
+          canResize={canResize}
+          actionColumn={actionColumn}
+          showGlobalFilter={showGlobalFilter}
+          showFilterbyColomn={showFilterbyColomn}
+          showColomnIcon={showColomnIcon}
+        />
+      </div>
     </React.Fragment>
   );
 }
