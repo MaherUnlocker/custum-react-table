@@ -157,7 +157,7 @@ export function TablePagination<T extends Record<string, unknown>>({
   return rowCount ? (
     <MuiTablePagination
       rowsPerPageOptions={rowsPerPageOptions}
-      //component='div'
+      component="div"
       count={rowCount}
       rowsPerPage={pageSize}
       page={pageIndex}
