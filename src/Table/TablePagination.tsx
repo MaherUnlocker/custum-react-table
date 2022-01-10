@@ -163,7 +163,6 @@ export function TablePagination<T extends Record<string, unknown>>({
       page={pageIndex}
       SelectProps={{
         inputProps: { 'aria-label': 'rows per page' },
-        // native: true,
       }}
       onChangePage={handleChangePage}
       onPageChange={() => null}
