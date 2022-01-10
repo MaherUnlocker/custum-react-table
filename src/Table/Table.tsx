@@ -68,8 +68,8 @@ export interface TableProperties<T extends Record<string, unknown>>
   canResize?: boolean;
   canSelect?: boolean;
   showGlobalFilter?: boolean;
-  showFilterbyColomn?: boolean;
-  showColomnIcon?: boolean;
+  showFilterByColumn?: boolean;
+  showColumnIcon?: boolean;
   actionColumn?: React.ReactNode;
 }
 
@@ -202,8 +202,8 @@ export function Table<T extends Record<string, unknown>>({
   canResize,
   actionColumn,
   showGlobalFilter,
-  showFilterbyColomn,
-  showColomnIcon,
+  showFilterByColumn,
+  showColumnIcon,
   ...props
 }: PropsWithChildren<TableProperties<T>>): ReactElement {
   const classes = useStyles();
@@ -344,7 +344,7 @@ export function Table<T extends Record<string, unknown>>({
     <React.Fragment>
       <TableToolbar
         instance={instance}
-        {...{ showGlobalFilter, showFilterbyColomn, showColomnIcon }}
+        {...{ showGlobalFilter, showFilterByColumn, showColumnIcon }}
       />
       <FilterChipBar instance={instance} />
       <TableTable {...tableProps}>
