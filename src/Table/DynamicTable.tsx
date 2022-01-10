@@ -52,7 +52,7 @@ export default function Dynamictable({
   showColumnIcon,
 }: DynamictableProps) {
   const [apiResult, setApiResult] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | any>(null);
 
   async function fetchData(url: string) {
