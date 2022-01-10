@@ -59,15 +59,15 @@ import { Dynamictable } from @maherunlocker/react-table-component
     canResize
     canSelect
     canExpand
-    ShowGlobalFilter
-    ShowFilterbyColomn
-    showColomnIcon
+    showGlobalFilter
+    showFilterbyColumn
+    showColumnIcon
   />
 ```
 
 ### Example for data with expand
 ```js
-{
+[{
   "id": 1,
   "name": "Maher",
   "lastName": "unlocker",
@@ -95,7 +95,7 @@ import { Dynamictable } from @maherunlocker/react-table-component
   "lastName": "unlocker",
   "age": 15,
   "subRows": []
-}
+}]
 ```
 
 ### TypeScript
