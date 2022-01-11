@@ -39,7 +39,7 @@ type DynamictableProps = {
   actionColumn?: React.ReactNode;
 };
 
-export default function Dynamictable({
+export  function DynamicTable({
   url,
   actionColumn,
   canGroupBy,
