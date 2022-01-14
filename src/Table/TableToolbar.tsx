@@ -23,7 +23,7 @@ import { TableInstance } from 'react-table';
 import { TableMouseEventHandler } from '../../types/react-table-config';
 import { ColumnHidePage } from './ColumnHidePage';
 import { FilterPage } from './FilterPage';
-import GlobalFilter from './filters/Global-Filter';
+import GlobalFilter from './filters/GlobalFilter';
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
