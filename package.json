@@ -37,7 +37,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@maherunlocker/custum-react-table",
+  "name": "@maherunlocker/custom-react-table",
   "author": "M@HeR",
   "module": "dist/react-table-component.esm.js",
   "homepage": "https://github.com/MaherUnlocker/custum-react-table",
