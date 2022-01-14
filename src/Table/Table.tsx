@@ -34,7 +34,7 @@ import {
   TableRow,
   TableTable,
   useStyles,
-} from './TableStyles';
+} from './TableStyle';
 import React, {
   CSSProperties,
   MouseEventHandler,
