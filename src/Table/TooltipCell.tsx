@@ -1,4 +1,5 @@
-import { Tooltip as MuiTooltip, makeStyles } from '@material-ui/core'
+import { Tooltip as MuiTooltip } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { CSSProperties } from 'react'
 import { CellProps } from 'react-table'
 

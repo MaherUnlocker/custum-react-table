@@ -1,14 +1,12 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './index.css';
-
-import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
 import { FilterValue, IdType, Row } from 'react-table';
 
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import { Table } from './Table';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 function filterGreaterThan(
   rows: Array<Row<any>>,
   id: Array<IdType<any>>,
@@ -39,7 +37,7 @@ type DynamictableProps = {
   actionColumn?: React.ReactNode;
 };
 
-export  function DynamicTable({
+export function DynamicTable({
   url,
   actionColumn,
   canGroupBy,

@@ -42,13 +42,14 @@ import React, {
   ReactElement,
   useEffect,
 } from 'react';
-import { TableSortLabel, TextField, Tooltip } from '@material-ui/core';
+import { TableSortLabel, TextField, Tooltip } from '@mui/material';
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 
 import { FilterChipBar } from './FilterChipBar';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import { ResizeHandle } from './ResizeHandle';
 import SettingIcon from './SettingIcon';
 import { TablePagination } from './TablePagination';
@@ -123,8 +124,9 @@ const getStyles = (props: any, disableResizing = false, align = 'left') => [
   props,
   {
     style: {
-      justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
-      alignItems: 'flex-start',
+      justifyContent: 'center',
+      // justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
+      alignItems: 'center',
       display: 'flex',
     },
   },
@@ -388,17 +390,22 @@ export function Table<T extends Record<string, unknown>>({
                           )
                         : null}
                       {column.canSort && canSort ? (
-                        <Tooltip title={sortTitle}>
-                          <TableSortLabel
-                            active={column.isSorted}
-                            direction={column.isSortedDesc ? 'desc' : 'asc'}
-                            {...columnSortByProps}
-                            className={classes.tableSortLabel}
-                            style={style}
-                          >
-                            {column.render('Header')}
-                          </TableSortLabel>
-                        </Tooltip>
+                        <>
+                          <Tooltip title={sortTitle}>
+                            <TableSortLabel
+                              active={column.isSorted}
+                              direction={column.isSortedDesc ? 'desc' : 'asc'}
+                              {...columnSortByProps}
+                              className={classes.tableSortLabel}
+                              style={{ flexDirection: 'row-reverse' }}
+                            >
+                              {column.render('Header')}
+                            </TableSortLabel>
+                          </Tooltip>
+                          <FilterAltOutlinedIcon
+                            className={classes.tableFilterAltOutlinedIcon}
+                          />
+                        </>
                       ) : (
                         <TableLabel style={style}>
                           {column.render('Header')}

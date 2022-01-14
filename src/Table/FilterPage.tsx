@@ -1,4 +1,6 @@
-import { Popover, createStyles, makeStyles } from '@material-ui/core';
+import { Popover } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { FormEvent, ReactElement, useCallback } from 'react';
 import { TableInstance } from 'react-table';
 
@@ -88,7 +90,7 @@ export function FilterPage<T extends Record<string, unknown>>({
             <div>
               {allColumns
 
-                .filter((it) => it.canFilter)
+                .filter((it) => it.canFilter && it.isVisible)
                 .map((column) => (
                   <div key={column.id} className="d-flex mt-2">
                     {column.render('Filter')}

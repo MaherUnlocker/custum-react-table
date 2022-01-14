@@ -1,4 +1,6 @@
-import { Chip, createStyles, makeStyles } from '@material-ui/core';
+import { Chip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import React, { ReactElement, useCallback } from 'react';
 import {
   ColumnInstance,
@@ -65,7 +67,7 @@ export function FilterChipBar<T extends Record<string, unknown>>({
 
   return Object.keys(filters).length > 0 ? (
     <div className={classes.chipZone}>
-      <span className={classes.filtersActiveLabel}>Active filters:</span>
+      {/* <span className={classes.filtersActiveLabel}>Active filters:</span> */}
 
       {filters &&
         allColumns.map((column) => {

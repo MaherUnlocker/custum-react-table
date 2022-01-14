@@ -37,7 +37,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "@maherunlocker/custom-react-table",
+  "name": "@maherunlocker/custum-react-table",
   "author": "M@HeR",
   "module": "dist/react-table-component.esm.js",
   "homepage": "https://github.com/MaherUnlocker/custum-react-table",
@@ -60,10 +60,8 @@
     "@storybook/addons": "^6.4.9",
     "@storybook/react": "^6.4.9",
     "@types/react": "^17.0.38",
-    "@types/react-bootstrap": "0.32.28",
     "@types/react-dom": "^17.0.11",
     "@types/react-table": "^7.7.9",
-    "@welldone-software/why-did-you-render": "^6.2.0",
     "autoprefixer": "^10.4.0",
     "babel-loader": "^8.2.3",
     "cssnano": "^5.0.14",
@@ -84,8 +82,9 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@material-ui/core": "^4.11.4",
-    "@material-ui/icons": "^4.11.2",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.5",
     "@mui/material": "^5.2.8",
     "@mui/styles": "^5.2.3",
     "axios": "0.24.0",
@@ -93,7 +92,6 @@
     "classnames": "^2.3.1",
     "match-sorter": "^6.3.0",
     "pretty-checkbox": "^3.0.3",
-    "react-bootstrap": "2.0.3",
     "react-json-view": "^1.21.3",
     "react-table": "^7.7.0"
   },

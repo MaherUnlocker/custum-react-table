@@ -1,14 +1,8 @@
-import {
-  Button,
-  IconButton,
-  Theme,
-  Toolbar,
-  Tooltip,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import ViewColumnsIcon from '@material-ui/icons/ViewColumn';
+import { Button, IconButton, Theme, Toolbar, Tooltip } from '@mui/material';
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ViewColumnsIcon from '@mui/icons-material/ViewColumn';
 import classnames from 'classnames';
 import React, {
   MouseEvent,
@@ -124,7 +118,7 @@ export const InstanceSmallIconActionButton = <
           })}
           onClick={onClick(instance)}
           disabled={!enabled(instance)}
-        >
+          size="large">
           {icon}
         </IconButton>
       </span>
@@ -150,7 +144,7 @@ export const SmallIconActionButton = ({
           })}
           onClick={onClick}
           disabled={!enabled}
-        >
+          size="large">
           {icon}
         </IconButton>
       </span>
