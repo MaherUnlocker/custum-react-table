@@ -1,1 +1,3 @@
-export { DynamicTable } from './Table/DynamicTable';
+import {DynamicTable} from './Table/DynamicTable';
+
+export { DynamicTable };

@@ -16,6 +16,7 @@
     "lint": "tsdx lint",
     "test": "tsdx test --passWithNoTests",
     "commit": "cz",
+    "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "storybook": "start-storybook -p 6006",
