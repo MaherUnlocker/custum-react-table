@@ -1,4 +1,5 @@
-import { Chip, createStyles, makeStyles } from '@material-ui/core';
+import { Chip } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import React, { ReactElement, useCallback } from 'react';
 import {
   ColumnInstance,
@@ -53,6 +54,7 @@ export function FilterChipBar<T extends Record<string, unknown>>({
   const {
     allColumns,
     setFilter,
+
     state: { filters },
   } = instance;
 

@@ -38,19 +38,19 @@ const useStyles = makeStyles(
   })
 );
 
-type ColumnHidePageProps<T extends Record<string, unknown>> = {
+type ShowHideFilterProps<T extends Record<string, unknown>> = {
   instance: TableInstance<T>;
   anchorEl?: Element;
   onClose: () => void;
   show: boolean;
 };
 
-export function ColumnHidePage<T extends Record<string, unknown>>({
+export function ShowHideFilterPage<T extends Record<string, unknown>>({
   instance,
   anchorEl,
   onClose,
   show,
-}: ColumnHidePageProps<T>): ReactElement | null {
+}: ShowHideFilterProps<T>): ReactElement | null {
   const classes = useStyles({});
   const { allColumns, toggleHideColumn } = instance;
   const hideableColumns = allColumns.filter(
@@ -59,7 +59,41 @@ export function ColumnHidePage<T extends Record<string, unknown>>({
   const checkedCount = hideableColumns.reduce((acc, val) => acc + (val.isVisible ? 0 : 1), 0);
 
   const onlyOneOptionLeft = checkedCount + 1 >= hideableColumns.length;
+  function FilterFormControl({ visibleColumns }: { visibleColumns: any[] }) {
+    const [columns, setColumns] = React.useState<any[]>(
+      visibleColumns.map((element) => {
+        return {
+          ...element,
+          active: false,
+        };
+      })
+    );
 
+    return (
+      <React.Fragment>
+        {columns.map((column) => (
+          <FormControlLabel
+            key={column.id}
+            control={<Checkbox value={column.id} />}
+            label={column.id}
+            checked={column.active}
+            onChange={() => {
+              column.active = !column.active;
+              !column.active
+                ? (document.getElementsByName(column.id)[0].style.display = 'none')
+                : (document.getElementsByName(column.id)[0].style.display = '');
+              setColumns((prevState: typeof columns) => {
+                let index = prevState.indexOf(column);
+                let newState = [...prevState];
+                newState[index] = column;
+                return newState;
+              });
+            }}
+          />
+        ))}
+      </React.Fragment>
+    );
+  }
   return hideableColumns.length > 1 ? (
     <div>
       <Popover
@@ -78,18 +112,8 @@ export function ColumnHidePage<T extends Record<string, unknown>>({
         style={{ padding: 24 }}
       >
         <div className={(classes.columnsPopOver, classes.grid, classes.cell)}>
-          <Typography className={classes.popoverTitle}>Visible Columns</Typography>
           <div style={{ display: 'grid' }}>
-            {hideableColumns.map((column) => (
-              <FormControlLabel
-                key={column.id}
-                control={<Checkbox value={`${column.id}`} disabled={column.isVisible && onlyOneOptionLeft} />}
-                label={column.id}
-                // label={column.render('Header')}
-                checked={column.isVisible}
-                onChange={() => toggleHideColumn(column.id, column.isVisible)}
-              />
-            ))}
+            <FilterFormControl visibleColumns={allColumns.filter((it) => it.canFilter && it.isVisible)} />
           </div>
         </div>
       </Popover>

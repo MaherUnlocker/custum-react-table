@@ -7,6 +7,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { FilterValue, IdType, Row } from 'react-table';
 
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
+import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
 import { Table } from './Table';
 
 function filterGreaterThan(
@@ -20,26 +21,26 @@ function filterGreaterThan(
   });
 }
 
-// This is an autoRemove method on the filter function that
-// when given the new filter value and returns true, the filter
+// This is an autoRemove method on the filter function
+//that when given the new filter value and returns true, the filter
 // will be automatically removed. Normally this is just an undefined
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = (val: any) => typeof val !== 'number';
 
-type DynamictableProps = {
+type DynamicTableProps = {
   url: string;
   canGroupBy?: boolean;
   canSort?: boolean;
   canSelect?: boolean;
   canResize?: boolean;
   showGlobalFilter?: boolean;
-  showFilterByColumn?: boolean;
-  showColumnIcon?: boolean;
+  showFilterbyColomn?: boolean;
+  showColomnIcon?: boolean;
   canExpand?: boolean;
   actionColumn?: React.ReactNode;
 };
 
-export default function Dynamictable({
+export default function DynamicTable({
   url,
   actionColumn,
   canGroupBy,
@@ -48,9 +49,9 @@ export default function Dynamictable({
   canExpand,
   canSelect,
   showGlobalFilter,
-  showFilterByColumn,
-  showColumnIcon,
-}: DynamictableProps) {
+  showFilterbyColomn,
+  showColomnIcon,
+}: DynamicTableProps) {
   const [apiResult, setApiResult] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | any>(null);
@@ -61,7 +62,7 @@ export default function Dynamictable({
       .then((response) => {
         setApiResult(response.data);
       })
-      .catch((err) => {
+      .catch((err: any) => {
         setError(err);
       })
       .finally(() => {
@@ -69,7 +70,7 @@ export default function Dynamictable({
       });
   }
 
-  let apiResultColumns = useMemo(
+  const apiResultColumns = useMemo(
     () =>
       apiResult[0]
         ? Object.keys(apiResult[0])
@@ -145,10 +146,11 @@ export default function Dynamictable({
   }, [url]);
 
   if (loading) return <LoadingDataAnimation />;
+  if (error) return <LoadingErrorAnimation />;
 
   return (
     <React.Fragment>
-      <div className="table-responsive">
+      <div className="table-responsive ">
         <Table
           name={'myTable'}
           columns={columns}
@@ -159,8 +161,8 @@ export default function Dynamictable({
           canResize={canResize}
           actionColumn={actionColumn}
           showGlobalFilter={showGlobalFilter}
-          showFilterByColumn={showFilterByColumn}
-          showColumnIcon={showColumnIcon}
+          showFilterbyColomn={showFilterbyColomn}
+          showColomnIcon={showColomnIcon}
         />
       </div>
     </React.Fragment>

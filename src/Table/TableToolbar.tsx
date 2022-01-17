@@ -1,14 +1,7 @@
-import {
-  Button,
-  IconButton,
-  Theme,
-  Toolbar,
-  Tooltip,
-  createStyles,
-  makeStyles,
-} from '@material-ui/core';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import ViewColumnsIcon from '@material-ui/icons/ViewColumn';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import ViewColumnsIcon from '@mui/icons-material/ViewColumn';
+import { Button, IconButton, Theme, Toolbar, Tooltip } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import classnames from 'classnames';
 import React, {
   MouseEvent,
@@ -124,6 +117,7 @@ export const InstanceSmallIconActionButton = <
           })}
           onClick={onClick(instance)}
           disabled={!enabled(instance)}
+          size="large"
         >
           {icon}
         </IconButton>
@@ -150,6 +144,7 @@ export const SmallIconActionButton = ({
           })}
           onClick={onClick}
           disabled={!enabled}
+          size="large"
         >
           {icon}
         </IconButton>
@@ -164,15 +159,15 @@ type TableToolbarProps<T extends Record<string, unknown>> = {
   onDelete?: TableMouseEventHandler;
   onEdit?: TableMouseEventHandler;
   showGlobalFilter?: boolean;
-  showFilterByColumn?: boolean;
-  showColumnIcon?: boolean;
+  showFilterbyColomn?: boolean;
+  showColomnIcon?: boolean;
 };
 
 export function TableToolbar<T extends Record<string, unknown>>({
   instance,
   showGlobalFilter,
-  showFilterByColumn,
-  showColumnIcon,
+  showFilterbyColomn,
+  showColomnIcon,
 }: PropsWithChildren<TableToolbarProps<T>>): ReactElement | null {
   const { columns } = instance;
   const classes = useStyles();
@@ -205,12 +200,12 @@ export function TableToolbar<T extends Record<string, unknown>>({
     setAnchorEl(undefined);
   }, []);
 
-  // toolbar with add, edit, delete, filter/search column select.
+  // toolbar with  filter/search column select.
 
   return (
     <Toolbar
       className={
-        !showGlobalFilter && !showFilterByColumn && !showColumnIcon
+        !showGlobalFilter && !showFilterbyColomn && !showColomnIcon
           ? 'd-none'
           : classes.toolbar
       }
@@ -237,7 +232,7 @@ export function TableToolbar<T extends Record<string, unknown>>({
           show={filterOpen}
           anchorEl={anchorEl}
         />
-        {showColumnIcon
+        {showColomnIcon
           ? hideableColumns.length > 1 && (
               <SmallIconActionButton
                 icon={<ViewColumnsIcon />}
@@ -247,9 +242,10 @@ export function TableToolbar<T extends Record<string, unknown>>({
               />
             )
           : null}
-        {showFilterByColumn ? (
+        {showFilterbyColomn ? (
           <SmallIconActionButton
             icon={<FilterListIcon />}
+            // icon={<span>add filter</span>} //{<FilterListIcon />}
             onClick={handleFilterClick}
             label="Filter by columns"
             variant="right"
@@ -259,3 +255,5 @@ export function TableToolbar<T extends Record<string, unknown>>({
     </Toolbar>
   );
 }
+
+// return <>{!showGlobalFilter && !showFilterbyColomn && !showColomnIcon ? null : <ToolbarWrapper />}</>;

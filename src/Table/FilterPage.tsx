@@ -1,13 +1,7 @@
-import { Popover, createStyles, makeStyles } from '@material-ui/core';
+import { Popover } from '@mui/material';
+import { createStyles, makeStyles } from '@mui/styles';
 import React, { FormEvent, ReactElement, useCallback } from 'react';
 import { TableInstance } from 'react-table';
-
-type FilterPageProps<T extends Record<string, unknown>> = {
-  instance: TableInstance<T>;
-  anchorEl?: Element;
-  onClose: () => void;
-  show: boolean;
-};
 
 const useStyles = makeStyles(
   createStyles({
@@ -44,6 +38,12 @@ const useStyles = makeStyles(
     },
   })
 );
+type FilterPageProps<T extends Record<string, unknown>> = {
+  instance: TableInstance<T>;
+  anchorEl?: Element;
+  onClose: () => void;
+  show: boolean;
+};
 
 export function FilterPage<T extends Record<string, unknown>>({
   instance,

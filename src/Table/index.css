@@ -19,4 +19,6 @@
   /* overflow-y: auto; */
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: -ms-autohiding-scrollbar;
+  flex: 1 1 auto;
+  padding: 1rem 1rem;
 }

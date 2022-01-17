@@ -1,15 +1,15 @@
-import cx from 'classnames'
-import React, { ReactElement } from 'react'
-import { ColumnInstance } from 'react-table'
+import cx from 'classnames';
+import React, { ReactElement } from 'react';
+import { ColumnInstance } from 'react-table';
 
-import { useStyles } from './TableStyles'
+import { useStyles } from './TableStyle';
 
 export const ResizeHandle = <T extends Record<string, unknown>>({
   column,
 }: {
-  column: ColumnInstance<T>
+  column: ColumnInstance<T>;
 }): ReactElement => {
-  const classes = useStyles()
+  const classes = useStyles();
   return (
     <div
       {...column.getResizerProps()}
@@ -19,5 +19,5 @@ export const ResizeHandle = <T extends Record<string, unknown>>({
         handleActive: column.isResizing,
       })}
     />
-  )
-}
+  );
+};

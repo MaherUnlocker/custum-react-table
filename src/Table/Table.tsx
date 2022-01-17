@@ -1,3 +1,15 @@
+import FilterAltOutlinedIcon from '@mui/icons-material/FilterAltOutlined';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import { TableSortLabel, TextField, Tooltip } from '@mui/material';
+import cx from 'classnames';
+import React, {
+  CSSProperties,
+  MouseEventHandler,
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+} from 'react';
 import {
   Cell,
   CellProps,
@@ -22,6 +34,13 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
+
+import { camelToWords, useDebounce, useLocalStorage } from '../utils';
+import { FilterChipBar } from './FilterChipBar';
+import { fuzzyTextFilter, numericTextFilter } from './filters';
+import { ResizeHandle } from './ResizeHandle';
+import SettingIcon from './SettingIcon';
+import { TablePagination } from './TablePagination';
 import {
   HeaderCheckbox,
   RowCheckbox,
@@ -34,27 +53,9 @@ import {
   TableRow,
   TableTable,
   useStyles,
-} from './TableStyles';
-import React, {
-  CSSProperties,
-  MouseEventHandler,
-  PropsWithChildren,
-  ReactElement,
-  useEffect,
-} from 'react';
-import { TableSortLabel, TextField, Tooltip } from '@material-ui/core';
-import { camelToWords, useDebounce, useLocalStorage } from '../utils';
-import { fuzzyTextFilter, numericTextFilter } from './filters';
-
-import { FilterChipBar } from './FilterChipBar';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import KeyboardArrowUp from '@material-ui/icons/KeyboardArrowUp';
-import { ResizeHandle } from './ResizeHandle';
-import SettingIcon from './SettingIcon';
-import { TablePagination } from './TablePagination';
+} from './TableStyle';
 import { TableToolbar } from './TableToolbar';
 import { TooltipCellRenderer } from './TooltipCell';
-import cx from 'classnames';
 
 export interface TableProperties<T extends Record<string, unknown>>
   extends TableOptions<T> {
@@ -68,8 +69,8 @@ export interface TableProperties<T extends Record<string, unknown>>
   canResize?: boolean;
   canSelect?: boolean;
   showGlobalFilter?: boolean;
-  showFilterByColumn?: boolean;
-  showColumnIcon?: boolean;
+  showFilterbyColomn?: boolean;
+  showColomnIcon?: boolean;
   actionColumn?: React.ReactNode;
 }
 
@@ -111,25 +112,53 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
       autoFocus={isFirstColumn}
       variant="standard"
       onChange={handleChange}
-      onBlur={(e) => {
+      onBlur={(e: any) => {
         setFilter(e.target.value || undefined);
       }}
     />
   );
 }
 
-// @ts-ignore
 const getStyles = (props: any, disableResizing = false, align = 'left') => [
   props,
   {
     style: {
-      justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
-      alignItems: 'flex-start',
+      justifyContent: 'center',
+      alignItems: 'center',
       display: 'flex',
     },
   },
 ];
 
+const headerProps = <T extends Record<string, unknown>>(
+  props: any,
+  { column }: Meta<T, { column: HeaderGroup<T> }>
+) => getStyles(props, column && column.disableResizing, column && column.align);
+
+const cellProps = <T extends Record<string, unknown>>(
+  props: any,
+  { cell }: Meta<T, { cell: Cell<T> }>
+) =>
+  getStyles(
+    props,
+    cell.column && cell.column.disableResizing,
+    cell.column && cell.column.align
+  );
+
+const defaultColumn = {
+  Filter: DefaultColumnFilter,
+  Cell: TooltipCellRenderer,
+  Header: DefaultHeader,
+  // When using the useFlexLayout:
+  minWidth: 10, // minWidth is only used as a limit for resizing
+  // width: 150, // width is used for both the flex-basis and flex-grow
+  maxWidth: 200, // maxWidth is only used as a limit for resizing
+};
+
+const filterTypes: any = {
+  fuzzyText: fuzzyTextFilter,
+  numeric: numericTextFilter,
+};
 const selectionHook = (hooks: Hooks<any>) => {
   hooks.allColumns.push((columns) => [
     // Let's make a column for selection
@@ -155,43 +184,12 @@ const selectionHook = (hooks: Hooks<any>) => {
     },
     ...columns,
   ]);
-  hooks.useInstanceBeforeDimensions.push(({ headerGroups }) => {
-    // fix the parent group of the selection button to not be resizable
-    const selectionGroupHeader = headerGroups[0].headers[0];
-    selectionGroupHeader.canResize = false;
-  });
+  // hooks.useInstanceBeforeDimensions.push(({ headerGroups }) => {
+  //   // fix the parent group of the selection button to not be resizable
+  //   const selectionGroupHeader = headerGroups[0].headers[0];
+  //   // selectionGroupHeader.canResize = false;
+  // });
 };
-
-const headerProps = <T extends Record<string, unknown>>(
-  props: any,
-  { column }: Meta<T, { column: HeaderGroup<T> }>
-) => getStyles(props, column && column.disableResizing, column && column.align);
-
-const cellProps = <T extends Record<string, unknown>>(
-  props: any,
-  { cell }: Meta<T, { cell: Cell<T> }>
-) =>
-  getStyles(
-    props,
-    cell.column && cell.column.disableResizing,
-    cell.column && cell.column.align
-  );
-
-const defaultColumn = {
-  Filter: DefaultColumnFilter,
-  Cell: TooltipCellRenderer,
-  Header: DefaultHeader,
-  // When using the useFlexLayout:
-  minWidth: 30, // minWidth is only used as a limit for resizing
-  width: 150, // width is used for both the flex-basis and flex-grow
-  maxWidth: 200, // maxWidth is only used as a limit for resizing
-};
-
-const filterTypes: any = {
-  fuzzyText: fuzzyTextFilter,
-  numeric: numericTextFilter,
-};
-
 export function Table<T extends Record<string, unknown>>({
   name,
   columns,
@@ -202,8 +200,8 @@ export function Table<T extends Record<string, unknown>>({
   canResize,
   actionColumn,
   showGlobalFilter,
-  showFilterByColumn,
-  showColumnIcon,
+  showFilterbyColomn,
+  showColomnIcon,
   ...props
 }: PropsWithChildren<TableProperties<T>>): ReactElement {
   const classes = useStyles();
@@ -269,7 +267,7 @@ export function Table<T extends Record<string, unknown>>({
           );
         },
         Cell: function () {
-          return <div>{actionColumn}</div>;
+          return actionColumn;
         },
       },
     ]);
@@ -287,13 +285,11 @@ export function Table<T extends Record<string, unknown>>({
     useResizeColumns,
     useRowSelect,
   ];
-
   let localHooks = hooks;
 
   if (canSelect) {
     localHooks.push(selectionHook as any);
   }
-
   if (actionColumn !== undefined) {
     localHooks.push(customHooks as any);
   }
@@ -344,7 +340,7 @@ export function Table<T extends Record<string, unknown>>({
     <React.Fragment>
       <TableToolbar
         instance={instance}
-        {...{ showGlobalFilter, showFilterByColumn, showColumnIcon }}
+        {...{ showGlobalFilter, showFilterbyColomn, showColomnIcon }}
       />
       <FilterChipBar instance={instance} />
       <TableTable {...tableProps}>
@@ -388,17 +384,23 @@ export function Table<T extends Record<string, unknown>>({
                           )
                         : null}
                       {column.canSort && canSort ? (
-                        <Tooltip title={sortTitle}>
-                          <TableSortLabel
-                            active={column.isSorted}
-                            direction={column.isSortedDesc ? 'desc' : 'asc'}
-                            {...columnSortByProps}
-                            className={classes.tableSortLabel}
-                            style={style}
-                          >
-                            {column.render('Header')}
-                          </TableSortLabel>
-                        </Tooltip>
+                        <>
+                          <Tooltip title={sortTitle}>
+                            <TableSortLabel
+                              active={column.isSorted}
+                              direction={column.isSortedDesc ? 'desc' : 'asc'}
+                              {...columnSortByProps}
+                              className={classes.tableSortLabel}
+                              style={{ flexDirection: 'row-reverse' }}
+                            >
+                              {column.render('Header')}
+                            </TableSortLabel>
+                          </Tooltip>
+
+                          <FilterAltOutlinedIcon
+                            className={classes.tableFilterAltOutlinedIcon}
+                          />
+                        </>
                       ) : (
                         <TableLabel style={style}>
                           {column.render('Header')}
