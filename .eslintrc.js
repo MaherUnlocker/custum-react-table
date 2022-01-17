@@ -4,7 +4,7 @@ module.exports = {
     // enable typescript support
     'plugin:@typescript-eslint/recommended',
     // now disable all of the rules that are in conflict with prettier
-    'prettier'
+    'prettier',
     // note that we don't add the prettier rules, they add noise to the IDE
     // and the code is all being formatted on commit anyway.
   ],
@@ -25,7 +25,7 @@ module.exports = {
     '@typescript-eslint/class-name-casing': 'off',
     // too many of the graphql generate types break this rule, and they do so
     // in a way that makes enough sense that I don't want to deal with it
-    '@typescript-eslint/camelcase': 'off'
+    '@typescript-eslint/camelcase': 'off',
   },
   overrides: [
     {
@@ -55,12 +55,12 @@ module.exports = {
         '@typescript-eslint/no-empty-interface': [
           'error',
           {
-            allowSingleExtends: true
-          }
+            allowSingleExtends: true,
+          },
         ],
         '@typescript-eslint/no-angle-bracket-type-assertion': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
-      }
-    }
-  ]
-}
+      },
+    },
+  ],
+};
