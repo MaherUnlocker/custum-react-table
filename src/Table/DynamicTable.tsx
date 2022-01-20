@@ -37,7 +37,7 @@ type DynamicTableProps = {
   showFilterbyColumn?: boolean;
   showColumnIcon?: boolean;
   canExpand?: boolean;
-  actionColumn?: React.ReactNode;
+  actionColumn?: Function;
 };
 
 export function DynamicTable({

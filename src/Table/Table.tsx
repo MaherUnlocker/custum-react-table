@@ -71,7 +71,7 @@ export interface TableProperties<T extends Record<string, unknown>>
   showGlobalFilter?: boolean;
   showFilterbyColumn?: boolean;
   showColumnIcon?: boolean;
-  actionColumn?: React.ReactNode;
+  actionColumn?: Function;
 }
 
 function DefaultHeader({ column }: HeaderProps<any>) {
@@ -266,8 +266,9 @@ export function Table<T extends Record<string, unknown>>({
             </div>
           );
         },
-        Cell: function () {
-          return actionColumn;
+        Cell: function (cell: any) {
+          const ActionColumnComponent = actionColumn as React.ElementType;
+          return <ActionColumnComponent selectedRow={cell.row} />;
         },
       },
     ]);
