@@ -1,14 +1,15 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import './index.css';
-
-import axios from 'axios';
 import React, { useEffect, useMemo, useState } from 'react';
+import axios from 'axios';
+
 import { FilterValue, IdType, Row } from 'react-table';
+import { DuplicateIcon, TrashIcon } from '@aureskonnect/react-ui';
 
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
+
 import { Table } from './Table';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
 
 function filterGreaterThan(
   rows: Array<Row<any>>,
@@ -37,9 +38,13 @@ type DynamicTableProps = {
   showFilterbyColumn?: boolean;
   showColumnIcon?: boolean;
   canExpand?: boolean;
+  canDeleteOrDuplicate?: boolean;
   actionColumn?: Function;
 };
-
+type apiResultProps = {
+  structure: string[];
+  data: any;
+};
 export function DynamicTable({
   url,
   actionColumn,
@@ -51,15 +56,16 @@ export function DynamicTable({
   showGlobalFilter,
   showFilterbyColumn,
   showColumnIcon,
+  canDeleteOrDuplicate,
 }: DynamicTableProps) {
-  const [apiResult, setApiResult] = useState<any[]>([]);
+  const [apiResult, setApiResult] = useState<apiResultProps>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | any>(null);
 
   async function fetchData(url: string) {
     await axios
       .get(url)
-      .then((response) => {
+      .then((response:any) => {
         setApiResult(response.data);
       })
       .catch((err: any) => {
@@ -72,11 +78,11 @@ export function DynamicTable({
 
   const apiResultColumns = useMemo(
     () =>
-      apiResult[0]
-        ? Object.keys(apiResult[0])
-            .filter((key) => key !== 'rating' && key !== 'subRows')
+      apiResult
+        ? apiResult.structure
+            .filter((key) =>  key !== 'subRows')
             .map((key) => {
-              if (key === 'image') {
+              if (key === 'image' || key === 'picture') {
                 return {
                   Header: key,
                   accessor: key,
@@ -86,7 +92,7 @@ export function DynamicTable({
                     return (
                       <img
                         src={value.cell.value}
-                        className="h-25 w-25"
+                        className="w-50"
                         alt=""
                       />
                     );
@@ -105,9 +111,23 @@ export function DynamicTable({
     [apiResult]
   );
 
+  function duplicateRow(index: number) {
+    const duplicatedData: any = { ...apiResult };
+    const duplicateRow = duplicatedData?.data[index];
+    const firstPart = duplicatedData?.data.slice(0, index + 1);
+    const secondPart = duplicatedData?.data.slice(
+      index + 1,
+      duplicatedData.data.length
+    );
+    duplicatedData.data = [...firstPart, duplicateRow, ...secondPart];
+    setApiResult(duplicatedData);
+  }
+
   const columns: any = useMemo(() => {
+    let modifiedColumns: any = apiResultColumns;
+
     if (canExpand) {
-      return [
+      modifiedColumns = [
         {
           // Build our expander column
           id: 'expander', // Make sure it has an ID
@@ -126,21 +146,50 @@ export function DynamicTable({
                   },
                 })}
               >
-                {row.isExpanded ? (
-                  <div className="arrowRight"></div>
-                ) : (
-                  <div className="arrowDown"></div>
-                )}
-                {/* {row.isExpanded ? '👇' : '👉'} */}
+                {/* {row.isExpanded ? <div className='arrowRight'></div> : <div className='arrowDown'></div>} */}
+                {row.isExpanded ? '👇' : '👉'}
               </span>
             ) : null,
         },
-        ...apiResultColumns,
+        ...modifiedColumns,
       ];
     }
 
-    return apiResultColumns;
+    if (canDeleteOrDuplicate) {
+      modifiedColumns = [
+        ...modifiedColumns,
+        {
+          Header: 'Actions',
+          id: 'Actions',
+          accessor: (str: any) => 'delete',
+
+          Cell: ({ row }: any) => (
+            <React.Fragment>
+              <TrashIcon
+                width={25}
+                height={25}
+                onClick={() => {
+                  const dataCopy: any = { ...apiResult };
+                  dataCopy.data.splice(row.index, 1);
+                  setApiResult(dataCopy);
+                }}
+              />
+              <DuplicateIcon
+                width={25}
+                height={25}
+                onClick={() => {
+                  duplicateRow(row.index);
+                }}
+              />
+            </React.Fragment>
+          ),
+        },
+      ];
+    }
+
+    return modifiedColumns;
   }, [apiResultColumns]);
+
   useEffect(() => {
     fetchData(url);
   }, [url]);
@@ -154,7 +203,7 @@ export function DynamicTable({
         <Table
           name={'myTable'}
           columns={columns}
-          data={apiResult}
+          data={apiResult?.data}
           canGroupBy={canGroupBy}
           canSort={canSort}
           canSelect={canSelect}
