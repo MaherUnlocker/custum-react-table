@@ -44,6 +44,11 @@ This loads the stories from `./stories`.
 > NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
 
 ### How to use
+> Your response from the API format must be like this:
+
+
+
+
 
 ```jsx
 import { Dynamictable } from @maherunlocker/custom-react-table
@@ -52,7 +57,7 @@ import { Dynamictable } from @maherunlocker/custom-react-table
     // put your backend api url
     url={apiUrl}
     // optional props
-    actionColumn={<div>put your component</div>}
+    actionColumn={'declare here your function to get props of selected row'}
     canGroupBy
     canSort
     canResize
@@ -61,40 +66,55 @@ import { Dynamictable } from @maherunlocker/custom-react-table
     showGlobalFilter
     showFilterByColumn
     showColumnIcon
+    canDeleteOrDuplicate
   />
 ```
 
 ### Example for data with expand
+. type of response must be like this:
+
 ```js
-[{
-  "id": 1,
-  "name": "Maher",
-  "lastName": "unlocker",
-  "age": 15,
-  "subRows": [
-    {
-      "id": 2,
-      "name": "Maher",
-      "lastName": "unlocker",
-      "age": 15,
-      "subRows": []
-    },
-    {
-      "id": 3,
-      "name": "Maher",
-      "lastName": "unlocker",
-      "age": 15,
-      "subRows": []
-    }
-  ]
-},
-{
-  "id": 4,
-  "name": "Maher",
-  "lastName": "unlocker",
-  "age": 15,
-  "subRows": []
-}]
+"person": {
+  //here list of visible header colums
+    "structure": [
+      "id",
+      "name",
+      "lastName"
+      "age"
+    ],
+    //here your data 
+    "data": [
+      {
+        "id": 1,
+        "name": "Maher",
+        "lastName": "unlocker",
+        "age": 15,
+        "subRows": [
+          {
+            "id": 2,
+            "name": "Maher",
+            "lastName": "unlocker",
+            "age": 15,
+            "subRows": []
+          },
+          {
+            "id": 3,
+            "name": "Maher",
+            "lastName": "unlocker",
+            "age": 15,
+            "subRows": []
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "name": "Maher",
+        "lastName": "unlocker",
+        "age": 15,
+        "subRows": []
+      }
+    ]
+  }
 ```
 
 ### TypeScript
