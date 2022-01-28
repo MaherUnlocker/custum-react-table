@@ -132,6 +132,10 @@ export function DynamicTable({
           // Build our expander column
           id: 'expander', // Make sure it has an ID
           Header: '',
+          minWidth: 50,
+          width: 60,
+          disableResizing: true,
+          disableGroupBy: true,
           Cell: ({ row }: any) =>
             // Use the row.canExpand and row.getToggleRowExpandedProps prop getter
             // to build the toggle for expanding a row
