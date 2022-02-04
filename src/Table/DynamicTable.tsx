@@ -8,7 +8,7 @@ import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
 
 import { Table } from './Table';
-import 'bootstrap/dist/css/bootstrap.min.css';
+
 import './index.css';
 
 function filterGreaterThan(
