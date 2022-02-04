@@ -65,7 +65,7 @@ export function DynamicTable({
   async function fetchData(url: string) {
     await axios
       .get(url)
-      .then((response:any) => {
+      .then((response: any) => {
         setApiResult(response.data);
       })
       .catch((err: any) => {
@@ -80,7 +80,7 @@ export function DynamicTable({
     () =>
       apiResult
         ? apiResult.structure
-            .filter((key) =>  key !== 'subRows')
+            .filter((key) => key !== 'subRows')
             .map((key) => {
               if (key === 'image' || key === 'picture') {
                 return {
@@ -90,11 +90,7 @@ export function DynamicTable({
                   // eslint-disable-next-line
                   Cell: (value: any) => {
                     return (
-                      <img
-                        src={value.cell.value}
-                        className="w-50"
-                        alt=""
-                      />
+                      <img src={value.cell.value} className="w-50" alt="" />
                     );
                   },
                 };
