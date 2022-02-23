@@ -99,7 +99,6 @@
     "@mui/icons-material": "^5.4.2",
     "@mui/material": "^5.4.2",
     "@mui/styles": "^5.4.2",
-    "@mui/x-data-grid": "^5.5.1",
     "axios": "^0.24.0",
     "classnames": "^2.3.1",
     "lodash.concat": "^4.5.0",
