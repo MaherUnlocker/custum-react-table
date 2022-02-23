@@ -1,15 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
+import './index.css';
 
+import {
+  AngleSmallRightIcon,
+  DuplicateIcon,
+  TrashIcon,
+} from '@aureskonnect/react-ui';
+import axios from 'axios';
+import React, { useEffect, useMemo, useState } from 'react';
 import { FilterValue, IdType, Row } from 'react-table';
-import { DuplicateIcon, TrashIcon } from '@aureskonnect/react-ui';
+import { customColumnProps } from 'react-table';
 
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
-
 import { Table } from './Table';
-
-import './index.css';
+import { useStyles } from './TableStyle';
 
 function filterGreaterThan(
   rows: Array<Row<any>>,
@@ -39,8 +43,12 @@ type DynamicTableProps = {
   showColumnIcon?: boolean;
   canExpand?: boolean;
   canDeleteOrDuplicate?: boolean;
+  filterActive?: boolean;
   actionColumn?: Function;
+  setLocalFilterActive?: Function | undefined;
+  arrayOfCustomColumns?: customColumnProps[] | undefined;
 };
+
 type apiResultProps = {
   structure: string[];
   data: any;
@@ -57,11 +65,14 @@ export function DynamicTable({
   showFilterbyColumn,
   showColumnIcon,
   canDeleteOrDuplicate,
+  arrayOfCustomColumns,
+  filterActive,
+  setLocalFilterActive,
 }: DynamicTableProps) {
   const [apiResult, setApiResult] = useState<apiResultProps>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | any>(null);
-
+  const classes = useStyles();
   async function fetchData(url: string) {
     await axios
       .get(url)
@@ -87,6 +98,7 @@ export function DynamicTable({
                   Header: key,
                   accessor: key,
                   disableFilters: true,
+
                   // eslint-disable-next-line
                   Cell: (value: any) => {
                     return (
@@ -100,6 +112,8 @@ export function DynamicTable({
                 Header: key,
                 accessor: key,
                 aggregate: 'count',
+                primary: false,
+                Filtertype: true,
                 Aggregated: ({ cell: { value } }: any) => `${value} `,
               };
             })
@@ -146,8 +160,16 @@ export function DynamicTable({
                   },
                 })}
               >
-                {/* {row.isExpanded ? <div className='arrowRight'></div> : <div className='arrowDown'></div>} */}
-                {row.isExpanded ? '👇' : '👉'}
+                {row.isExpanded ? (
+                  <AngleSmallRightIcon
+                    height={25}
+                    width={25}
+                    className={classes.iconDirectionAsc}
+                  />
+                ) : (
+                  <AngleSmallRightIcon height={25} width={25} />
+                )}
+                {/* {row.isExpanded ? '👇' : '👉'} */}
               </span>
             ) : null,
         },
@@ -155,6 +177,18 @@ export function DynamicTable({
       ];
     }
 
+    if (arrayOfCustomColumns && arrayOfCustomColumns.length > 0) {
+      arrayOfCustomColumns.map((elm) => {
+        modifiedColumns.splice(elm.indexOFColumn, 0, {
+          id: elm.columnName,
+          Header: elm.columnName,
+          Cell: function (cell: any) {
+            const ActionColumnComponent = elm.customJsx as React.ElementType;
+            return <elm.customJsx selectedRow={cell.row.original} />;
+          },
+        });
+      });
+    }
     if (canDeleteOrDuplicate) {
       modifiedColumns = [
         ...modifiedColumns,
@@ -198,22 +232,20 @@ export function DynamicTable({
   if (error) return <LoadingErrorAnimation />;
 
   return (
-    <React.Fragment>
-      <div className="table-responsive ">
-        <Table
-          name={'myTable'}
-          columns={columns}
-          data={apiResult?.data}
-          canGroupBy={canGroupBy}
-          canSort={canSort}
-          canSelect={canSelect}
-          canResize={canResize}
-          actionColumn={actionColumn}
-          showGlobalFilter={showGlobalFilter}
-          showFilterbyColumn={showFilterbyColumn}
-          showColumnIcon={showColumnIcon}
-        />
-      </div>
-    </React.Fragment>
+    <Table
+      name={'myTable'}
+      columns={columns}
+      data={apiResult?.data}
+      canGroupBy={canGroupBy}
+      canSort={canSort}
+      canSelect={canSelect}
+      canResize={canResize}
+      actionColumn={actionColumn}
+      showGlobalFilter={showGlobalFilter}
+      showFilterbyColumn={showFilterbyColumn}
+      showColumnIcon={showColumnIcon}
+      filterActive={filterActive}
+      setLocalFilterActive={setLocalFilterActive}
+    />
   );
 }

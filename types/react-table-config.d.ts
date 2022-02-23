@@ -129,6 +129,11 @@ declare module 'react-table' {
   export interface TableGroupByToggleProps {
     title?: string
   }
+  export interface customColumnProps {
+    indexOFColumn: number;
+    columnName: string;
+    customJsx: Function;
+  }
 }
 
 export type TableMouseEventHandler = (instance: TableInstance<T>) => MouseEventHandler

@@ -44,30 +44,83 @@ This loads the stories from `./stories`.
 > NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
 
 ### How to use
-> Your response from the API format must be like this:
 
 
 
 
 
 ```jsx
-import { Dynamictable } from @maherunlocker/custom-react-table
+import { DynamicTable } from @maherunlocker/custom-react-table
 
-<DynamicTable
-    // put your backend api url
-    url={apiUrl}
-    // optional props
-    actionColumn={'declare here your function to get props of selected row'}
-    canGroupBy
-    canSort
-    canResize
-    canSelect
-    canExpand
-    showGlobalFilter
-    showFilterByColumn
-    showColumnIcon
-    canDeleteOrDuplicate
-  />
+//this the format of object if you need to add custom columns to table with your personal jsx
+interface customColumnProps {
+  indexOFColumn: number;  //position of column to insert it 
+  columnName: string;    //name of column 
+  customJsx: Function;   //react componant 
+}
+
+let arrayOfCustomColumns: customColumnProps[] = [];
+
+
+function customJsxComponent(props: any) {
+  return (
+    <div className='w-100 d-flex justify-content-center'>
+      <div className='dropdown'>
+        <button
+          id='dropdownMenuButton1'
+          data-bs-toggle='dropdown'
+          // className=" dropdown-toggle"
+        >
+          test
+        </button>
+        <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
+          <div className='dropdown-item' onClick={() => console.log({ props })}>
+            react
+          </div>
+          <div className='dropdown-item'>table</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+arrayOfCustomColumns.push(
+  { indexOFColumn: 0, columnName: 'column1', customJsx: SelectAccountDropdown2 },
+  { indexOFColumn: 2, columnName: 'column2', customJsx: SelectAccountDropdown }
+);
+
+
+
+
+export default function App() {
+  //this  to get the filter page is opened or no 
+  const [filterActive, setLocalFilterActive] = React.useState<boolean>(false);
+
+  return (
+    <DynamicTable
+      //put your backed api url
+      
+      url='http://localhost:4000/client'
+    
+      //optionnal props
+      actionColumn={SelectAccountDropdown}
+      canGroupBy
+      canSort
+      canResize
+      canExpand
+      canSelect
+      showGlobalFilter
+      showFilterbyColumn
+      showColumnIcon
+      canDeleteOrDuplicate
+      filterActive={filterActive}
+      setLocalFilterActive={setLocalFilterActive}
+      arrayOfCustomColumns={arrayOfCustomColumns}
+    />
+  );
+}
+
 ```
 
 ### Example for data with expand

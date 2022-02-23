@@ -67,7 +67,7 @@ export function FilterChipBar<T extends Record<string, unknown>>({
 
   return Object.keys(filters).length > 0 ? (
     <div className={classes.chipZone}>
-      <span className={classes.filtersActiveLabel}>Active filters:</span>
+      {/* <span className={classes.filtersActiveLabel}>Active filters:</span> */}
 
       {filters &&
         allColumns.map((column) => {

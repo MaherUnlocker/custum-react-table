@@ -11,7 +11,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { makeStyles } from '@mui/styles';
-import * as React from 'react';
+import React from 'react';
 
 const useStyles = makeStyles({
   cell_short: {
@@ -21,8 +21,6 @@ const useStyles = makeStyles({
     width: 100,
   },
 });
-
-// import MobileRow from './MobileRow';
 
 function MobileRow(props: any) {
   const { row, headerGroups } = props;
@@ -49,7 +47,7 @@ function MobileRow(props: any) {
           .map((headerGroup: any) => {
             if (headerGroup.id === 'image' || headerGroup.id === 'picture') {
               return (
-                <TableCell component="th" scope="key" variant="body">
+                <TableCell component='th' scope='key' variant='body'>
                   {/* <Box
                     component='img'
                     sx={{
@@ -63,27 +61,19 @@ function MobileRow(props: any) {
                     src={dataRow[headerGroup.id]}
                   /> */}
 
-                  <img
-                    src={dataRow[headerGroup.id]}
-                    className="w-25 h-25"
-                    alt=""
-                  />
+                  <img src={dataRow[headerGroup.id]} className='w-25 h-25' alt='' />
                 </TableCell>
               );
             }
             return (
-              <TableCell component="th" scope="row">
+              <TableCell component='th' scope='row'>
                 {dataRow[headerGroup.id]}
               </TableCell>
             );
           })}
 
-        <TableCell align="right">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => setOpen(!open)}
-          >
+        <TableCell align='right'>
+          <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
             {open ? <KeyboardArrowDownIcon /> : <ArrowForwardIosIcon />}
           </IconButton>
         </TableCell>
@@ -91,7 +81,7 @@ function MobileRow(props: any) {
 
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ marginLeft: 0, marginRight: 0 }}>
               <Table aria-label={row.id}>
                 <TableBody>
@@ -109,46 +99,24 @@ function MobileRow(props: any) {
                       )
                       .slice(3)
                       .map((headerGroup: any) => {
-                        if (
-                          headerGroup.id === 'image' ||
-                          headerGroup.id === 'picture'
-                        ) {
+                        if (headerGroup.id === 'image' || headerGroup.id === 'picture') {
                           return (
-                            <TableRow component="th" scope="row">
-                              <TableCell
-                                className="tableCellLabel"
-                                scope="key"
-                                variant="body"
-                                align="right"
-                              >
+                            <TableRow component='th' scope='row'>
+                              <TableCell className='tableCellLabel' scope='key' variant='body' align='right'>
                                 {headerGroup.id}
                               </TableCell>
-                              <TableCell
-                                component="th"
-                                scope="row"
-                                variant="body"
-                              >
-                                <img
-                                  src={dataRow[headerGroup.id]}
-                                  className="w-25 h-25"
-                                  alt=""
-                                />
+                              <TableCell component='th' scope='row' variant='body'>
+                                <img src={dataRow[headerGroup.id]} className='w-25 h-25' alt='' />
                               </TableCell>
                             </TableRow>
                           );
                         }
                         return (
-                          <TableRow component="th" scope="row">
-                            <TableCell
-                              scope="key"
-                              variant="body"
-                              className={classes.cell_short}
-                            >
+                          <TableRow component='th' scope='row'>
+                            <TableCell scope='key' variant='body' className={classes.cell_short}>
                               {headerGroup.id}
                             </TableCell>
-                            <TableCell scope="key">
-                              {dataRow[headerGroup.id]}
-                            </TableCell>
+                            <TableCell scope='key'>{dataRow[headerGroup.id]}</TableCell>
                           </TableRow>
                         );
                       })}
@@ -164,32 +132,34 @@ function MobileRow(props: any) {
 }
 
 export default function CollapsibleTable(props: any) {
-  const {
-    getTableProps,
-    headerGroups,
-    getTableBodyProps,
-    page,
-    prepareRow,
-    state,
-  } = props.props;
+  const { headerGroups, page } = props.props;
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        {/* <TableHead>
+    <TableContainer component={Paper} sx={{ maxHeight: 'auto' }}>
+      <Table aria-label='collapsible table' stickyHeader>
+        <TableHead>
           <TableRow>
-            <TableCell />
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            {headerGroups[0]?.headers
+
+              .filter(
+                (headerGroup: any) =>
+                  headerGroup.id !== '_selector' &&
+                  headerGroup.id !== 'rating' &&
+                  headerGroup.id !== 'subRows' &&
+                  headerGroup.id !== 'hidecolumns' &&
+                  headerGroup.id !== 'expander' &&
+                  headerGroup.id !== 'Actions'
+              )
+              .slice(0, 3)
+
+              .map((headerGroup: any) => {
+                return <TableCell>{headerGroup.id}</TableCell>;
+              })}
+            <TableCell align='right'>actions</TableCell>;
           </TableRow>
-        </TableHead> */}
+        </TableHead>
         <TableBody>
           {page?.map((row: any) => {
-            return (
-              <MobileRow key={row.id} row={row} headerGroups={headerGroups} />
-            );
+            return <MobileRow key={row.id} row={row} headerGroups={headerGroups} />;
           })}
         </TableBody>
       </Table>

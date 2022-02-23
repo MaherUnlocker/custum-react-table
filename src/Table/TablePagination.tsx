@@ -1,3 +1,9 @@
+import {
+  AngleDoubleSmallLeftIcon,
+  AngleDoubleSmallRightIcon,
+  AngleSmallLeftIcon,
+  AngleSmallRightIcon,
+} from '@aureskonnect/react-ui';
 import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -8,6 +14,7 @@ import { useTheme } from '@mui/material/styles';
 import { makeStyles } from '@mui/styles';
 import React, { PropsWithChildren, ReactElement, useCallback } from 'react';
 import { TableInstance } from 'react-table';
+
 const rowsPerPageOptions = [10, 25, 50];
 
 // avoid all of the redraws caused by the internal withStyles
@@ -125,10 +132,13 @@ export function TablePagination<T extends Record<string, unknown>>({
     state: { pageIndex, pageSize, rowCount = instance.rows.length },
     gotoPage,
     nextPage,
+    pageOptions,
+    pageCount,
     previousPage,
+    canPreviousPage,
+    canNextPage,
     setPageSize,
   } = instance;
-
   const handleChangePage = useCallback(
     (
       event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
@@ -144,6 +154,59 @@ export function TablePagination<T extends Record<string, unknown>>({
     },
     [gotoPage, nextPage, pageIndex, previousPage]
   );
+  function CustomPagination() {
+    return (
+      <div className="d-flex justify-content-end mr-3 pagination">
+        <div className="d-flex align-items-center">
+          Lignes par page :
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+            }}
+          >
+            {[10, 20, 30, 40, 50].map((pageSize) => (
+              <option key={pageSize} value={pageSize}>
+                {pageSize}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <button
+          className="btn"
+          onClick={() => gotoPage(0)}
+          disabled={!canPreviousPage}
+        >
+          <AngleDoubleSmallLeftIcon height={20} width={20} />
+        </button>
+        <button
+          className="btn"
+          onClick={() => previousPage()}
+          disabled={!canPreviousPage}
+        >
+          <AngleSmallLeftIcon height={20} width={20} />
+        </button>
+        <span className="d-flex align-items-center">
+          Page {pageIndex + 1} sur {pageOptions.length}
+        </span>
+        <button
+          className="btn"
+          onClick={() => nextPage()}
+          disabled={!canNextPage}
+        >
+          <AngleSmallRightIcon height={20} width={20} />
+        </button>
+        <button
+          className="btn"
+          onClick={() => gotoPage(pageCount - 1)}
+          disabled={!canNextPage}
+        >
+          <AngleDoubleSmallRightIcon height={20} width={20} />
+        </button>
+      </div>
+    );
+  }
 
   const onChangeRowsPerPage = useCallback(
     (e: any) => {
@@ -153,19 +216,22 @@ export function TablePagination<T extends Record<string, unknown>>({
   );
 
   return rowCount ? (
-    <MuiTablePagination
-      rowsPerPageOptions={rowsPerPageOptions}
-      component="div"
-      rowsPerPage={pageSize}
-      count={rowCount}
-      page={pageIndex}
-      SelectProps={{
-        inputProps: { 'aria-label': 'rows per page' },
-        native: true,
-      }}
-      onPageChange={handleChangePage}
-      onRowsPerPageChange={onChangeRowsPerPage}
-      ActionsComponent={TablePaginationActions}
-    />
+    <React.Fragment>
+      {/* <MuiTablePagination
+        rowsPerPageOptions={rowsPerPageOptions}
+        component='div'
+        rowsPerPage={pageSize}
+        count={rowCount}
+        page={pageIndex}
+        SelectProps={{
+          inputProps: { 'aria-label': 'rows per page' },
+          native: true,
+        }}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={onChangeRowsPerPage}
+        ActionsComponent={TablePaginationActions}
+      /> */}
+      <CustomPagination />
+    </React.Fragment>
   ) : null;
 }
