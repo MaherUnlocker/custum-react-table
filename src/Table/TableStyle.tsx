@@ -1,18 +1,19 @@
 import { Checkbox, styled } from '@mui/material';
-import MuiTableTable from '@mui/material/Table';
-import { TableTypeMap } from '@mui/material/Table/Table';
+import React, { CSSProperties } from 'react';
+
 import MuiTableBody from '@mui/material/TableBody';
-import { TableBodyTypeMap } from '@mui/material/TableBody/TableBody';
 import MuiTableCell from '@mui/material/TableCell';
-import { TableCellProps } from '@mui/material/TableCell/TableCell';
 import MuiTableHead from '@mui/material/TableHead';
-import { TableHeadTypeMap } from '@mui/material/TableHead/TableHead';
 import MuiTableRow from '@mui/material/TableRow';
+import MuiTableTable from '@mui/material/Table';
+import { TableBodyTypeMap } from '@mui/material/TableBody/TableBody';
+import { TableCellProps } from '@mui/material/TableCell/TableCell';
+import { TableHeadTypeMap } from '@mui/material/TableHead/TableHead';
 import { TableRowTypeMap } from '@mui/material/TableRow/TableRow';
-import { makeStyles } from '@mui/styles';
+import { TableTypeMap } from '@mui/material/Table/Table';
 //import { palette } from '@mui/system';
 import cx from 'classnames';
-import React, { CSSProperties } from 'react';
+import { makeStyles } from '@mui/styles';
 
 export const useStyles = makeStyles({
   rawTable: {
@@ -20,12 +21,14 @@ export const useStyles = makeStyles({
     border: '1px solid rgba(224, 224, 224, 1)',
     width: '100%',
     // minHeight: '100vh',
+    // marginTop: 5,
   },
   tableHead: {},
   tableHeadRow: {
-    // backgroundColor: '#ffffff',
+    // backgroundColor: 'red',
+
     backgroundColor: '#F8F8FB ',
-    // backgroundColor: theme.palette.background.paper,
+
     color: '#000',
     borderBottom: '1px solid rgba(224, 224, 224, 1)',
     '&:hover $resizeHandle': {
@@ -36,7 +39,7 @@ export const useStyles = makeStyles({
     padding: '16px 1px 16px 16px',
     fontSize: '0.875rem',
     textAlign: 'center',
-
+    maxHeight: 35,
     verticalAlign: 'inherit',
     // color: theme.palette.text.primary,
     fontWeight: '700 !important',
@@ -146,6 +149,12 @@ export const useStyles = makeStyles({
       height: 16,
       marginTop: 3,
     },
+  },
+  FiltersCss: {
+    border: '1px solid rgba(224, 224, 224, 1)',
+    borderSpacing: 0,
+    paddingLeft: '0 !important',
+    paddingTop: '0 !important',
   },
 });
 

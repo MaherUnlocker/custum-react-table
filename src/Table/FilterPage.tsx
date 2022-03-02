@@ -62,42 +62,40 @@ export function FilterPage<T extends Record<string, unknown>>({
     [onClose]
   );
 
-  const resetFilters = useCallback(() => {
-    setAllFilters([]);
-  }, [setAllFilters]);
+  // const resetFilters = useCallback(() => {
+  //   setAllFilters([]);
+  // }, [setAllFilters]);
 
   return (
-    <div>
-      <Popover
-        anchorEl={anchorEl}
-        id={'popover-filters'}
-        onClose={onClose}
-        open={show}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        <div className={(classes.columnsPopOver, classes.grid, classes.cell)}>
-          <form onSubmit={onSubmit} className={classes.cell}>
-            <button onClick={resetFilters}>Reset</button>
-            <div>
-              {allColumns
+    <Popover
+      anchorEl={anchorEl}
+      id={'popover-filters'}
+      onClose={onClose}
+      open={show}
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'right',
+      }}
+      transformOrigin={{
+        vertical: 'top',
+        horizontal: 'right',
+      }}
+    >
+      <div className={(classes.columnsPopOver, classes.grid, classes.cell)}>
+        <form onSubmit={onSubmit} className={classes.cell}>
+          {/* <button onClick={resetFilters}>Reset</button> */}
+          <div>
+            {allColumns
 
-                .filter((it) => it.canFilter)
-                .map((column) => (
-                  <div key={column.id} className="d-flex mt-2">
-                    {column.render('Filter')}
-                  </div>
-                ))}
-            </div>
-          </form>
-        </div>
-      </Popover>
-    </div>
+              .filter((it) => it.canFilter)
+              .map((column) => (
+                <div key={column.id} className="d-flex mt-2">
+                  {column.render('Filter')}
+                </div>
+              ))}
+          </div>
+        </form>
+      </div>
+    </Popover>
   );
 }

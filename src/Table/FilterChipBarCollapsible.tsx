@@ -1,14 +1,14 @@
+import { Chip, Collapse } from '@mui/material';
 import {
   ColumnInstance,
   FilterValue,
   IdType,
   TableInstance,
 } from 'react-table';
-import { CrossIcon, StyledButton } from '@aureskonnect/react-ui';
 import React, { ReactElement, useCallback } from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
 
-import { Chip } from '@mui/material';
+import { CrossIcon } from '@aureskonnect/react-ui';
 
 const useStyles = makeStyles(
   createStyles({
@@ -37,33 +37,8 @@ const useStyles = makeStyles(
 
 type FilterChipBarProps<T extends Record<string, unknown>> = {
   instance: TableInstance<T>;
-};
-
-type ExpandableProps = { baseHeight: any; children: any };
-
-const Expandable = ({ baseHeight, children }: ExpandableProps) => {
-  const [expanded, setExpanded] = React.useState(false);
-  const [overflow, setOverflow] = React.useState(false);
-  return (
-    <div
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        height: expanded ? null : baseHeight,
-      }}
-      ref={(v) => v && setOverflow(v.offsetHeight < v.scrollHeight)}
-    >
-      {children}
-      {overflow && (
-        <button
-          onClick={() => setExpanded(true)}
-          style={{ position: 'absolute', bottom: 0 }}
-        >
-          Afficher plus
-        </button>
-      )}
-    </div>
-  );
+  showMore: boolean;
+  currentHeight: number;
 };
 
 const getFilterValue = (
@@ -79,8 +54,9 @@ const getFilterValue = (
   return filterValue;
 };
 
-export function FilterChipBar<T extends Record<string, unknown>>({
+export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
   instance,
+  showMore,
 }: FilterChipBarProps<T>): ReactElement | null {
   const classes = useStyles({});
   const {
@@ -101,23 +77,32 @@ export function FilterChipBar<T extends Record<string, unknown>>({
     setAllFilters([]);
   }, [setAllFilters]);
 
-  return Object.keys(filters).length > 0 ? (
-    <div className={classes.chipZone}>
-      <span
-        className={classes.filtersActiveLabel}
-        style={{
-          color: '#FF0000',
-          textDecoration: 'underline',
-          cursor: 'pointer',
-          fontWeight: 'bold',
-        }}
-        onClick={() => resetFilters()}
-      >
-        Effacer tous
-      </span>
-      {filters &&
-        allColumns.map((column) => {
-          const filter = filters.find((f) => f.id === column.id);
+  const [expanded, setExpanded] = React.useState(false);
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  function FilteredChipBar({
+    splicedFilter,
+    showMore,
+  }: {
+    splicedFilter: boolean;
+    showMore: boolean;
+  }) {
+    const [filtersToShow, setFiltersToShow] = React.useState(() => filters);
+
+    React.useEffect(() => {
+      if (showMore) {
+        setFiltersToShow(
+          splicedFilter ? filters.slice(2, filters.length) : filters.slice(0, 2)
+        );
+      }
+    }, [showMore]);
+
+    return (
+      <React.Fragment>
+        {allColumns.map((column: ColumnInstance<T>) => {
+          const filter = filtersToShow.find((f) => f.id === column.id);
 
           const value = filter && filter.value;
           return (
@@ -142,6 +127,50 @@ export function FilterChipBar<T extends Record<string, unknown>>({
             )
           );
         })}
+      </React.Fragment>
+    );
+  }
+
+  return Object.keys(filters).length > 0 ? (
+    <div className={classes.chipZone}>
+      <span
+        className={classes.filtersActiveLabel}
+        style={{
+          color: '#FF0000',
+          textDecoration: 'underline',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+        }}
+        onClick={() => resetFilters()}
+      >
+        Effacer tous
+      </span>
+
+      {filters.length > 0 ? (
+        <FilteredChipBar splicedFilter={false} showMore={showMore} />
+      ) : null}
+
+      <Collapse in={expanded}>
+        {filters.length > 2 ? (
+          <FilteredChipBar splicedFilter={true} showMore={showMore} />
+        ) : null}
+      </Collapse>
+      {showMore ? (
+        <span
+          onClick={() => handleExpandClick()}
+          style={{
+            textAlign: 'end',
+            color: '#0077D7',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            alignItems: 'flex-end',
+            display: 'block',
+            marginRight: '11px',
+          }}
+        >
+          {expanded ? 'Afficher moins' : 'Afficher plus'}
+        </span>
+      ) : null}
     </div>
   ) : null;
 }

@@ -221,7 +221,7 @@ export function TableToolbar<T extends Record<string, unknown>>({
         <GlobalFilter
           preGlobalFilteredRows={instance.preGlobalFilteredRows}
           setGlobalFilter={instance.setGlobalFilter}
-          style={{ width: '40%' }}
+          style={{ width: '20%' }}
         />
       ) : null}
 

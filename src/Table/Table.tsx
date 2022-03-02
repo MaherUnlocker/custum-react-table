@@ -1,27 +1,4 @@
-import './table.css';
 
-import {
-  CrossIcon,
-  FilterIcon,
-  StyledLabel,
-  StyledSelectInput,
-} from '@aureskonnect/react-ui';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
-import {
-  Autocomplete,
-  Box,
-  Grid,
-  Paper,
-  TableContainer,
-  TableSortLabel,
-  TextField,
-  Tooltip,
-} from '@mui/material';
-import cx from 'classnames';
-import _concat from 'lodash.concat';
-import _uniqby from 'lodash.uniqby';
-import _without from 'lodash.without';
 import React, {
   CSSProperties,
   MouseEventHandler,
@@ -29,6 +6,29 @@ import React, {
   ReactElement,
   useEffect,
 } from 'react';
+
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import { ResizeHandle } from './ResizeHandle';
+import SettingIcon from './SettingIcon';
+import { TablePagination } from './TablePagination';
+import { TableToolbar } from './TableToolbar';
+import { TooltipCellRenderer } from './TooltipCell';
+import _concat from 'lodash.concat';
+import _uniqby from 'lodash.uniqby';
+import _without from 'lodash.without';
+import cx from 'classnames';
+
+
+
+import {
+  Box,
+  Grid,
+  Paper,
+  TableContainer,
+  TableSortLabel,
+  Tooltip,
+} from '@mui/material';
 import {
   Cell,
   CellProps,
@@ -53,15 +53,13 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
-
-import { camelToWords, useDebounce, useLocalStorage } from '../utils';
-import CollapsibleTable from './CollapsibleTable';
-import { FilterChipBar } from './FilterChipBar';
-import { FilterPageCustom } from './FilterPageCustom';
-import { fuzzyTextFilter, numericTextFilter } from './filters';
-import { ResizeHandle } from './ResizeHandle';
-import SettingIcon from './SettingIcon';
-import { TablePagination } from './TablePagination';
+import {
+  CrossIcon,
+  FilterIcon,
+  StyledH2,
+  StyledLabel,
+  StyledSelectInput,
+} from '@aureskonnect/react-ui';
 import {
   HeaderCheckbox,
   RawTable,
@@ -75,8 +73,14 @@ import {
   TableRow,
   useStyles,
 } from './TableStyle';
-import { TableToolbar } from './TableToolbar';
-import { TooltipCellRenderer } from './TooltipCell';
+
+import { camelToWords, useDebounce, useLocalStorage } from '../utils';
+import { fuzzyTextFilter, numericTextFilter } from './filters';
+
+import CollapsibleTable from './CollapsibleTable';
+import { FilterChipBar } from './FilterChipBar';
+import { FilterPageCustom } from './FilterPageCustom';
+import './table.css';
 
 export interface TableProperties<T extends Record<string, unknown>>
   extends TableOptions<T> {
@@ -166,78 +170,47 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
       })
 
       .map((cell: any) => {
-        // console.log(cell.value);
-        return String(cell.value);
-        // return { label: String(cell.value), value: String(cell.value) };
+        return { label: String(cell.value), value: String(cell.value) };
       })[0];
   });
 
   // his uniquby from lodash for get unique array of object
-  //  let unique: any = uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
+  let unique: any = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
 
-  // his uniquby from lodash for get unique array of object
-  let unique: any = [
-    ...new Set(_without(FilterArray, undefined, null, 'null', 'undefined')),
-  ]; // FilterArray.filter((v, i, a) => a.indexOf(v) === i);
-  // console.log({ unique });
+  // this uniquby from lodash for get unique array of object
+  // FilterArray = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
+  // console.log({ FilterArray });
+  // let unique: any = [...new Set(_without(FilterArray, undefined, null, 'null', 'undefined'))]; // FilterArray.filter((v, i, a) => a.indexOf(v) === i);
+  //  console.log({ unique });
+
   const isFirstColumn = findFirstColumn(columns) === column;
+  const [selectedValueState, setSelectedValueState] = React.useState<any[]>([]);
+
+  function handleSelectOnChangeEvent(selectedValue: any) {
+    setSelectedValueState(selectedValue);
+    //  add selected filter
+    setFilter(selectedValue.value);
+  }
 
   return (
-    <>
-      {/* <AsyncAutocomplete /> */}
+    <React.Fragment>
       <StyledLabel htmlFor={column.id}>{render('Header')}</StyledLabel>
-      <Autocomplete
-        // disablePortal
-        id="combo-box-demo"
-        autoComplete={true}
-        options={unique}
-        // defaultValue={unique[0]}
-        // fullWidth
-        renderInput={(params) => {
-          return (
-            <TextField
-              {...params}
-              sx={{ width: '90%' }}
-              //label={render('Header')}
-              label=" "
-              variant="outlined"
-              placeholder="Sélectionner ..."
-              onChange={handleChange}
-              autoFocus={isFirstColumn}
-              onBlur={(e: any) => {
-                setFilter(e.target.value || undefined);
-              }}
-            />
-          );
-        }}
-      />
-
-      {/* <StyledLabel htmlFor={column.id}>{render('Header')}</StyledLabel>
       <StyledSelectInput
-        defaultValue={FilterArray[0]}
+        // defaultValue={selectedValueState}
+        //value={selectedValueState}
         id={render('Header')}
         name={render('Header')}
-        onBlur={(e: any) => {
-          setFilter(e.target.value || undefined);
-        }}
         options={unique}
-        // placeholder='Insert text'
-        // onChange={()=>{console.log("jjjj")}}
-      /> */}
-
-      {/* <TextField
-        name={id}
-        label={render('Header')}
-        InputLabelProps={{ htmlFor: id }}
-        value={value}
+        placeholder="Sélectionner ..."
+        // onChange={handleChange}
+        onChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}
-        variant='standard'
-        onChange={handleChange}
-        onBlur={(e: any) => {
-          setFilter(e.target.value || undefined);
-        }}
-      /> */}
-    </>
+        // onBlur={(e: any) => {
+        //   console.log(e.target);
+        //   // setFilter(e.target.value || undefined);
+        // }}
+      />
+    </React.Fragment>
   );
 }
 
@@ -431,7 +404,7 @@ export function Table<T extends Record<string, unknown>>({
     },
     ...localHooks
   );
-  console.log({ instance });
+
   const {
     getTableProps,
     headerGroups,
@@ -478,7 +451,10 @@ export function Table<T extends Record<string, unknown>>({
       />
       <FilterChipBar instance={instance} />
 
-      <Paper elevation={0} sx={{ display: { xs: 'none', md: 'block' } }}>
+      <Paper
+        elevation={0}
+        sx={{ display: { xs: 'none', md: 'block' }, marginTop: 5 }}
+      >
         <Grid container spacing={1} direction={'row'}>
           <Grid
             container
@@ -486,8 +462,8 @@ export function Table<T extends Record<string, unknown>>({
             xs={filterActive ? 8 : 12}
             className="table-responsive"
           >
-            <TableContainer>
-              <RawTable {...tableProps}>
+            <TableContainer sx={{ overflowX: 'initial', maxHeight: '60vh' }}>
+              <RawTable>
                 <TableHead>
                   {headerGroups.map((headerGroup) => {
                     const {
@@ -636,6 +612,7 @@ export function Table<T extends Record<string, unknown>>({
                 </TableBody>
               </RawTable>
               <Grid
+                item
                 xs={12}
                 sx={{ display: 'flex', justifyContent: 'flex-end' }}
               >
@@ -643,26 +620,33 @@ export function Table<T extends Record<string, unknown>>({
               </Grid>
             </TableContainer>
           </Grid>
+          {/* here the filter component is always in the right place*/}
           {filterActive ? (
             <>
-              <Grid item xs={4}>
+              <Grid item xs={4} className={classes.FiltersCss}>
                 <Box
                   component="div"
                   sx={{
-                    height: 50,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    paddingX: 1,
                   }}
                   className={classes.tableHeadRow}
                 >
-                  <div>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
                     <FilterIcon
                       className={classes.tableFilterAltOutlinedIcon}
                       style={{ flexDirection: 'row-reverse' }}
                     />
-                    Filtres
-                  </div>
+                    <StyledH2>Filtres</StyledH2>
+                  </Box>
 
                   <CrossIcon
                     height={11}
