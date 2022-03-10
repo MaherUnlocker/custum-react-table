@@ -1,5 +1,12 @@
 import { Button, IconButton, Theme, Toolbar, Tooltip } from '@mui/material';
-import React, { MouseEvent, MouseEventHandler, PropsWithChildren, ReactElement, useCallback, useState } from 'react';
+import React, {
+  MouseEvent,
+  MouseEventHandler,
+  PropsWithChildren,
+  ReactElement,
+  useCallback,
+  useState,
+} from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
 
 import { ColumnHidePage } from './ColumnHidePage';
@@ -60,20 +67,37 @@ export const InstanceLabeledActionButton = <T extends Record<string, unknown>>({
   label,
   enabled = () => true,
 }: InstanceActionButton<T>): ReactElement => (
-  <Button variant='contained' color='primary' onClick={onClick(instance)} disabled={!enabled(instance)}>
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={onClick(instance)}
+    disabled={!enabled(instance)}
+  >
     {icon}
     {label}
   </Button>
 );
 
-export const LabeledActionButton = ({ icon, onClick, label, enabled = true }: ActionButton): ReactElement => (
-  <Button variant='contained' color='primary' onClick={onClick} disabled={!enabled}>
+export const LabeledActionButton = ({
+  icon,
+  onClick,
+  label,
+  enabled = true,
+}: ActionButton): ReactElement => (
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={onClick}
+    disabled={!enabled}
+  >
     {icon}
     {label}
   </Button>
 );
 
-export const InstanceSmallIconActionButton = <T extends Record<string, unknown>>({
+export const InstanceSmallIconActionButton = <
+  T extends Record<string, unknown>
+>({
   instance,
   icon,
   onClick,
@@ -92,7 +116,7 @@ export const InstanceSmallIconActionButton = <T extends Record<string, unknown>>
           })}
           onClick={onClick(instance)}
           disabled={!enabled(instance)}
-          size='large'
+          size="large"
         >
           {icon}
         </IconButton>
@@ -119,7 +143,7 @@ export const SmallIconActionButton = ({
           })}
           onClick={onClick}
           disabled={!enabled}
-          size='large'
+          size="large"
         >
           {icon}
         </IconButton>
@@ -137,7 +161,9 @@ type TableToolbarProps<T extends Record<string, unknown>> = {
   showFilter?: boolean;
   showColumnIcon?: boolean;
   filterActive?: boolean;
-  setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>> | undefined;
+  setLocalFilterActive?:
+    | React.Dispatch<React.SetStateAction<boolean>>
+    | undefined;
   customJsxSideFilterButton?: React.ReactNode;
 };
 
@@ -156,7 +182,9 @@ export function TableToolbar<T extends Record<string, unknown>>({
   const [columnsOpen, setColumnsOpen] = useState(false);
   const [, setFilterOpen] = useState(false);
 
-  const hideableColumns = columns.filter((column) => !(column.id === '_selector'));
+  const hideableColumns = columns.filter(
+    (column) => !(column.id === '_selector')
+  );
 
   const handleColumnsClick = useCallback(
     (event: MouseEvent) => {
@@ -175,7 +203,13 @@ export function TableToolbar<T extends Record<string, unknown>>({
   // toolbar with  filter/search column select.
 
   return (
-    <Toolbar className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : classes.toolbar}>
+    <Toolbar
+      className={
+        !showGlobalFilter && !showFilter && !showColumnIcon
+          ? 'd-none'
+          : classes.toolbar
+      }
+    >
       {showGlobalFilter ? (
         <GlobalFilter
           preGlobalFilteredRows={instance.preGlobalFilteredRows}
@@ -184,16 +218,24 @@ export function TableToolbar<T extends Record<string, unknown>>({
         />
       ) : null}
 
-      <div className={classes.rightButtons} style={{ display: 'flex', alignItems: 'center', height: '25' }}>
-        <ColumnHidePage<T> instance={instance} onClose={handleClose} show={columnsOpen} anchorEl={anchorEl} />
+      <div
+        className={classes.rightButtons}
+        style={{ display: 'flex', alignItems: 'center', height: '25' }}
+      >
+        <ColumnHidePage<T>
+          instance={instance}
+          onClose={handleClose}
+          show={columnsOpen}
+          anchorEl={anchorEl}
+        />
 
         {showColumnIcon
           ? hideableColumns.length > 1 && (
               <SmallIconActionButton
                 icon={<ViewColumnsIcon />}
                 onClick={handleColumnsClick}
-                label='Show / hide columns'
-                variant='right'
+                label="Show / hide columns"
+                variant="right"
               />
             )
           : null}
@@ -201,17 +243,17 @@ export function TableToolbar<T extends Record<string, unknown>>({
           <React.Fragment>
             <StyledButton
               rounded
-              variant='primary'
+              variant="primary"
               onClick={() => {
                 setLocalFilterActive!(!filterActive);
               }}
-              label='Filter by columns'
+              label="Filter by columns"
             >
               Filtrer
             </StyledButton>
-            {customJsxSideFilterButton}
           </React.Fragment>
         ) : null}
+        {customJsxSideFilterButton}
       </div>
     </Toolbar>
   );

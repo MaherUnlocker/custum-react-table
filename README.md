@@ -136,10 +136,11 @@ export default function App(): JSX.Element {
         showGlobalFilter
         // --->here showing  filter button  on the top of table
         showFilter
-        // --->here add action header with delete and duplicate
-        canDeleteOrDuplicate
         filterActive={filterActive}
         setLocalFilterActive={setLocalFilterActive}
+        // --->here add action header with delete and duplicate
+        canDeleteOrDuplicate
+        
         // --->here you can add any column to the table in the specified place with custom name and customjsx
         arrayOfCustomColumns={arrayOfCustomColumns}
         // --->here  if you dont have any other click in row you can use to get clicked row details
