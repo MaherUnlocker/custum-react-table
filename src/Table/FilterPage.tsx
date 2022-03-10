@@ -1,6 +1,7 @@
-import { Popover } from '@mui/material';
-import { createStyles, makeStyles } from '@mui/styles';
 import React, { FormEvent, ReactElement, useCallback } from 'react';
+import { createStyles, makeStyles } from '@mui/styles';
+
+import { Popover } from '@mui/material';
 import { TableInstance } from 'react-table';
 
 const useStyles = makeStyles(
@@ -50,7 +51,7 @@ export function FilterPage<T extends Record<string, unknown>>({
   anchorEl,
   onClose,
   show,
-}: FilterPageProps<T>): ReactElement {
+}: FilterPageProps<T>): React.ReactElement {
   const classes = useStyles({});
   const { allColumns, setAllFilters } = instance;
 
@@ -89,7 +90,7 @@ export function FilterPage<T extends Record<string, unknown>>({
 
               .filter((it) => it.canFilter)
               .map((column) => (
-                <div key={column.id} className="d-flex mt-2">
+                <div key={column.id} className='d-flex mt-2'>
                   {column.render('Filter')}
                 </div>
               ))}

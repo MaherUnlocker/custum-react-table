@@ -1,34 +1,6 @@
+import './table.css';
 
-import React, {
-  CSSProperties,
-  MouseEventHandler,
-  PropsWithChildren,
-  ReactElement,
-  useEffect,
-} from 'react';
-
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
-import { ResizeHandle } from './ResizeHandle';
-import SettingIcon from './SettingIcon';
-import { TablePagination } from './TablePagination';
-import { TableToolbar } from './TableToolbar';
-import { TooltipCellRenderer } from './TooltipCell';
-import _concat from 'lodash.concat';
-import _uniqby from 'lodash.uniqby';
-import _without from 'lodash.without';
-import cx from 'classnames';
-
-
-
-import {
-  Box,
-  Grid,
-  Paper,
-  TableContainer,
-  TableSortLabel,
-  Tooltip,
-} from '@mui/material';
+import { Box, Grid, Paper, TableContainer, TableSortLabel, Tooltip } from '@mui/material';
 import {
   Cell,
   CellProps,
@@ -47,6 +19,7 @@ import {
   useFlexLayout,
   useGlobalFilter,
   useGroupBy,
+  useMountedLayoutEffect,
   usePagination,
   useResizeColumns,
   useRowSelect,
@@ -56,6 +29,7 @@ import {
 import {
   CrossIcon,
   FilterIcon,
+  SettingsIcon,
   StyledH2,
   StyledLabel,
   StyledSelectInput,
@@ -73,32 +47,31 @@ import {
   TableRow,
   useStyles,
 } from './TableStyle';
-
+import React, { CSSProperties, MouseEventHandler, PropsWithChildren, ReactElement, useEffect } from 'react';
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 
 import CollapsibleTable from './CollapsibleTable';
+import { DynamicTableProps } from './DynamicTable';
 import { FilterChipBar } from './FilterChipBar';
 import { FilterPageCustom } from './FilterPageCustom';
-import './table.css';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import { ResizeHandle } from './ResizeHandle';
+import { TablePagination } from './TablePagination';
+import { TableToolbar } from './TableToolbar';
+import { TooltipCellRenderer } from './TooltipCell';
+// import _concat from 'lodash.concat';
+import _uniqby from 'lodash.uniqby';
+// import _without from 'lodash.without';
+import cx from 'classnames';
 
-export interface TableProperties<T extends Record<string, unknown>>
-  extends TableOptions<T> {
+export interface TableProperties<T extends Record<string, unknown>> extends TableOptions<T>, DynamicTableProps {
   name: string;
   onAdd?: (instance: TableInstance<T>) => MouseEventHandler;
   onDelete?: (instance: TableInstance<T>) => MouseEventHandler;
   onEdit?: (instance: TableInstance<T>) => MouseEventHandler;
   onClick?: (row: Row<T>) => void;
-  canGroupBy?: boolean;
-  canSort?: boolean;
-  canResize?: boolean;
-  canSelect?: boolean;
-  showGlobalFilter?: boolean;
-  showFilterbyColumn?: boolean;
-  showColumnIcon?: boolean;
-  filterActive?: boolean;
-  actionColumn?: Function;
-  setLocalFilterActive?: Function;
 }
 
 function DefaultHeader({ column }: HeaderProps<any>) {
@@ -106,85 +79,43 @@ function DefaultHeader({ column }: HeaderProps<any>) {
 }
 
 // yes this is recursive, but the depth never exceeds three so it seems safe enough
-const findFirstColumn = <T extends Record<string, unknown>>(
-  columns: Array<ColumnInstance<T>>
-): ColumnInstance<T> =>
+const findFirstColumn = <T extends Record<string, unknown>>(columns: Array<ColumnInstance<T>>): ColumnInstance<T> =>
   columns[0].columns ? findFirstColumn(columns[0].columns) : columns[0];
-// old version
 
-// function DefaultColumnFilter<T extends Record<string, unknown>>({ columns, column }: FilterProps<T>) {
-//   const { id, filterValue, setFilter, render } = column;
-//   const [value, setValue] = React.useState(filterValue || '');
+function DefaultColumnFilter<T extends Record<string, unknown>>({ columns, column, rows, prepareRow }: FilterProps<T>) {
+  const { filterValue, setFilter, render } = column;
+  const [, setValue] = React.useState(filterValue || '');
 
-//   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-//     setValue(event.target.value);
-//   };
-//   // ensure that reset loads the new value
-//   useEffect(() => {
-//     setValue(filterValue || '');
-//   }, [filterValue]);
-
-//   const isFirstColumn = findFirstColumn(columns) === column;
-//   return (
-//     <TextField
-//       name={id}
-//       label={render('Header')}
-//       InputLabelProps={{ htmlFor: id }}
-//       value={value}
-//       autoFocus={isFirstColumn}
-//       variant='standard'
-//       onChange={handleChange}
-//       onBlur={(e: any) => {
-//         setFilter(e.target.value || undefined);
-//       }}
-//     />
-//   );
-// }
-
-// ***************New Version of filter
-function DefaultColumnFilter<T extends Record<string, unknown>>({
-  columns,
-  column,
-  rows,
-  prepareRow,
-}: FilterProps<T>) {
-  const { id, filterValue, setFilter, render } = column;
-  const [value, setValue] = React.useState(filterValue || '');
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
-  };
   // ensure that reset loads the new value
   useEffect(() => {
     setValue(filterValue || '');
   }, [filterValue]);
-  let FilterArray: any[] = rows.map((row) => {
-    prepareRow(row);
-    return row.cells
-      .filter((cel: any) => {
-        const { key: cellKey } = cel.getCellProps();
-        return (
-          (cellKey as string).replace(/([^\_]*\_){2}/, '') ===
-          (column.id as string)
-        );
-      })
 
-      .map((cell: any) => {
-        return { label: String(cell.value), value: String(cell.value) };
-      })[0];
+  const FilterArray: any[] = rows.map((row) => {
+    prepareRow(row);
+    return (
+      row.cells
+        .filter((cel: any) => {
+          const { key: cellKey } = cel.getCellProps();
+          // eslint-disable-next-line
+          return (cellKey as string).replace(/([^\_]*\_){2}/, '') === (column.id as string);
+        })
+        // eslint-disable-next-line
+        .map((cell: any) => {
+          return { label: String(cell.value), value: String(cell.value) };
+        })[0]
+    );
   });
 
   // his uniquby from lodash for get unique array of object
-  let unique: any = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
+  const unique: any = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
 
   // this uniquby from lodash for get unique array of object
   // FilterArray = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
-  // console.log({ FilterArray });
   // let unique: any = [...new Set(_without(FilterArray, undefined, null, 'null', 'undefined'))]; // FilterArray.filter((v, i, a) => a.indexOf(v) === i);
-  //  console.log({ unique });
 
   const isFirstColumn = findFirstColumn(columns) === column;
-  const [selectedValueState, setSelectedValueState] = React.useState<any[]>([]);
+  const [, setSelectedValueState] = React.useState<any[]>([]);
 
   function handleSelectOnChangeEvent(selectedValue: any) {
     setSelectedValueState(selectedValue);
@@ -196,25 +127,16 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
     <React.Fragment>
       <StyledLabel htmlFor={column.id}>{render('Header')}</StyledLabel>
       <StyledSelectInput
-        // defaultValue={selectedValueState}
-        //value={selectedValueState}
         id={render('Header')}
         name={render('Header')}
         options={unique}
-        placeholder="Sélectionner ..."
-        // onChange={handleChange}
+        placeholder='Sélectionner ...'
         onChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}
-        // onBlur={(e: any) => {
-        //   console.log(e.target);
-        //   // setFilter(e.target.value || undefined);
-        // }}
       />
     </React.Fragment>
   );
 }
-
-// *************************************
 
 const getStyles = (props: any, disableResizing = false, align = 'left') => [
   props,
@@ -227,20 +149,11 @@ const getStyles = (props: any, disableResizing = false, align = 'left') => [
   },
 ];
 
-const headerProps = <T extends Record<string, unknown>>(
-  props: any,
-  { column }: Meta<T, { column: HeaderGroup<T> }>
-) => getStyles(props, column && column.disableResizing, column && column.align);
+const headerProps = <T extends Record<string, unknown>>(props: any, { column }: Meta<T, { column: HeaderGroup<T> }>) =>
+  getStyles(props, column && column.disableResizing, column && column.align);
 
-const cellProps = <T extends Record<string, unknown>>(
-  props: any,
-  { cell }: Meta<T, { cell: Cell<T> }>
-) =>
-  getStyles(
-    props,
-    cell.column && cell.column.disableResizing,
-    cell.column && cell.column.align
-  );
+const cellProps = <T extends Record<string, unknown>>(props: any, { cell }: Meta<T, { cell: Cell<T> }>) =>
+  getStyles(props, cell.column && cell.column.disableResizing, cell.column && cell.column.align);
 
 const defaultColumn = {
   Filter: DefaultColumnFilter,
@@ -275,17 +188,10 @@ const selectionHook = (hooks: Hooks<any>) => {
       ),
       // The cell can use the individual row's getToggleRowSelectedProps method
       // to the render a checkbox
-      Cell: ({ row }: CellProps<any>) => (
-        <RowCheckbox {...row.getToggleRowSelectedProps()} />
-      ),
+      Cell: ({ row }: CellProps<any>) => <RowCheckbox {...row.getToggleRowSelectedProps()} />,
     },
     ...columns,
   ]);
-  // hooks.useInstanceBeforeDimensions.push(({ headerGroups }) => {
-  //   // fix the parent group of the selection button to not be resizable
-  //   const selectionGroupHeader = headerGroups[0].headers[0];
-  //   // selectionGroupHeader.canResize = false;
-  // });
 };
 export function Table<T extends Record<string, unknown>>({
   name,
@@ -297,18 +203,17 @@ export function Table<T extends Record<string, unknown>>({
   canResize,
   actionColumn,
   showGlobalFilter,
-  showFilterbyColumn,
+  showFilter,
   showColumnIcon,
   filterActive,
   setLocalFilterActive,
+  customJsxSideFilterButton,
+  setSelectedRows,
   ...props
 }: PropsWithChildren<TableProperties<T>>): ReactElement {
   const classes = useStyles();
 
-  const [initialState, setInitialState] = useLocalStorage(
-    `tableState:${name}`,
-    {}
-  );
+  const [initialState, setInitialState] = useLocalStorage(`tableState:${name}`, {});
 
   const customHooks = (hooks: Hooks<any>) => {
     hooks.allColumns.push((columns) => [
@@ -320,52 +225,31 @@ export function Table<T extends Record<string, unknown>>({
         minWidth: 60,
         width: 60,
         maxWidth: 100,
-        Header: () => {
-          return (
-            <div className="dropdown">
-              <div
-                id="dropdownMenuButton1"
-                data-bs-toggle="dropdown"
-                className=" dropdown-toggle"
-              >
-                <SettingIcon />
-              </div>
-
-              <ul
-                className="dropdown-menu "
-                aria-labelledby="dropdownMenuButton1"
-              >
-                <div className="d-flex flex-column">
-                  {columns
-                    .filter(
-                      (column) =>
-                        !(column.id === '_selector') &&
-                        !(column.id === 'expander')
-                    )
-                    .map((column: any) => {
-                      return (
-                        <div
-                          key={column.id}
-                          className=" pretty p-default p-curve p-fill my-2 d-flex align-items-center"
-                        >
-                          <input
-                            type="checkbox"
-                            className="mx-2"
-                            {...column.getToggleHiddenProps()}
-                          />
-                          <div className="state p-primary ">
-                            <label>{column.id}</label>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  <br />
-                </div>
-              </ul>
+        Header: () => (
+          <div className='dropdown'>
+            <div id='dropdownHideColomuns' data-bs-toggle='dropdown' className=' dropdown-toggle'>
+              <SettingsIcon height={20} width={20} />
             </div>
-          );
-        },
-        Cell: function (cell: any) {
+
+            <ul className='dropdown-menu ' aria-labelledby='dropdownHideColomuns'>
+              <div className='d-flex flex-column'>
+                {columns
+                  .filter((column) => !(column.id === '_selector') && !(column.id === 'expander'))
+                  .map((column: any) => (
+                    <div key={column.id} className=' pretty p-default p-curve p-fill my-2 d-flex align-items-center'>
+                      <input type='checkbox' className='mx-2' {...column.getToggleHiddenProps()} />
+                      <div className='state p-primary '>
+                        <label>{column.id}</label>
+                      </div>
+                    </div>
+                  ))}
+                <br />
+              </div>
+            </ul>
+          </div>
+        ),
+
+        Cell(cell: any) {
           const ActionColumnComponent = actionColumn as React.ElementType;
           return <ActionColumnComponent selectedRow={cell.row} />;
         },
@@ -385,6 +269,7 @@ export function Table<T extends Record<string, unknown>>({
     useResizeColumns,
     useRowSelect,
   ];
+  // eslint-disable-next-line
   let localHooks = hooks;
 
   if (canSelect) {
@@ -405,19 +290,13 @@ export function Table<T extends Record<string, unknown>>({
     ...localHooks
   );
 
-  const {
-    getTableProps,
-    headerGroups,
-    getTableBodyProps,
-    page,
-    prepareRow,
-    state,
-  } = instance;
+  const { headerGroups, getTableBodyProps, page, prepareRow, state, selectedFlatRows } = instance;
   const debouncedState = useDebounce(state, 200);
-
+  useMountedLayoutEffect(() => {
+    setSelectedRows && setSelectedRows(selectedFlatRows.map((row) => row.original));
+  }, [setSelectedRows, selectedFlatRows]);
   useEffect(() => {
-    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } =
-      debouncedState;
+    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } = debouncedState;
     setInitialState({
       sortBy,
       filters,
@@ -428,14 +307,8 @@ export function Table<T extends Record<string, unknown>>({
   }, [setInitialState, debouncedState]);
 
   const cellClickHandler = (cell: Cell<T>) => () => {
-    onClick &&
-      !cell.column.isGrouped &&
-      !cell.row.isGrouped &&
-      cell.column.id !== '_selector' &&
-      onClick(cell.row);
+    onClick && !cell.column.isGrouped && !cell.row.isGrouped && cell.column.id !== '_selector' && onClick(cell.row);
   };
-
-  const { role: tableRole, ...tableProps } = getTableProps();
 
   return (
     <Paper elevation={0} sx={{ paddingX: 1 }}>
@@ -443,25 +316,18 @@ export function Table<T extends Record<string, unknown>>({
         instance={instance}
         {...{
           showGlobalFilter,
-          showFilterbyColumn,
+          showFilter,
           showColumnIcon,
           filterActive,
           setLocalFilterActive,
+          customJsxSideFilterButton,
         }}
       />
       <FilterChipBar instance={instance} />
 
-      <Paper
-        elevation={0}
-        sx={{ display: { xs: 'none', md: 'block' }, marginTop: 5 }}
-      >
+      <Paper elevation={0} sx={{ display: { xs: 'none', md: 'block' }, marginTop: 5 }}>
         <Grid container spacing={1} direction={'row'}>
-          <Grid
-            container
-            item
-            xs={filterActive ? 8 : 12}
-            className="table-responsive"
-          >
+          <Grid container item xs={filterActive ? 8 : 12} className='table-responsive'>
             <TableContainer sx={{ overflowX: 'initial', maxHeight: '60vh' }}>
               <RawTable>
                 <TableHead>
@@ -473,10 +339,7 @@ export function Table<T extends Record<string, unknown>>({
                       ...getHeaderGroupProps
                     } = headerGroup.getHeaderGroupProps();
                     return (
-                      <TableHeadRow
-                        key={headerGroupKey}
-                        {...getHeaderGroupProps}
-                      >
+                      <TableHeadRow key={headerGroupKey} {...getHeaderGroupProps}>
                         {headerGroup.headers.map((column) => {
                           const style = {
                             textAlign: column.align ? column.align : 'left ',
@@ -486,14 +349,8 @@ export function Table<T extends Record<string, unknown>>({
                             role: headerRole,
                             ...getHeaderProps
                           } = column.getHeaderProps(headerProps);
-                          const {
-                            title: groupTitle = '',
-                            ...columnGroupByProps
-                          } = column.getGroupByToggleProps();
-                          const {
-                            title: sortTitle = '',
-                            ...columnSortByProps
-                          } = column.getSortByToggleProps();
+                          const { title: groupTitle = '', ...columnGroupByProps } = column.getGroupByToggleProps();
+                          const { title: sortTitle = '', ...columnSortByProps } = column.getSortByToggleProps();
 
                           return (
                             <TableHeadCell key={headerKey} {...getHeaderProps}>
@@ -511,37 +368,22 @@ export function Table<T extends Record<string, unknown>>({
                                   )
                                 : null}
                               {column.canSort && canSort ? (
-                                <>
-                                  <Tooltip title={sortTitle}>
-                                    <TableSortLabel
-                                      active={column.isSorted}
-                                      direction={
-                                        column.isSortedDesc ? 'desc' : 'asc'
-                                      }
-                                      {...columnSortByProps}
-                                      className={classes.tableSortLabel}
-                                      style={{ flexDirection: 'row-reverse' }}
-                                    >
-                                      {column.render('Header')}
-                                    </TableSortLabel>
-                                  </Tooltip>
-
-                                  {/* <FilterAltOutlinedIcon
-                                  className={classes.tableFilterAltOutlinedIcon}
-                                  style={{ flexDirection: 'row-reverse' }}
-                                /> */}
-                                </>
+                                <Tooltip title={sortTitle}>
+                                  <TableSortLabel
+                                    active={column.isSorted}
+                                    direction={column.isSortedDesc ? 'desc' : 'asc'}
+                                    {...columnSortByProps}
+                                    className={classes.tableSortLabel}
+                                    style={{ flexDirection: 'row-reverse' }}
+                                  >
+                                    {column.render('Header')}
+                                  </TableSortLabel>
+                                </Tooltip>
                               ) : (
-                                <TableLabel style={style}>
-                                  {column.render('Header')}
-                                </TableLabel>
+                                <TableLabel style={style}>{column.render('Header')}</TableLabel>
                               )}
                               {/*<div>{column.canFilter ? column.render('Filter') : null}</div>*/}
-                              {canResize
-                                ? column.canResize && (
-                                    <ResizeHandle column={column} />
-                                  )
-                                : null}
+                              {canResize ? column.canResize && <ResizeHandle column={column} /> : null}
                             </TableHeadCell>
                           );
                         })}
@@ -552,11 +394,7 @@ export function Table<T extends Record<string, unknown>>({
                 <TableBody {...getTableBodyProps()}>
                   {page.map((row) => {
                     prepareRow(row);
-                    const {
-                      key: rowKey,
-                      role: rowRole,
-                      ...getRowProps
-                    } = row.getRowProps();
+                    const { key: rowKey, role: rowRole, ...getRowProps } = row.getRowProps();
 
                     return (
                       <TableRow
@@ -568,26 +406,16 @@ export function Table<T extends Record<string, unknown>>({
                         })}
                       >
                         {row.cells.map((cell) => {
-                          const {
-                            key: cellKey,
-                            role: cellRole,
-                            ...getCellProps
-                          } = cell.getCellProps(cellProps);
+                          const { key: cellKey, role: cellRole, ...getCellProps } = cell.getCellProps(cellProps);
 
                           return (
-                            <TableCell
-                              key={cellKey}
-                              {...getCellProps}
-                              onClick={cellClickHandler(cell)}
-                            >
+                            <TableCell key={cellKey} {...getCellProps} onClick={cellClickHandler(cell)}>
                               {cell.isGrouped ? (
                                 <>
                                   <TableSortLabel
                                     classes={{
-                                      iconDirectionAsc:
-                                        classes.iconDirectionAsc,
-                                      iconDirectionDesc:
-                                        classes.iconDirectionDesc,
+                                      iconDirectionAsc: classes.iconDirectionAsc,
+                                      iconDirectionDesc: classes.iconDirectionDesc,
                                     }}
                                     active
                                     direction={row.isExpanded ? 'desc' : 'asc'}
@@ -595,8 +423,7 @@ export function Table<T extends Record<string, unknown>>({
                                     {...row.getToggleRowExpandedProps()}
                                     className={classes.cellIcon}
                                   />{' '}
-                                  {cell.render('Cell', { editable: false })} (
-                                  {row.subRows.length})
+                                  {cell.render('Cell', { editable: false })} ({row.subRows.length})
                                 </>
                               ) : cell.isAggregated ? (
                                 cell.render('Aggregated')
@@ -611,58 +438,38 @@ export function Table<T extends Record<string, unknown>>({
                   })}
                 </TableBody>
               </RawTable>
-              <Grid
-                item
-                xs={12}
-                sx={{ display: 'flex', justifyContent: 'flex-end' }}
-              >
+              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <TablePagination<T> instance={instance} />
               </Grid>
             </TableContainer>
           </Grid>
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
-            <>
-              <Grid item xs={4} className={classes.FiltersCss}>
-                <Box
-                  component="div"
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingX: 1,
-                  }}
-                  className={classes.tableHeadRow}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <FilterIcon
-                      className={classes.tableFilterAltOutlinedIcon}
-                      style={{ flexDirection: 'row-reverse' }}
-                    />
-                    <StyledH2>Filtres</StyledH2>
-                  </Box>
-
-                  <CrossIcon
-                    height={11}
-                    width={25}
-                    onClick={() => {
-                      setLocalFilterActive!(false);
-                    }}
-                  />
+            <Grid item xs={4} className={classes.FiltersCss}>
+              <Box
+                component='div'
+                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingX: 1 }}
+                className={classes.tableHeadRow}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <FilterIcon className={classes.tableFilterAltOutlinedIcon} style={{ flexDirection: 'row-reverse' }} />
+                  <StyledH2>Filtres</StyledH2>
                 </Box>
-                <FilterPageCustom<T>
-                  instance={instance}
-                  setLocalFilterActive={setLocalFilterActive}
-                  filterActive={filterActive}
+
+                <CrossIcon
+                  height={11}
+                  width={25}
+                  onClick={() => {
+                    setLocalFilterActive!(false);
+                  }}
                 />
-              </Grid>
-            </>
+              </Box>
+              <FilterPageCustom<T>
+                instance={instance}
+                setLocalFilterActive={setLocalFilterActive}
+                filterActive={filterActive}
+              />
+            </Grid>
           ) : null}
         </Grid>
       </Paper>

@@ -5,15 +5,40 @@ import {
   DuplicateIcon,
   TrashIcon,
 } from '@aureskonnect/react-ui';
-import axios from 'axios';
+import { FilterValue, IdType, Row, customColumnProps } from 'react-table';
 import React, { useEffect, useMemo, useState } from 'react';
-import { FilterValue, IdType, Row } from 'react-table';
-import { customColumnProps } from 'react-table';
 
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
 import { Table } from './Table';
+import axios from 'axios';
 import { useStyles } from './TableStyle';
+
+export interface DynamicTableProps {
+  url?: string;
+  onClick?: (row: any) => void;
+
+  canGroupBy?: boolean;
+  canSort?: boolean;
+  canSelect?: boolean;
+  canResize?: boolean;
+  showGlobalFilter?: boolean;
+  showFilter?: boolean;
+  showColumnIcon?: boolean;
+  canExpand?: boolean;
+  canDeleteOrDuplicate?: boolean;
+  filterActive?: boolean;
+  actionColumn?: React.ReactNode;
+  customJsxSideFilterButton?: React.ReactNode;
+  arrayOfCustomColumns?: customColumnProps[] | undefined;
+  setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedRows?: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+export type apiResultProps = {
+  structure: string[];
+  data: any;
+};
 
 function filterGreaterThan(
   rows: Array<Row<any>>,
@@ -32,27 +57,6 @@ function filterGreaterThan(
 // check, but here, we want to remove the filter if it's not a number
 filterGreaterThan.autoRemove = (val: any) => typeof val !== 'number';
 
-type DynamicTableProps = {
-  url: string;
-  canGroupBy?: boolean;
-  canSort?: boolean;
-  canSelect?: boolean;
-  canResize?: boolean;
-  showGlobalFilter?: boolean;
-  showFilterbyColumn?: boolean;
-  showColumnIcon?: boolean;
-  canExpand?: boolean;
-  canDeleteOrDuplicate?: boolean;
-  filterActive?: boolean;
-  actionColumn?: Function;
-  setLocalFilterActive?: Function | undefined;
-  arrayOfCustomColumns?: customColumnProps[] | undefined;
-};
-
-type apiResultProps = {
-  structure: string[];
-  data: any;
-};
 export function DynamicTable({
   url,
   actionColumn,
@@ -62,14 +66,18 @@ export function DynamicTable({
   canExpand,
   canSelect,
   showGlobalFilter,
-  showFilterbyColumn,
+  showFilter,
   showColumnIcon,
   canDeleteOrDuplicate,
   arrayOfCustomColumns,
   filterActive,
   setLocalFilterActive,
-}: DynamicTableProps) {
+  customJsxSideFilterButton,
+  onClick,
+  setSelectedRows,
+}: DynamicTableProps): React.ReactElement {
   const [apiResult, setApiResult] = useState<apiResultProps>();
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<null | any>(null);
   const classes = useStyles();
@@ -95,20 +103,18 @@ export function DynamicTable({
             .map((key) => {
               if (key === 'image' || key === 'picture') {
                 return {
+                  id: key,
                   Header: key,
                   accessor: key,
                   disableFilters: true,
-
-                  // eslint-disable-next-line
-                  Cell: (value: any) => {
-                    return (
-                      <img src={value.cell.value} className="w-50" alt="" />
-                    );
-                  },
+                  Cell: (value: any) => (
+                    <img src={value.cell.value} className="w-50" alt="" />
+                  ),
                 };
               }
 
               return {
+                id: key,
                 Header: key,
                 accessor: key,
                 aggregate: 'count',
@@ -169,7 +175,6 @@ export function DynamicTable({
                 ) : (
                   <AngleSmallRightIcon height={25} width={25} />
                 )}
-                {/* {row.isExpanded ? '👇' : '👉'} */}
               </span>
             ) : null,
         },
@@ -178,16 +183,15 @@ export function DynamicTable({
     }
 
     if (arrayOfCustomColumns && arrayOfCustomColumns.length > 0) {
-      arrayOfCustomColumns.map((elm) => {
+      arrayOfCustomColumns.map((elm: any) =>
         modifiedColumns.splice(elm.indexOFColumn, 0, {
           id: elm.columnName,
           Header: elm.columnName,
-          Cell: function (cell: any) {
-            const ActionColumnComponent = elm.customJsx as React.ElementType;
-            return <elm.customJsx selectedRow={cell.row.original} />;
-          },
-        });
-      });
+          Cell: (cell: any) => (
+            <elm.customJsx selectedRow={cell.row.original} />
+          ),
+        })
+      );
     }
     if (canDeleteOrDuplicate) {
       modifiedColumns = [
@@ -222,10 +226,11 @@ export function DynamicTable({
     }
 
     return modifiedColumns;
+    // eslint-disable-next-line
   }, [apiResultColumns]);
 
   useEffect(() => {
-    fetchData(url);
+    fetchData(url!);
   }, [url]);
 
   if (loading) return <LoadingDataAnimation />;
@@ -235,6 +240,7 @@ export function DynamicTable({
     <Table
       name={'myTable'}
       columns={columns}
+      setSelectedRows={setSelectedRows}
       data={apiResult?.data}
       canGroupBy={canGroupBy}
       canSort={canSort}
@@ -242,10 +248,12 @@ export function DynamicTable({
       canResize={canResize}
       actionColumn={actionColumn}
       showGlobalFilter={showGlobalFilter}
-      showFilterbyColumn={showFilterbyColumn}
+      showFilter={showFilter}
       showColumnIcon={showColumnIcon}
       filterActive={filterActive}
       setLocalFilterActive={setLocalFilterActive}
+      customJsxSideFilterButton={customJsxSideFilterButton}
+      onClick={onClick}
     />
   );
 }

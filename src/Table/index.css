@@ -1,17 +1,4 @@
-.arrowRight {
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
-  width: 8px;
-  height: 8px;
-  transform: rotate(320deg);
-}
-.arrowDown {
-  border-bottom: 1px solid #000;
-  border-right: 1px solid #000;
-  width: 8px;
-  height: 8px;
-  transform: rotate(45deg);
-}
+
 .table-responsive {
   display: block;
   width: 100%;
@@ -21,4 +8,6 @@
   -ms-overflow-style: -ms-autohiding-scrollbar;
   flex: 1 1 auto;
   padding: 1rem 1rem;
+  /* max-height: 90vh;
+  overflow-x: auto; */
 }

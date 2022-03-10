@@ -10,11 +10,7 @@ type GlobalFilterProps = {
 
   style: React.CSSProperties;
 };
-export default function GlobalFilter({
-  preGlobalFilteredRows,
-  setGlobalFilter,
-  style,
-}: GlobalFilterProps) {
+export default function GlobalFilter({ preGlobalFilteredRows, setGlobalFilter, style }: GlobalFilterProps) :React.ReactElement{
   const count = preGlobalFilteredRows.length;
   const [value, setValue] = useState<string>('');
   const onChange = useAsyncDebounce((value) => {

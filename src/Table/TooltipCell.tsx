@@ -10,10 +10,9 @@ const useStyles = makeStyles({
   },
 });
 
-export const TooltipCellRenderer: React.FC<CellProps<any>> = ({
-  cell: { value },
-  column: { align = 'left' },
-}) => <TooltipCell text={value} align={align} />;
+export const TooltipCellRenderer: React.FC<CellProps<any>> = ({ cell: { value }, column: { align = 'left' } }) => (
+  <TooltipCell text={value} align={align} />
+);
 
 interface TooltipProps {
   text: string;
@@ -21,11 +20,7 @@ interface TooltipProps {
   align: string;
 }
 
-export const TooltipCell: React.FC<TooltipProps> = ({
-  text,
-  tooltip = text,
-  align,
-}) => {
+export const TooltipCell: React.FC<TooltipProps> = ({ text, tooltip = text, align }) => {
   const classes = useStyles({});
   return (
     <MuiTooltip

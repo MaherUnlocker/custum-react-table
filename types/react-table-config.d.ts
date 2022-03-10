@@ -132,8 +132,15 @@ declare module 'react-table' {
   export interface customColumnProps {
     indexOFColumn: number;
     columnName: string;
-    customJsx: Function;
+    customJsx: React.ReactNode;
   }
 }
-
+export type canSelectProps =
+  | {
+    canSelect: true;
+    onChange: () => void;
+  }
+  | {
+    canSelect: false;
+  };
 export type TableMouseEventHandler = (instance: TableInstance<T>) => MouseEventHandler

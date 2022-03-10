@@ -1,8 +1,19 @@
 # Custom react table / Storybook User Guide
 
-`custom-react-table` is based on <code>React-Table v7</code>: collection of hooks for **building powerful tables and datagrid experiences**. These hooks are lightweight, composable, and ultra-extensible, but **do not render any markup or styles for you**. This effectively means that React Table is a "headless" UI library.
+**Custom-react-table** is based on <code>React-Table v7</code>: collection of hooks for **building powerful tables and datagrid experiences**. These hooks are lightweight, composable, and ultra-extensible, but **do not render any markup or styles for you**. This effectively means that React Table is a "headless" UI library.
 
-<a target="_blank" rel="noopener noreferrer" href="https://user-images.githubusercontent.com/30791819/147334536-5de8ed47-4719-4563-b537-f468cfef3fdf.PNG"><img src="https://user-images.githubusercontent.com/30791819/147334536-5de8ed47-4719-4563-b537-f468cfef3fdf.PNG" alt="sample" style="max-width: 100%;"></a>
+**Desktop Version:**
+ 
+![alt text](https://user-images.githubusercontent.com/30791819/157678784-2e49fddd-5766-4185-a816-2e36b2a60037.png)
+
+**Mobile Version:**
+
+
+
+
+![alt text](https://user-images.githubusercontent.com/30791819/157678930-6004a305-fac9-40de-b549-68a6e7798d8e.png)
+
+
 
 
 
@@ -56,7 +67,7 @@ import { DynamicTable } from @maherunlocker/custom-react-table
 interface customColumnProps {
   indexOFColumn: number;  //position of column to insert it 
   columnName: string;    //name of column 
-  customJsx: Function;   //react componant 
+  customJsx:  React.ReactNode;;   //react componant 
 }
 
 let arrayOfCustomColumns: customColumnProps[] = [];
@@ -86,38 +97,67 @@ function customJsxComponent(props: any) {
 
 
 arrayOfCustomColumns.push(
-  { indexOFColumn: 0, columnName: 'column1', customJsx: SelectAccountDropdown2 },
-  { indexOFColumn: 2, columnName: 'column2', customJsx: SelectAccountDropdown }
+  { indexOFColumn: 0, columnName: 'columnName1', customJsx: SelectAccountDropdown2 },
+  { indexOFColumn: 2, columnName: 'columnName2', customJsx: SelectAccountDropdown }
 );
 
 
 
 
-export default function App() {
-  //this  to get the filter page is opened or no 
+export default function App(): JSX.Element {
   const [filterActive, setLocalFilterActive] = React.useState<boolean>(false);
+  const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
 
   return (
-    <DynamicTable
-      //put your backed api url
-      
-      url='http://localhost:4000/client'
-    
-      //optionnal props
-      actionColumn={SelectAccountDropdown}
-      canGroupBy
-      canSort
-      canResize
-      canExpand
-      canSelect
-      showGlobalFilter
-      showFilterbyColumn
-      showColumnIcon
-      canDeleteOrDuplicate
-      filterActive={filterActive}
-      setLocalFilterActive={setLocalFilterActive}
-      arrayOfCustomColumns={arrayOfCustomColumns}
-    />
+    <>
+      <DynamicTable
+        //put your backed api url it's obligation  to get your date from api
+        
+        url='http://localhost:4000/client'
+        // url='http://localhost:4000/cards'
+
+        //optionnal props
+        // --->here for add cusom component in the end of table
+        actionColumn={SelectAccountDropdown}
+        // --->here you can add component side Filter Button
+        customJsxSideFilterButton={<FilterSideComponent />}
+        // --->here for grouping columns with same name
+        canGroupBy
+        // --->here for sorting table
+        canSort
+        // --->here for resising with of column
+        canResize
+        // --->here for row and subrows
+        canExpand
+        // --->here showing checkbox in the begin of RowTable with return you the checked rows
+        canSelect
+        setSelectedRows={setSelectedRows}
+        // --->here showing golobal filter input on the top of table
+        showGlobalFilter
+        // --->here showing  filter button  on the top of table
+        showFilter
+        // --->here add action header with delete and duplicate
+        canDeleteOrDuplicate
+        filterActive={filterActive}
+        setLocalFilterActive={setLocalFilterActive}
+        // --->here you can add any column to the table in the specified place with custom name and customjsx
+        arrayOfCustomColumns={arrayOfCustomColumns}
+        // --->here  if you dont have any other click in row you can use to get clicked row details
+        onClick={(row: any) => console.log(row.original)}
+      />
+      <p>Selected Rows: {selectedRows.length}</p>
+      <pre>
+        <code>
+          {JSON.stringify(
+            {
+              selectedRows,
+            },
+            null,
+            2
+          )}
+        </code>
+      </pre>
+    </>
   );
 }
 
