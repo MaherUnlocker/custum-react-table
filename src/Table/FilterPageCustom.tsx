@@ -168,7 +168,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
         </StyledButton>
       )}
 
-      <Box component='div' style={{ height: '60vh', overflow: 'auto', alignItems: 'center' }}>
+      <Box component='div' style={{ maxHeight: '50vh', overflow: 'auto', alignItems: 'center' }}>
         {allColumns
           .filter((it) => it.canFilter && it.id !== 'delete' && it.isVisible)
           .map((column) => (

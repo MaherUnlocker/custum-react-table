@@ -26,14 +26,7 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
-import {
-  CrossIcon,
-  FilterIcon,
-  SettingsIcon,
-  StyledH2,
-  StyledLabel,
-  StyledSelectInput,
-} from '@aureskonnect/react-ui';
+import { CrossIcon, FilterIcon, SettingsIcon, StyledH2, StyledLabel, StyledSelectInput } from '@aureskonnect/react-ui';
 import {
   HeaderCheckbox,
   RawTable,
@@ -67,7 +60,6 @@ import _uniqby from 'lodash.uniqby';
 import cx from 'classnames';
 
 export interface TableProperties<T extends Record<string, unknown>> extends TableOptions<T>, DynamicTableProps {
-  name: string;
   onAdd?: (instance: TableInstance<T>) => MouseEventHandler;
   onDelete?: (instance: TableInstance<T>) => MouseEventHandler;
   onEdit?: (instance: TableInstance<T>) => MouseEventHandler;
@@ -212,6 +204,9 @@ export function Table<T extends Record<string, unknown>>({
   ...props
 }: PropsWithChildren<TableProperties<T>>): ReactElement {
   const classes = useStyles();
+  if (name === undefined || name === null) {
+    name = 'mytable';
+  }
 
   const [initialState, setInitialState] = useLocalStorage(`tableState:${name}`, {});
 
@@ -325,10 +320,16 @@ export function Table<T extends Record<string, unknown>>({
       />
       <FilterChipBar instance={instance} />
 
-      <Paper elevation={0} sx={{ display: { xs: 'none', md: 'block' }, marginTop: 5 }}>
+      <Paper elevation={0} sx={{ display: { xs: 'none', md: 'block' }, marginTop: 2 }}>
         <Grid container spacing={1} direction={'row'}>
-          <Grid container item xs={filterActive ? 8 : 12} className='table-responsive'>
-            <TableContainer sx={{ overflowX: 'initial', maxHeight: '60vh' }}>
+          <Grid
+            container
+            item
+            xs={filterActive ? 8 : 12}
+            className='table-responsive'
+            sx={{ maxHeight: '80vh', minHeight: '80vh' }}
+          >
+            <TableContainer sx={{ overflowX: 'initial', maxHeight: '99vh' }}>
               <RawTable>
                 <TableHead>
                   {headerGroups.map((headerGroup) => {
@@ -438,11 +439,13 @@ export function Table<T extends Record<string, unknown>>({
                   })}
                 </TableBody>
               </RawTable>
-              <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <TablePagination<T> instance={instance} />
-              </Grid>
             </TableContainer>
+
+            {/* <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', bottom: '0px' }}>
+              <TablePagination<T> instance={instance} />
+            </Grid> */}
           </Grid>
+
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
             <Grid item xs={4} className={classes.FiltersCss}>
@@ -471,6 +474,11 @@ export function Table<T extends Record<string, unknown>>({
               />
             </Grid>
           ) : null}
+          <Grid item xs={filterActive ? 8 : 12}>
+            <TableRow style={{ justifyContent: 'end', display: 'flex' }}>
+              <TablePagination<T> instance={instance} />
+            </TableRow>
+          </Grid>
         </Grid>
       </Paper>
 

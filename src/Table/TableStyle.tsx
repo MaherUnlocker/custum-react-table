@@ -23,7 +23,11 @@ export const useStyles = makeStyles({
     // minHeight: '100vh',
     // marginTop: 5,
   },
-  tableHead: {},
+  tableHead: {
+    position: 'sticky',
+    top: '0px',
+    zIndex: 200,
+  },
   tableHeadRow: {
     // backgroundColor: 'red',
 

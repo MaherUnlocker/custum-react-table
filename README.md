@@ -117,7 +117,8 @@ export default function App(): JSX.Element {
         // url='http://localhost:4000/cards'
 
         //optionnal props
-        // --->here for add cusom component in the end of table
+         name="mytable"
+        // --->here for add custom component in the end of table
         actionColumn={SelectAccountDropdown}
         // --->here you can add component side Filter Button
         customJsxSideFilterButton={<FilterSideComponent />}
@@ -125,14 +126,14 @@ export default function App(): JSX.Element {
         canGroupBy
         // --->here for sorting table
         canSort
-        // --->here for resising with of column
+        // --->here for resizing with of column
         canResize
         // --->here for row and subrows
         canExpand
         // --->here showing checkbox in the begin of RowTable with return you the checked rows
         canSelect
         setSelectedRows={setSelectedRows}
-        // --->here showing golobal filter input on the top of table
+        // --->here showing global filter input on the top of table
         showGlobalFilter
         // --->here showing  filter button  on the top of table
         showFilter
@@ -143,7 +144,7 @@ export default function App(): JSX.Element {
         
         // --->here you can add any column to the table in the specified place with custom name and customjsx
         arrayOfCustomColumns={arrayOfCustomColumns}
-        // --->here  if you dont have any other click in row you can use to get clicked row details
+        // --->here  if you don't have any other click in row you can use to get clicked row details
         onClick={(row: any) => console.log(row.original)}
       />
       <p>Selected Rows: {selectedRows.length}</p>
