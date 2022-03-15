@@ -43,7 +43,7 @@ export const useStyles = makeStyles({
     padding: '16px 1px 16px 16px',
     fontSize: '0.875rem',
     textAlign: 'center',
-    maxHeight: 35,
+    maxHeight: 45,
     verticalAlign: 'inherit',
     // color: theme.palette.text.primary,
     fontWeight: '700 !important',
@@ -159,6 +159,14 @@ export const useStyles = makeStyles({
     borderSpacing: 0,
     paddingLeft: '0 !important',
     paddingTop: '0 !important',
+    height: '45px !important',
+    backgroundColor: '#F8F8FB ',
+    alignItems: 'center',
+  },
+  DividerCss: {
+    background: '#F7F7FA 0% 0% no-repeat padding-box',
+    border: '1px solid #F1F1F1',
+    height: '5px',
   },
 });
 

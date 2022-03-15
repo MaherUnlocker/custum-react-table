@@ -15,7 +15,6 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles({
   cell_short: {
-    fontSize: '150px',
     lineHeight: '1.5rem',
     fontWeight: '700!important',
     width: 100,
@@ -99,18 +98,13 @@ function MobileRow(props: any): React.ReactElement {
                           );
                         }
                         return (
-                          <TableRow component='th' scope='row' key={headerGroup.id}>
-                            <TableCell
-                              scope='key'
-                              variant='body'
-                              className={classes.cell_short}
-                              style={{
-                                fontSize: '150px',
-                                lineHeight: '1.5rem',
-                                fontWeight: 700,
-                                width: 100,
-                              }}
-                            >
+                          <TableRow
+                            component='th'
+                            scope='row'
+                            key={headerGroup.id}
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                          >
+                            <TableCell scope='key' variant='body' className={classes.cell_short}>
                               {headerGroup.id}
                             </TableCell>
                             <TableCell scope='key'>{dataRow[headerGroup.id]}</TableCell>
