@@ -20,6 +20,7 @@ export const useStyles = makeStyles({
     borderSpacing: 0,
     border: '1px solid rgba(224, 224, 224, 1)',
     width: '100%',
+    borderTop: '0',
     // minHeight: '100vh',
     // marginTop: 5,
   },
@@ -27,6 +28,9 @@ export const useStyles = makeStyles({
     position: 'sticky',
     top: '0px',
     zIndex: 200,
+    borderTop: '0',
+    marginTop: '0',
+    paddingTop: '0',
   },
   tableHeadRow: {
     // backgroundColor: 'red',
@@ -34,10 +38,11 @@ export const useStyles = makeStyles({
     backgroundColor: '#F8F8FB ',
 
     color: '#000',
-    borderBottom: '1px solid rgba(224, 224, 224, 1)',
-    '&:hover $resizeHandle': {
-      opacity: 1,
-    },
+    border: '0px',
+    // borderBottom: '1px solid rgba(224, 224, 224, 1)',
+    // '&:hover $resizeHandle': {
+    //   opacity: 1,
+    // },
   },
   tableHeadCell: {
     padding: '16px 1px 16px 16px',
@@ -52,7 +57,7 @@ export const useStyles = makeStyles({
     '&:last-child': {
       borderRight: 'none',
     },
-    borderBottom: '1px solid #555B6D',
+    // borderBottom: '1px solid #555B6D',
   },
   tableBody: {},
   tableRow: {
@@ -165,8 +170,8 @@ export const useStyles = makeStyles({
   },
   DividerCss: {
     background: '#F7F7FA 0% 0% no-repeat padding-box',
-    border: '1px solid #F1F1F1',
-    height: '5px',
+    // border: '1px solid #F1F1F1',
+    height: '2px',
   },
 });
 

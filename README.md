@@ -107,7 +107,7 @@ arrayOfCustomColumns.push(
 export default function App(): JSX.Element {
   const [filterActive, setLocalFilterActive] = React.useState<boolean>(false);
   const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
-
+  const [dataIsUpdated, setDataIsUpdated] = React.useState<boolean | number>(false);
   return (
     <>
       <DynamicTable
@@ -146,6 +146,17 @@ export default function App(): JSX.Element {
         arrayOfCustomColumns={arrayOfCustomColumns}
         // --->here  if you don't have any other click in row you can use to get clicked row details
         onClick={(row: any) => console.log(row.original)}
+
+        // when you update your backend set dataIsUpdated to true to render table
+        setDataIsUpdated={setDataIsUpdated}
+        dataIsUpdated={dataIsUpdated}
+        // if you need your table is elevated in his parent 
+        elevationTable={8}
+        //this for let you modify the height of the table and min height you can put number or string  or calc() function of css
+       [ NB: for maxHeight must be less than 100%] 
+        minHeight='calc(100% - 276px)'
+        maxHeight={'200px'}
+
       />
       <p>Selected Rows: {selectedRows.length}</p>
       <pre>

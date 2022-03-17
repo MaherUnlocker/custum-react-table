@@ -1,6 +1,14 @@
 import './table.css';
 
-import { Box, Divider, Grid, Paper, TableContainer, TableSortLabel, Tooltip } from '@mui/material';
+import {
+  Box,
+  Divider,
+  Grid,
+  Paper,
+  TableContainer,
+  TableSortLabel,
+  Tooltip,
+} from '@mui/material';
 import {
   Cell,
   CellProps,
@@ -29,7 +37,6 @@ import {
 import {
   CrossIcon,
   FilterIcon,
-  StyledCheckbox,
   StyledH2,
   StyledLabel,
   StyledSelectInput,
@@ -47,12 +54,19 @@ import {
   TableRow,
   useStyles,
 } from './TableStyle';
-import React, { CSSProperties, MouseEventHandler, PropsWithChildren, ReactElement, useEffect } from 'react';
+import React, {
+  CSSProperties,
+  MouseEventHandler,
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+} from 'react';
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
+import { ColumnHidePageCustom } from './ColumnHidePageCustom';
 import { DynamicTableProps } from './DynamicTable';
 import { FilterChipBar } from './FilterChipBar';
 import { FilterPageCustom } from './FilterPageCustom';
@@ -67,7 +81,9 @@ import _uniqby from 'lodash.uniqby';
 // import _without from 'lodash.without';
 import cx from 'classnames';
 
-export interface TableProperties<T extends Record<string, unknown>> extends TableOptions<T>, DynamicTableProps {
+export interface TableProperties<T extends Record<string, unknown>>
+  extends TableOptions<T>,
+    DynamicTableProps {
   onAdd?: (instance: TableInstance<T>) => MouseEventHandler;
   onDelete?: (instance: TableInstance<T>) => MouseEventHandler;
   onEdit?: (instance: TableInstance<T>) => MouseEventHandler;
@@ -79,10 +95,17 @@ function DefaultHeader({ column }: HeaderProps<any>) {
 }
 
 // yes this is recursive, but the depth never exceeds three so it seems safe enough
-const findFirstColumn = <T extends Record<string, unknown>>(columns: Array<ColumnInstance<T>>): ColumnInstance<T> =>
+const findFirstColumn = <T extends Record<string, unknown>>(
+  columns: Array<ColumnInstance<T>>
+): ColumnInstance<T> =>
   columns[0].columns ? findFirstColumn(columns[0].columns) : columns[0];
 
-function DefaultColumnFilter<T extends Record<string, unknown>>({ columns, column, rows, prepareRow }: FilterProps<T>) {
+function DefaultColumnFilter<T extends Record<string, unknown>>({
+  columns,
+  column,
+  rows,
+  prepareRow,
+}: FilterProps<T>) {
   const { filterValue, setFilter, render } = column;
   const [, setValue] = React.useState(filterValue || '');
 
@@ -98,7 +121,10 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({ columns, colum
         .filter((cel: any) => {
           const { key: cellKey } = cel.getCellProps();
           // eslint-disable-next-line
-          return (cellKey as string).replace(/([^\_]*\_){2}/, '') === (column.id as string);
+          return (
+            (cellKey as string).replace(/([^\_]*\_){2}/, '') ===
+            (column.id as string)
+          );
         })
         // eslint-disable-next-line
         .map((cell: any) => {
@@ -130,7 +156,7 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({ columns, colum
         id={render('Header')}
         name={render('Header')}
         options={unique}
-        placeholder='Sélectionner ...'
+        placeholder="Sélectionner ..."
         onChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}
       />
@@ -149,11 +175,20 @@ const getStyles = (props: any, disableResizing = false, align = 'left') => [
   },
 ];
 
-const headerProps = <T extends Record<string, unknown>>(props: any, { column }: Meta<T, { column: HeaderGroup<T> }>) =>
-  getStyles(props, column && column.disableResizing, column && column.align);
+const headerProps = <T extends Record<string, unknown>>(
+  props: any,
+  { column }: Meta<T, { column: HeaderGroup<T> }>
+) => getStyles(props, column && column.disableResizing, column && column.align);
 
-const cellProps = <T extends Record<string, unknown>>(props: any, { cell }: Meta<T, { cell: Cell<T> }>) =>
-  getStyles(props, cell.column && cell.column.disableResizing, cell.column && cell.column.align);
+const cellProps = <T extends Record<string, unknown>>(
+  props: any,
+  { cell }: Meta<T, { cell: Cell<T> }>
+) =>
+  getStyles(
+    props,
+    cell.column && cell.column.disableResizing,
+    cell.column && cell.column.align
+  );
 
 const defaultColumn = {
   Filter: DefaultColumnFilter,
@@ -188,7 +223,9 @@ const selectionHook = (hooks: Hooks<any>) => {
       ),
       // The cell can use the individual row's getToggleRowSelectedProps method
       // to the render a checkbox
-      Cell: ({ row }: CellProps<any>) => <RowCheckbox {...row.getToggleRowSelectedProps()} />,
+      Cell: ({ row }: CellProps<any>) => (
+        <RowCheckbox {...row.getToggleRowSelectedProps()} />
+      ),
     },
     ...columns,
   ]);
@@ -209,6 +246,9 @@ export function Table<T extends Record<string, unknown>>({
   setLocalFilterActive,
   customJsxSideFilterButton,
   setSelectedRows,
+  elevationTable,
+  minHeight,
+  maxHeight,
   ...props
 }: PropsWithChildren<TableProperties<T>>): ReactElement {
   const classes = useStyles();
@@ -216,7 +256,10 @@ export function Table<T extends Record<string, unknown>>({
     name = 'mytable';
   }
 
-  const [initialState, setInitialState] = useLocalStorage(`tableState:${name}`, {});
+  const [initialState, setInitialState] = useLocalStorage(
+    `tableState:${name}`,
+    {}
+  );
 
   const customHooks = (hooks: Hooks<any>) => {
     hooks.allColumns.push((columns) => [
@@ -228,44 +271,18 @@ export function Table<T extends Record<string, unknown>>({
         minWidth: 60,
         width: 60,
         maxWidth: 100,
+
         Header: () => (
-          <div className='dropdown'>
-            <div id='dropdownHideColomuns' data-bs-toggle='dropdown'>
+          <div className="dropdown">
+            <div id="dropdownHideColomuns" data-bs-toggle="dropdown">
               <ChoiceIcon height={25} width={25} />
             </div>
 
-            <ul className='dropdown-menu ' aria-labelledby='dropdownHideColomuns'>
-              <div className='d-flex flex-column'>
-                <div key='showall' className='   mx-2 d-flex align-items-center justify-content-between'>
-                  <label
-                    style={{
-                      font: 'normal normal normal 13px/17px Segoe UI',
-                      letterSpacing: '0px',
-                      color: '#495057 ',
-                    }}
-                  >
-                    Afficher tous:
-                  </label>
-                  <input type='checkbox' />
-                </div>
-                <Divider className={classes.DividerCss} />
-                {columns
-                  .filter((column) => !(column.id === '_selector') && !(column.id === 'expander'))
-                  .map((column: any) => (
-                    <div key={column.id} className='  my-1 mx-2 d-flex align-items-center justify-content-between'>
-                      <label
-                        style={{
-                          font: 'normal normal normal 13px/17px Segoe UI',
-                          letterSpacing: '0px',
-                          color: '#495057 ',
-                        }}
-                      >
-                        {column.id}
-                      </label>
-                      <input type='checkbox' {...column.getToggleHiddenProps()} />
-                    </div>
-                  ))}
-              </div>
+            <ul
+              className="dropdown-menu "
+              aria-labelledby="dropdownHideColomuns"
+            >
+              <ColumnHidePageCustom instance={instance} />
             </ul>
           </div>
         ),
@@ -310,14 +327,22 @@ export function Table<T extends Record<string, unknown>>({
     },
     ...localHooks
   );
-
-  const { headerGroups, getTableBodyProps, page, prepareRow, state, selectedFlatRows } = instance;
+  const {
+    headerGroups,
+    getTableBodyProps,
+    page,
+    prepareRow,
+    state,
+    selectedFlatRows,
+  } = instance;
   const debouncedState = useDebounce(state, 200);
   useMountedLayoutEffect(() => {
-    setSelectedRows && setSelectedRows(selectedFlatRows.map((row) => row.original));
+    setSelectedRows &&
+      setSelectedRows(selectedFlatRows.map((row) => row.original));
   }, [setSelectedRows, selectedFlatRows]);
   useEffect(() => {
-    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } = debouncedState;
+    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } =
+      debouncedState;
     setInitialState({
       sortBy,
       filters,
@@ -328,12 +353,21 @@ export function Table<T extends Record<string, unknown>>({
   }, [setInitialState, debouncedState]);
 
   const cellClickHandler = (cell: Cell<T>) => () => {
-    onClick && !cell.column.isGrouped && !cell.row.isGrouped && cell.column.id !== '_selector' && onClick(cell.row);
+    onClick &&
+      !cell.column.isGrouped &&
+      !cell.row.isGrouped &&
+      cell.column.id !== '_selector' &&
+      onClick(cell.row);
   };
-
   return (
-    <Paper elevation={0} sx={{ paddingX: 1 }}>
-      <Paper elevation={2} sx={{ marginTop: '2px' }}>
+    <Paper elevation={elevationTable}>
+      <Paper
+        elevation={elevationTable}
+        sx={{ marginTop: '2px' }}
+        className={
+          !showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : ''
+        }
+      >
         <TableToolbar
           instance={instance}
           {...{
@@ -348,15 +382,34 @@ export function Table<T extends Record<string, unknown>>({
         <FilterChipBar instance={instance} />
       </Paper>
 
-      <Divider className={classes.DividerCss} />
-
-      <Paper elevation={2} sx={{ display: { xs: 'none', md: 'block' }, marginTop: '2px' }}>
+      <Paper
+        id={name}
+        elevation={elevationTable}
+        sx={{ display: { xs: 'none', md: 'block' }, marginTop: '10px' }}
+      >
         <Grid
           container
           direction={'row'}
-          sx={{ display: 'grid', gridTemplateColumns: filterActive ? '2fr 1fr ' : 'auto', gridColumnGap: '10px' }}
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: filterActive ? '2fr 1fr ' : 'auto',
+            gridColumnGap: '10px',
+          }}
         >
-          <TableContainer sx={{ overflowX: 'auto', maxHeight: '630px' }} className='table-responsive'>
+          <TableContainer
+            sx={{
+              overflowX: 'auto',
+              maxHeight:
+                maxHeight === 0 || maxHeight === '' || maxHeight === undefined
+                  ? '630px'
+                  : maxHeight,
+              minHeight:
+                minHeight === 0 || minHeight === '' || minHeight === undefined
+                  ? '580px'
+                  : minHeight,
+            }}
+            className="table-responsive"
+          >
             <RawTable>
               <TableHead>
                 {headerGroups.map((headerGroup) => {
@@ -377,8 +430,12 @@ export function Table<T extends Record<string, unknown>>({
                           role: headerRole,
                           ...getHeaderProps
                         } = column.getHeaderProps(headerProps);
-                        const { title: groupTitle = '', ...columnGroupByProps } = column.getGroupByToggleProps();
-                        const { title: sortTitle = '', ...columnSortByProps } = column.getSortByToggleProps();
+                        const {
+                          title: groupTitle = '',
+                          ...columnGroupByProps
+                        } = column.getGroupByToggleProps();
+                        const { title: sortTitle = '', ...columnSortByProps } =
+                          column.getSortByToggleProps();
 
                         return (
                           <TableHeadCell key={headerKey} {...getHeaderProps}>
@@ -399,7 +456,9 @@ export function Table<T extends Record<string, unknown>>({
                               <Tooltip title={sortTitle}>
                                 <TableSortLabel
                                   active={column.isSorted}
-                                  direction={column.isSortedDesc ? 'desc' : 'asc'}
+                                  direction={
+                                    column.isSortedDesc ? 'desc' : 'asc'
+                                  }
                                   {...columnSortByProps}
                                   className={classes.tableSortLabel}
                                   style={{ flexDirection: 'row-reverse' }}
@@ -408,10 +467,16 @@ export function Table<T extends Record<string, unknown>>({
                                 </TableSortLabel>
                               </Tooltip>
                             ) : (
-                              <TableLabel style={style}>{column.render('Header')}</TableLabel>
+                              <TableLabel style={style}>
+                                {column.render('Header')}
+                              </TableLabel>
                             )}
                             {/*<div>{column.canFilter ? column.render('Filter') : null}</div>*/}
-                            {canResize ? column.canResize && <ResizeHandle column={column} /> : null}
+                            {canResize
+                              ? column.canResize && (
+                                  <ResizeHandle column={column} />
+                                )
+                              : null}
                           </TableHeadCell>
                         );
                       })}
@@ -423,7 +488,11 @@ export function Table<T extends Record<string, unknown>>({
               <TableBody {...getTableBodyProps()}>
                 {page.map((row) => {
                   prepareRow(row);
-                  const { key: rowKey, role: rowRole, ...getRowProps } = row.getRowProps();
+                  const {
+                    key: rowKey,
+                    role: rowRole,
+                    ...getRowProps
+                  } = row.getRowProps();
 
                   return (
                     <TableRow
@@ -435,16 +504,25 @@ export function Table<T extends Record<string, unknown>>({
                       })}
                     >
                       {row.cells.map((cell) => {
-                        const { key: cellKey, role: cellRole, ...getCellProps } = cell.getCellProps(cellProps);
+                        const {
+                          key: cellKey,
+                          role: cellRole,
+                          ...getCellProps
+                        } = cell.getCellProps(cellProps);
 
                         return (
-                          <TableCell key={cellKey} {...getCellProps} onClick={cellClickHandler(cell)}>
+                          <TableCell
+                            key={cellKey}
+                            {...getCellProps}
+                            onClick={cellClickHandler(cell)}
+                          >
                             {cell.isGrouped ? (
                               <>
                                 <TableSortLabel
                                   classes={{
                                     iconDirectionAsc: classes.iconDirectionAsc,
-                                    iconDirectionDesc: classes.iconDirectionDesc,
+                                    iconDirectionDesc:
+                                      classes.iconDirectionDesc,
                                   }}
                                   active
                                   direction={row.isExpanded ? 'desc' : 'asc'}
@@ -452,7 +530,8 @@ export function Table<T extends Record<string, unknown>>({
                                   {...row.getToggleRowExpandedProps()}
                                   className={classes.cellIcon}
                                 />{' '}
-                                {cell.render('Cell', { editable: false })} ({row.subRows.length})
+                                {cell.render('Cell', { editable: false })} (
+                                {row.subRows.length})
                               </>
                             ) : cell.isAggregated ? (
                               cell.render('Aggregated')
@@ -468,18 +547,31 @@ export function Table<T extends Record<string, unknown>>({
               </TableBody>
             </RawTable>
           </TableContainer>
-
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
-            <Paper elevation={2}>
+            <Paper elevation={elevationTable}>
               <Box
-                component='div'
-                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingX: 1 }}
+                component="div"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingX: 1,
+                }}
                 className={classes.FiltersCss}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <FilterIcon className={classes.tableFilterAltOutlinedIcon} style={{ flexDirection: 'row-reverse' }} />
-                  <StyledH2>Filtres</StyledH2>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <FilterIcon
+                    className={classes.tableFilterAltOutlinedIcon}
+                    style={{ flexDirection: 'row-reverse' }}
+                  />
+                  <StyledH2>Filtre(s)</StyledH2>
                 </Box>
 
                 <CrossIcon
@@ -509,8 +601,8 @@ export function Table<T extends Record<string, unknown>>({
       <Paper sx={{ display: { xl: 'none', md: 'none' } }}>
         {/* MOBILE EXPANDABLE LIST OF CARDS */}
         <CollapsibleTable props={instance} />
+        <TablePagination<T> instance={instance} />
       </Paper>
-      {/* <TablePagination<T> instance={instance} /> */}
     </Paper>
   );
 }

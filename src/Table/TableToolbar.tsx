@@ -47,7 +47,7 @@ type InstanceActionButton<T extends Record<string, unknown>> = {
 
 type ActionButton = {
   icon?: JSX.Element;
-  onClick: MouseEventHandler;
+  onClick?: MouseEventHandler;
   enabled?: boolean;
   label: string;
   variant?: 'right' | 'left';

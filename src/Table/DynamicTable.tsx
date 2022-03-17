@@ -1,10 +1,6 @@
 import './index.css';
 
-import {
-  AngleSmallRightIcon,
-  DuplicateIcon,
-  TrashIcon,
-} from '@aureskonnect/react-ui';
+import { AngleSmallRightIcon, DuplicateIcon, TrashIcon } from '@aureskonnect/react-ui';
 import { FilterValue, IdType, Row, customColumnProps } from 'react-table';
 import React, { useEffect, useMemo, useState } from 'react';
 
@@ -17,7 +13,12 @@ import { useStyles } from './TableStyle';
 export interface DynamicTableProps {
   url?: string;
   onClick?: (row: any) => void;
+  setDataIsUpdated?: React.Dispatch<React.SetStateAction<boolean | number>>;
+  dataIsUpdated?: boolean | number;
   name?: string;
+  minHeight?: number | string;
+  maxHeight?: number | string;
+
   canGroupBy?: boolean;
   canSort?: boolean;
   canSelect?: boolean;
@@ -27,6 +28,7 @@ export interface DynamicTableProps {
   showColumnIcon?: boolean;
   canExpand?: boolean;
   canDeleteOrDuplicate?: boolean;
+  elevationTable?: number;
   filterActive?: boolean;
   actionColumn?: React.ReactNode;
   customJsxSideFilterButton?: React.ReactNode;
@@ -40,11 +42,7 @@ export type apiResultProps = {
   data: any;
 };
 
-function filterGreaterThan(
-  rows: Array<Row<any>>,
-  id: Array<IdType<any>>,
-  filterValue: FilterValue
-) {
+function filterGreaterThan(rows: Array<Row<any>>, id: Array<IdType<any>>, filterValue: FilterValue) {
   return rows.filter((row) => {
     const rowValue = row.values[id[0]];
     return rowValue >= filterValue;
@@ -75,7 +73,12 @@ export function DynamicTable({
   setLocalFilterActive,
   customJsxSideFilterButton,
   onClick,
+  elevationTable,
   setSelectedRows,
+  setDataIsUpdated,
+  dataIsUpdated,
+  minHeight,
+  maxHeight,
 }: DynamicTableProps): React.ReactElement {
   const [apiResult, setApiResult] = useState<apiResultProps>();
 
@@ -95,7 +98,9 @@ export function DynamicTable({
         setLoading(false);
       });
   }
-
+  if (elevationTable === undefined) {
+    elevationTable = 0;
+  }
   const apiResultColumns = useMemo(
     () =>
       apiResult
@@ -108,9 +113,7 @@ export function DynamicTable({
                   Header: key,
                   accessor: key,
                   disableFilters: true,
-                  Cell: (value: any) => (
-                    <img src={value.cell.value} className="w-50" alt="" />
-                  ),
+                  Cell: (value: any) => <img src={value.cell.value} className='w-50' alt='' />,
                 };
               }
 
@@ -132,10 +135,7 @@ export function DynamicTable({
     const duplicatedData: any = { ...apiResult };
     const duplicateRow = duplicatedData?.data[index];
     const firstPart = duplicatedData?.data.slice(0, index + 1);
-    const secondPart = duplicatedData?.data.slice(
-      index + 1,
-      duplicatedData.data.length
-    );
+    const secondPart = duplicatedData?.data.slice(index + 1, duplicatedData.data.length);
     duplicatedData.data = [...firstPart, duplicateRow, ...secondPart];
     setApiResult(duplicatedData);
   }
@@ -168,11 +168,7 @@ export function DynamicTable({
                 })}
               >
                 {row.isExpanded ? (
-                  <AngleSmallRightIcon
-                    height={25}
-                    width={25}
-                    className={classes.iconDirectionAsc}
-                  />
+                  <AngleSmallRightIcon height={25} width={25} className={classes.iconDirectionAsc} />
                 ) : (
                   <AngleSmallRightIcon height={25} width={25} />
                 )}
@@ -188,9 +184,7 @@ export function DynamicTable({
         modifiedColumns.splice(elm.indexOFColumn, 0, {
           id: elm.columnName,
           Header: elm.columnName,
-          Cell: (cell: any) => (
-            <elm.customJsx selectedRow={cell.row.original} />
-          ),
+          Cell: (cell: any) => <elm.customJsx selectedRow={cell.row.original} />,
         })
       );
     }
@@ -232,7 +226,8 @@ export function DynamicTable({
 
   useEffect(() => {
     fetchData(url!);
-  }, [url]);
+    setDataIsUpdated!(false);
+  }, [url, dataIsUpdated, setDataIsUpdated]);
 
   if (loading) return <LoadingDataAnimation />;
   if (error) return <LoadingErrorAnimation />;
@@ -255,6 +250,9 @@ export function DynamicTable({
       setLocalFilterActive={setLocalFilterActive}
       customJsxSideFilterButton={customJsxSideFilterButton}
       onClick={onClick}
+      elevationTable={elevationTable}
+      minHeight={minHeight}
+      maxHeight={maxHeight}
     />
   );
 }
