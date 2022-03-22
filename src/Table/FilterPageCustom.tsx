@@ -170,7 +170,15 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
 
       <Box component='div' style={{ maxHeight: '50vh', overflow: 'auto', alignItems: 'center' }}>
         {allColumns
-          .filter((it) => it.canFilter && it.id !== 'delete' && it.isVisible)
+          .filter(
+            (it) =>
+              it.canFilter &&
+              it.isVisible &&
+              it.id !== 'delete' &&
+              it.id !== 'Actions' &&
+              it.id !== 'expander' &&
+              it.id !== 'hidecolumns'
+          )
           .map((column) => (
             <div
               key={column.id}

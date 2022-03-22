@@ -1,5 +1,6 @@
-import { matchSorter } from 'match-sorter'
-import { FilterValue, IdType, Row } from 'react-table'
+import { FilterValue, IdType, Row } from 'react-table';
+
+import { matchSorter } from 'match-sorter';
 
 export function fuzzyTextFilter<T extends Record<string, unknown>>(
   rows: Array<Row<T>>,
@@ -8,8 +9,8 @@ export function fuzzyTextFilter<T extends Record<string, unknown>>(
 ): Array<Row<T>> {
   return matchSorter(rows, filterValue, {
     keys: [(row: Row<T>) => row.values[id]],
-  })
+  });
 }
 
 // Let the table remove the filter if the string is empty
-fuzzyTextFilter.autoRemove = (val: any) => !val
+fuzzyTextFilter.autoRemove = (val: any) => !val;

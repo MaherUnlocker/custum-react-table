@@ -37,9 +37,13 @@ export interface DynamicTableProps {
   setSelectedRows?: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
+type DataType = {
+  [key: string]: any;
+};
+
 export type apiResultProps = {
   structure: string[];
-  data: any;
+  data: DataType[];
 };
 
 function filterGreaterThan(rows: Array<Row<any>>, id: Array<IdType<any>>, filterValue: FilterValue) {
@@ -88,7 +92,7 @@ export function DynamicTable({
   async function fetchData(url: string) {
     await axios
       .get(url)
-      .then((response: any) => {
+      .then((response: { data: apiResultProps }) => {
         setApiResult(response.data);
       })
       .catch((err: any) => {
@@ -113,6 +117,7 @@ export function DynamicTable({
                   Header: key,
                   accessor: key,
                   disableFilters: true,
+                  canFilter: false,
                   Cell: (value: any) => <img src={value.cell.value} className='w-50' alt='' />,
                 };
               }
@@ -123,7 +128,7 @@ export function DynamicTable({
                 accessor: key,
                 aggregate: 'count',
                 primary: false,
-                Filtertype: true,
+                canFilter: true,
                 Aggregated: ({ cell: { value } }: any) => `${value} `,
               };
             })
@@ -153,6 +158,8 @@ export function DynamicTable({
           width: 60,
           disableResizing: true,
           disableGroupBy: true,
+          canFilter: false,
+          disableFilters: true,
           Cell: ({ row }: any) =>
             // Use the row.canExpand and row.getToggleRowExpandedProps prop getter
             // to build the toggle for expanding a row
@@ -195,7 +202,8 @@ export function DynamicTable({
           Header: 'Actions',
           id: 'Actions',
           accessor: (str: any) => 'delete',
-
+          canFilter: false,
+          disableFilters: true,
           Cell: ({ row }: any) => (
             <React.Fragment>
               <TrashIcon
@@ -223,21 +231,23 @@ export function DynamicTable({
     return modifiedColumns;
     // eslint-disable-next-line
   }, [apiResultColumns]);
-
+  const data = React.useMemo(() => apiResult?.data, [apiResult]);
   useEffect(() => {
     fetchData(url!);
-    setDataIsUpdated!(false);
-  }, [url, dataIsUpdated, setDataIsUpdated]);
+    setDataIsUpdated !== undefined && setDataIsUpdated(false);
+
+    // eslint-disable-next-line
+  }, [url, dataIsUpdated]);
 
   if (loading) return <LoadingDataAnimation />;
-  if (error) return <LoadingErrorAnimation />;
+  if (error || apiResult === undefined || apiResult?.structure.length === 0) return <LoadingErrorAnimation />;
 
   return (
     <Table
       name={name}
       columns={columns}
       setSelectedRows={setSelectedRows}
-      data={apiResult?.data}
+      data={data as any}
       canGroupBy={canGroupBy}
       canSort={canSort}
       canSelect={canSelect}

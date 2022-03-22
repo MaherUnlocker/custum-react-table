@@ -27,7 +27,7 @@ export default function GlobalFilter({
       value={value || ''}
       onChange={(e) => {
         setValue(e.target.value);
-        onChange(value);
+        onChange(e.target.value);
       }}
       placeholder={`Search ${count} records...`}
     />

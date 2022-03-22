@@ -176,6 +176,12 @@ export default function App(): JSX.Element {
 
 ```
 
+### other info
+---> if you need click on row and click on custom cell add to your custom jsx  `onClick={(e) => {
+             put here your function;
+              e.stopPropagation(); 
+            }}`
+--->            
 ### Example for data with expand
 . type of response must be like this:
 

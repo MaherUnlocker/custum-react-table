@@ -173,6 +173,14 @@ export const useStyles = makeStyles({
     // border: '1px solid #F1F1F1',
     height: '2px',
   },
+  SvgNoDataCss: {
+    display: 'flex !important',
+    justifyContent: 'center !important',
+    alignContent: 'center!important',
+    alignItems: 'center!important',
+    border: '0',
+    height: '100%',
+  },
 });
 
 const areEqual = (prevProps: any, nextProps: any) =>
