@@ -108,6 +108,7 @@
   },
   "dependencies": {
     "@aureskonnect/react-ui": "latest",
+    "reactstrap": "^8.4.1",
     "classnames": "^2.3.1",
     "lodash.concat": "^4.5.0",
     "lodash.isequal": "^4.5.0",

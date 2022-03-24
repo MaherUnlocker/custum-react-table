@@ -22,7 +22,6 @@ export function ColumnHidePageCustom<T extends Record<string, unknown>>({
   const onlyOneOptionLeft = uncheckedCount + 1 >= hideableColumns.length;
   // eslint-disable-next-line
   function toggleAllColumnsVisibility() {
-    console.log('uncheckedCount:', { uncheckedCount });
     if (uncheckedCount === 0) {
       setIsVisible(true);
     } else {

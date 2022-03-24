@@ -1,6 +1,5 @@
 // eslint-disable-next-line 
 const DefaultGlobalFilter = (rows: any[], columnIds: any[], filterValue: string, options?: any): any => {
-  console.log('defaultGlobalFilter', filterValue);
 
   // Do not filter
   if (filterValue === '' || filterValue === null || filterValue === undefined) {

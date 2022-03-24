@@ -21,23 +21,23 @@
   }
 }
 .centeranimation {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20%;
-  justify-content: center;
-  z-index: 1050;
+  display: flex !important;
+  flex-direction: row !important;
+  margin-top: 20% !important;
+  justify-content: center !important;
+  z-index: 1050 !important;
 }
 .errorLoding {
-    opacity: 0;
-    text-align: center;
-    background-color: rgba(255, 0, 0, 0.4);
-    border-radius: 10px;
-    border: 4px solid rgba(255, 0, 0, 0.4);
-    line-height:1.5;
-    -webkit-background-clip: padding-box; /* for Safari */
-    background-clip: padding-box;
-    transition: opacity 0.4s ease-in;
-    -ms-transition: opacity 0.4s ease-in;
-    -moz-transition: opacity 0.4s ease-in;
-    -webkit-transition: opacity 0.4s ease-in;
+  opacity: 0;
+  text-align: center;
+  background-color: rgba(255, 0, 0, 0.4);
+  border-radius: 10px;
+  border: 4px solid rgba(255, 0, 0, 0.4);
+  line-height: 1.5;
+  -webkit-background-clip: padding-box; /* for Safari */
+  background-clip: padding-box;
+  transition: opacity 0.4s ease-in;
+  -ms-transition: opacity 0.4s ease-in;
+  -moz-transition: opacity 0.4s ease-in;
+  -webkit-transition: opacity 0.4s ease-in;
 }

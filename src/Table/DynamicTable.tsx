@@ -204,6 +204,8 @@ export function DynamicTable({
           accessor: (str: any) => 'delete',
           canFilter: false,
           disableFilters: true,
+          disableGroupBy: true,
+          disableSortBy: true,
           Cell: ({ row }: any) => (
             <React.Fragment>
               <TrashIcon

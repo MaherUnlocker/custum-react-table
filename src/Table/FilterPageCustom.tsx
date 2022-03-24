@@ -11,6 +11,7 @@ import { createStyles, makeStyles } from '@mui/styles';
 
 import { Box } from '@mui/material';
 import { FilterChipBarCollapsible } from './FilterChipBarCollapsible';
+import { IsMobileView } from './isMobileView';
 import { TableInstance } from 'react-table';
 import { useLocalStorage } from '../utils';
 
@@ -112,7 +113,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
     },
     [savedFilters, setAllFilters]
   );
-
+  const isMobile = IsMobileView();
   return (
     <div className={(classes.columnsPopOver, classes.grid, classes.cell)} style={{ marginLeft: 5, marginRight: 5 }}>
       <StyledLabel style={{ borderBottom: '2px solid', marginLeft: 1, marginRight: 1, marginTop: 10 }}>
@@ -168,7 +169,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
         </StyledButton>
       )}
 
-      <Box component='div' style={{ maxHeight: '50vh', overflow: 'auto', alignItems: 'center' }}>
+      <Box component='div' style={{ maxHeight: !isMobile ? '50vh' : 'auto', overflow: 'auto', alignItems: 'center' }}>
         {allColumns
           .filter(
             (it) =>

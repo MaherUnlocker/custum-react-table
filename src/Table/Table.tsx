@@ -1,6 +1,6 @@
 import './table.css';
 
-import { Box, Divider, Grid, Paper, TableContainer, TableSortLabel, Tooltip } from '@mui/material';
+import { Box, Grid, TableContainer, TableSortLabel, Tooltip } from '@mui/material';
 import {
   Cell,
   CellProps,
@@ -44,13 +44,16 @@ import React, { CSSProperties, MouseEventHandler, PropsWithChildren, ReactElemen
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 
+import { Card } from 'reactstrap';
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
 import { ColumnHidePageCustom } from './ColumnHidePageCustom';
 import DefaultGlobalFilter from './filters/defaultGlobalFilter';
 import { DynamicTableProps } from './DynamicTable';
 import { FilterChipBar } from './FilterChipBar';
+import FilterModalMobile from './FilterModalMobile';
 import { FilterPageCustom } from './FilterPageCustom';
+import { IsMobileView } from './isMobileView';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import { ResizeHandle } from './ResizeHandle';
@@ -222,14 +225,15 @@ export function Table<T extends Record<string, unknown>>({
       ...columns,
       {
         id: 'hidecolumns',
+        accessor: 'hidecolumns',
         disableResizing: true,
         disableGroupBy: true,
-        accessor: 'hidecolumns',
+        disableFilters: true,
+        disableSortBy: true,
+        canFilter: false,
         minWidth: 60,
         width: 60,
         maxWidth: 100,
-        canFilter: false,
-        disableFilters: true,
         Header: () => (
           <div className='dropdown'>
             <div id='dropdownHideColomuns' data-bs-toggle='dropdown'>
@@ -306,164 +310,183 @@ export function Table<T extends Record<string, unknown>>({
     onClick && !cell.column.isGrouped && !cell.row.isGrouped && cell.column.id !== '_selector' && onClick(cell.row);
   };
 
+  const isMobile = IsMobileView();
   return (
-    <Paper elevation={elevationTable}>
-      <Paper
-        elevation={elevationTable}
-        sx={{ marginTop: '2px' }}
-        className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : ''}
-      >
-        <TableToolbar
-          instance={instance}
-          {...{
-            showGlobalFilter,
-            showFilter,
-            showColumnIcon,
-            filterActive,
-            setLocalFilterActive,
-            customJsxSideFilterButton,
+    <>
+      {!isMobile ? (
+        <Card
+          style={{
+            display: 'grid',
+            gridTemplateColumns: filterActive ? '2fr 1fr ' : 'auto',
+            gridColumnGap: '4px',
           }}
-        />
-        <FilterChipBar instance={instance} />
-      </Paper>
-
-      <Paper id={name} elevation={elevationTable} sx={{ display: { xs: 'none', md: 'block' }, marginTop: '10px' }}>
-        <Grid
-          container
-          id='tablecontainer'
-          direction={'row'}
-          sx={{ display: 'grid', gridTemplateColumns: filterActive ? '2fr 1fr ' : 'auto', gridColumnGap: '10px' }}
         >
-          <TableContainer
-            sx={{
-              overflowX: 'auto',
-              maxHeight: maxHeight === 0 || maxHeight === '' || maxHeight === undefined ? '630px' : maxHeight,
-              minHeight: minHeight === 0 || minHeight === '' || minHeight === undefined ? '580px' : minHeight,
-            }}
-            className='table-responsive'
-          >
-            <RawTable>
-              <TableHead>
-                {headerGroups.map((headerGroup) => {
-                  const {
-                    key: headerGroupKey,
-                    title: headerGroupTitle,
-                    role: headerGroupRole,
-                    ...getHeaderGroupProps
-                  } = headerGroup.getHeaderGroupProps();
-                  return (
-                    <TableHeadRow key={headerGroupKey} {...getHeaderGroupProps}>
-                      {headerGroup.headers.map((column) => {
-                        const style = {
-                          textAlign: column.align ? column.align : 'left ',
-                        } as CSSProperties;
-                        const {
-                          key: headerKey,
-                          role: headerRole,
-                          ...getHeaderProps
-                        } = column.getHeaderProps(headerProps);
-                        const { title: groupTitle = '', ...columnGroupByProps } = column.getGroupByToggleProps();
-                        const { title: sortTitle = '', ...columnSortByProps } = column.getSortByToggleProps();
+          <Card>
+            <Card className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : ''}>
+              <TableToolbar
+                instance={instance}
+                {...{
+                  showGlobalFilter,
+                  showFilter,
+                  showColumnIcon,
+                  filterActive,
+                  setLocalFilterActive,
+                  customJsxSideFilterButton,
+                }}
+              />
+              <FilterChipBar instance={instance} />
+            </Card>
 
+            <Card id={name} style={{ marginTop: '2px', marginRight: '0', marginLeft: '0' }}>
+              <Grid container id='tablecontainer' direction={'row'} sx={{ display: 'grid' }}>
+                <TableContainer
+                  sx={{
+                    paddingRight: '0!important',
+                    paddingLeft: '0!important',
+                    overflowX: 'auto',
+                    maxHeight: maxHeight === 0 || maxHeight === '' || maxHeight === undefined ? '630px' : maxHeight,
+                    minHeight: minHeight === 0 || minHeight === '' || minHeight === undefined ? '580px' : minHeight,
+                  }}
+                  className='table-responsive'
+                >
+                  <RawTable>
+                    <TableHead>
+                      {headerGroups.map((headerGroup) => {
+                        const {
+                          key: headerGroupKey,
+                          title: headerGroupTitle,
+                          role: headerGroupRole,
+                          ...getHeaderGroupProps
+                        } = headerGroup.getHeaderGroupProps();
                         return (
-                          <TableHeadCell key={headerKey} {...getHeaderProps}>
-                            {canGroupBy
-                              ? column.canGroupBy && (
-                                  <Tooltip title={groupTitle}>
-                                    <TableSortLabel
-                                      active
-                                      // direction={column.isGrouped ? 'desc' : 'asc'}
-                                      IconComponent={KeyboardArrowRight}
-                                      {...columnGroupByProps}
-                                      className={classes.headerIcon}
-                                    />
-                                  </Tooltip>
-                                )
-                              : null}
-                            {column.canSort && canSort ? (
-                              <Tooltip title={sortTitle}>
-                                <TableSortLabel
-                                  active={column.isSorted}
-                                  direction={column.isSortedDesc ? 'desc' : 'asc'}
-                                  {...columnSortByProps}
-                                  className={classes.tableSortLabel}
-                                  style={{ flexDirection: 'row-reverse' }}
-                                >
-                                  {column.render('Header')}
-                                </TableSortLabel>
-                              </Tooltip>
-                            ) : (
-                              <TableLabel style={style}>{column.render('Header')}</TableLabel>
-                            )}
-                            {/*<div>{column.canFilter ? column.render('Filter') : null}</div>*/}
-                            {canResize ? column.canResize && <ResizeHandle column={column} /> : null}
-                          </TableHeadCell>
+                          <TableHeadRow key={headerGroupKey} {...getHeaderGroupProps}>
+                            {headerGroup.headers.map((column) => {
+                              const style = {
+                                textAlign: column.align ? column.align : 'left ',
+                              } as CSSProperties;
+                              const {
+                                key: headerKey,
+                                role: headerRole,
+                                ...getHeaderProps
+                              } = column.getHeaderProps(headerProps);
+                              const { title: groupTitle = '', ...columnGroupByProps } = column.getGroupByToggleProps();
+                              const { title: sortTitle = '', ...columnSortByProps } = column.getSortByToggleProps();
+
+                              return (
+                                <TableHeadCell key={headerKey} {...getHeaderProps}>
+                                  {canGroupBy
+                                    ? column.canGroupBy && (
+                                        <Tooltip title={groupTitle}>
+                                          <TableSortLabel
+                                            active
+                                            // direction={column.isGrouped ? 'desc' : 'asc'}
+                                            IconComponent={KeyboardArrowRight}
+                                            {...columnGroupByProps}
+                                            className={classes.headerIcon}
+                                          />
+                                        </Tooltip>
+                                      )
+                                    : null}
+                                  {column.canSort && canSort ? (
+                                    <Tooltip title={sortTitle}>
+                                      <TableSortLabel
+                                        active={column.isSorted}
+                                        direction={column.isSortedDesc ? 'desc' : 'asc'}
+                                        {...columnSortByProps}
+                                        className={classes.tableSortLabel}
+                                        style={{ flexDirection: 'row-reverse' }}
+                                      >
+                                        {column.render('Header')}
+                                      </TableSortLabel>
+                                    </Tooltip>
+                                  ) : (
+                                    <TableLabel style={style}>{column.render('Header')}</TableLabel>
+                                  )}
+                                  {/*<div>{column.canFilter ? column.render('Filter') : null}</div>*/}
+                                  {canResize ? column.canResize && <ResizeHandle column={column} /> : null}
+                                </TableHeadCell>
+                              );
+                            })}
+                          </TableHeadRow>
                         );
                       })}
-                    </TableHeadRow>
-                  );
-                })}
-              </TableHead>
-              <Divider className={classes.DividerCss} />
-              <TableBody {...getTableBodyProps()} className={page.length === 0 ? classes.SvgNoDataCss : ''}>
-                {page.length !== 0
-                  ? page.map((row) => {
-                      prepareRow(row);
-                      const { key: rowKey, role: rowRole, ...getRowProps } = row.getRowProps();
-
-                      return (
-                        <TableRow
-                          key={rowKey}
-                          {...getRowProps}
-                          className={cx({
-                            rowSelected: row.isSelected,
-                            clickable: onClick,
-                          })}
-                        >
-                          {row.cells.map((cell) => {
-                            const { key: cellKey, role: cellRole, ...getCellProps } = cell.getCellProps(cellProps);
+                    </TableHead>
+                    {/* <Divider className={classes.DividerCss} /> */}
+                    <TableBody {...getTableBodyProps()} className={page.length === 0 ? classes.SvgNoDataCss : ''}>
+                      {page.length !== 0
+                        ? page.map((row) => {
+                            prepareRow(row);
+                            const { key: rowKey, role: rowRole, ...getRowProps } = row.getRowProps();
 
                             return (
-                              <TableCell key={cellKey} {...getCellProps} onClick={cellClickHandler(cell)}>
-                                {cell.isGrouped ? (
-                                  <>
-                                    <TableSortLabel
-                                      classes={{
-                                        iconDirectionAsc: classes.iconDirectionAsc,
-                                        iconDirectionDesc: classes.iconDirectionDesc,
-                                      }}
-                                      active
-                                      direction={row.isExpanded ? 'desc' : 'asc'}
-                                      IconComponent={KeyboardArrowUp}
-                                      {...row.getToggleRowExpandedProps()}
-                                      className={classes.cellIcon}
-                                    />{' '}
-                                    {cell.render('Cell', { editable: false })} ({row.subRows.length})
-                                  </>
-                                ) : cell.isAggregated ? (
-                                  cell.render('Aggregated')
-                                ) : cell.isPlaceholder ? null : (
-                                  cell.render('Cell')
-                                )}
-                              </TableCell>
+                              <TableRow
+                                key={rowKey}
+                                {...getRowProps}
+                                className={cx({
+                                  rowSelected: row.isSelected,
+                                  clickable: onClick,
+                                })}
+                              >
+                                {row.cells.map((cell) => {
+                                  const {
+                                    key: cellKey,
+                                    role: cellRole,
+                                    ...getCellProps
+                                  } = cell.getCellProps(cellProps);
+
+                                  return (
+                                    <TableCell key={cellKey} {...getCellProps} onClick={cellClickHandler(cell)}>
+                                      {cell.isGrouped ? (
+                                        <>
+                                          <TableSortLabel
+                                            classes={{
+                                              iconDirectionAsc: classes.iconDirectionAsc,
+                                              iconDirectionDesc: classes.iconDirectionDesc,
+                                            }}
+                                            active
+                                            direction={row.isExpanded ? 'desc' : 'asc'}
+                                            IconComponent={KeyboardArrowUp}
+                                            {...row.getToggleRowExpandedProps()}
+                                            className={classes.cellIcon}
+                                          />{' '}
+                                          {cell.render('Cell', { editable: false })} ({row.subRows.length})
+                                        </>
+                                      ) : cell.isAggregated ? (
+                                        cell.render('Aggregated')
+                                      ) : cell.isPlaceholder ? null : (
+                                        cell.render('Cell')
+                                      )}
+                                    </TableCell>
+                                  );
+                                })}
+                              </TableRow>
                             );
-                          })}
-                        </TableRow>
-                      );
-                    })
-                  : null}
-              </TableBody>
-            </RawTable>
-            <div className={page.length === 0 ? classes.SvgNoDataCss : 'd-none'}>
-              <SvgNoData />
-            </div>
-          </TableContainer>
+                          })
+                        : null}
+                    </TableBody>
+                  </RawTable>
+                  <div className={page.length === 0 ? classes.SvgNoDataCss : 'd-none'}>
+                    <SvgNoData />
+                  </div>
+                </TableContainer>
+              </Grid>
+              <Grid item>
+                <TablePagination<T> instance={instance} />
+              </Grid>
+            </Card>
+          </Card>
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
-            <Paper elevation={elevationTable}>
+            <Card>
               <Box
-                component='div'
-                sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingX: 1 }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '2px',
+                  // minHeight: '64px',
+                  justifyContent: 'space-between',
+                  paddingLeft: 1,
+                }}
                 className={classes.FiltersCss}
               >
                 <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -479,27 +502,49 @@ export function Table<T extends Record<string, unknown>>({
                   }}
                 />
               </Box>
-              <Divider className={classes.DividerCss} />
-              <FilterPageCustom<T>
-                instance={instance}
-                setLocalFilterActive={setLocalFilterActive}
-                filterActive={filterActive}
-              />
-            </Paper>
+              {/* <Divider className={classes.DividerCss} /> */}
+              <Card>
+                <FilterPageCustom<T>
+                  instance={instance}
+                  setLocalFilterActive={setLocalFilterActive}
+                  filterActive={filterActive}
+                />
+              </Card>
+            </Card>
           ) : null}
-        </Grid>
-        <Grid item xs={filterActive ? 8 : 12}>
-          <TableRow style={{ justifyContent: 'end', display: 'flex' }}>
-            <TablePagination<T> instance={instance} />
-          </TableRow>
-        </Grid>
-      </Paper>
+        </Card>
+      ) : (
+        <React.Fragment>
+          {/* MOBILE EXPANDABLE LIST OF CARDS */}
+          <Card
+            style={{ marginBottom: '2px' }}
+            className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : ''}
+          >
+            <TableToolbar
+              instance={instance}
+              {...{
+                showGlobalFilter,
+                showFilter,
+                showColumnIcon,
+                filterActive,
+                setLocalFilterActive,
+                customJsxSideFilterButton,
+              }}
+            />
+            <FilterChipBar instance={instance} />
+          </Card>
 
-      <Paper sx={{ display: { xl: 'none', md: 'none' } }}>
-        {/* MOBILE EXPANDABLE LIST OF CARDS */}
-        <CollapsibleTable props={instance} />
-        <TablePagination<T> instance={instance} />
-      </Paper>
-    </Paper>
+          <CollapsibleTable props={instance} />
+          <TablePagination<T> instance={instance} />
+          {filterActive ? (
+            <FilterModalMobile
+              instance={instance}
+              setLocalFilterActive={setLocalFilterActive}
+              filterActive={filterActive}
+            />
+          ) : null}
+        </React.Fragment>
+      )}
+    </>
   );
 }
