@@ -128,9 +128,9 @@ function MobileRow(props: any): React.ReactElement {
 export default function CollapsibleTable(props: any): React.ReactElement {
   const { headerGroups, page } = props.props;
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} style={{ minHeight: '200', maxHeight: '99vh', overflowX: 'hidden' }}>
       <Table aria-label='collapsible table' stickyHeader>
-        <TableHead>
+        <TableHead style={{ zIndex: '200', position: 'sticky', borderTop: '0', top: '0' }}>
           <TableRow>
             {headerGroups[0]?.headers
 

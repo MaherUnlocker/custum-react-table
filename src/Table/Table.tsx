@@ -1,6 +1,7 @@
 import './table.css';
 
 import { Box, Grid, TableContainer, TableSortLabel, Tooltip } from '@mui/material';
+import { Card, CardBody, CardFooter, CardHeader } from 'reactstrap';
 import {
   Cell,
   CellProps,
@@ -44,7 +45,6 @@ import React, { CSSProperties, MouseEventHandler, PropsWithChildren, ReactElemen
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 
-import { Card } from 'reactstrap';
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
 import { ColumnHidePageCustom } from './ColumnHidePageCustom';
@@ -208,7 +208,7 @@ export function Table<T extends Record<string, unknown>>({
   setLocalFilterActive,
   customJsxSideFilterButton,
   setSelectedRows,
-  elevationTable,
+
   minHeight,
   maxHeight,
   ...props
@@ -322,7 +322,9 @@ export function Table<T extends Record<string, unknown>>({
           }}
         >
           <Card>
-            <Card className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : ''}>
+            <CardHeader
+              className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : classes.cardHeaderCss}
+            >
               <TableToolbar
                 instance={instance}
                 {...{
@@ -335,9 +337,9 @@ export function Table<T extends Record<string, unknown>>({
                 }}
               />
               <FilterChipBar instance={instance} />
-            </Card>
+            </CardHeader>
 
-            <Card id={name} style={{ marginTop: '2px', marginRight: '0', marginLeft: '0' }}>
+            <CardBody id={name} style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px ' }}>
               <Grid container id='tablecontainer' direction={'row'} sx={{ display: 'grid' }}>
                 <TableContainer
                   sx={{
@@ -470,26 +472,27 @@ export function Table<T extends Record<string, unknown>>({
                   </div>
                 </TableContainer>
               </Grid>
-              <Grid item>
-                <TablePagination<T> instance={instance} />
-              </Grid>
-            </Card>
+            </CardBody>
+            <CardFooter style={{ backgroundColor: 'white' }}>
+              <TablePagination<T> instance={instance} />
+            </CardFooter>
           </Card>
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
             <Card>
-              <Box
+              <CardHeader
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   marginBottom: '2px',
-                  // minHeight: '64px',
+
                   justifyContent: 'space-between',
-                  paddingLeft: 1,
                 }}
                 className={classes.FiltersCss}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '10px' }}
+                >
                   <FilterIcon className={classes.tableFilterAltOutlinedIcon} style={{ flexDirection: 'row-reverse' }} />
                   <StyledH2>Filtre(s)</StyledH2>
                 </Box>
@@ -501,7 +504,7 @@ export function Table<T extends Record<string, unknown>>({
                     setLocalFilterActive!(false);
                   }}
                 />
-              </Box>
+              </CardHeader>
               {/* <Divider className={classes.DividerCss} /> */}
               <Card>
                 <FilterPageCustom<T>
@@ -516,9 +519,10 @@ export function Table<T extends Record<string, unknown>>({
       ) : (
         <React.Fragment>
           {/* MOBILE EXPANDABLE LIST OF CARDS */}
-          <Card
+          {/* <Card> */}
+          <CardHeader
             style={{ marginBottom: '2px' }}
-            className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : ''}
+            className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : classes.cardHeaderCss}
           >
             <TableToolbar
               instance={instance}
@@ -532,10 +536,14 @@ export function Table<T extends Record<string, unknown>>({
               }}
             />
             <FilterChipBar instance={instance} />
-          </Card>
-
-          <CollapsibleTable props={instance} />
-          <TablePagination<T> instance={instance} />
+          </CardHeader>
+          <CardBody style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px ', minHeight: '100vh' }}>
+            <CollapsibleTable props={instance} />
+          </CardBody>
+          <CardFooter style={{ backgroundColor: 'white', padding: '0' }}>
+            <TablePagination<T> instance={instance} />
+          </CardFooter>
+          {/* </Card> */}
           {filterActive ? (
             <FilterModalMobile
               instance={instance}

@@ -206,7 +206,7 @@ export function TableToolbar<T extends Record<string, unknown>>({
               }}
               label='Filter by columns'
             >
-              Filtrer
+              Filtre(s)
             </StyledButton>
           </React.Fragment>
         ) : null}

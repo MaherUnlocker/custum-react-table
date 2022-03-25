@@ -183,6 +183,12 @@ export const useStyles = makeStyles({
     border: '0',
     height: '100%',
   },
+  cardHeaderCss: {
+    padding: 0,
+    backgroundColor: 'white',
+    boxShadow: 'rgb(209 197 197) 0px 1px 4px',
+    borderRadius: '5px',
+  },
 });
 
 const areEqual = (prevProps: any, nextProps: any) =>

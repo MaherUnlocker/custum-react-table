@@ -1,5 +1,5 @@
 import React from 'react'
-
+// eslint-disable-next-line
 export function IsMobileView(): boolean {
     const [width, setWidth] = React.useState(window.innerWidth);
     const breakpoint = 767;

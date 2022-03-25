@@ -28,7 +28,7 @@ export interface DynamicTableProps {
   showColumnIcon?: boolean;
   canExpand?: boolean;
   canDeleteOrDuplicate?: boolean;
-  elevationTable?: number;
+
   filterActive?: boolean;
   actionColumn?: React.ReactNode;
   customJsxSideFilterButton?: React.ReactNode;
@@ -77,7 +77,7 @@ export function DynamicTable({
   setLocalFilterActive,
   customJsxSideFilterButton,
   onClick,
-  elevationTable,
+
   setSelectedRows,
   setDataIsUpdated,
   dataIsUpdated,
@@ -102,9 +102,7 @@ export function DynamicTable({
         setLoading(false);
       });
   }
-  if (elevationTable === undefined) {
-    elevationTable = 0;
-  }
+
   const apiResultColumns = useMemo(
     () =>
       apiResult
@@ -262,7 +260,6 @@ export function DynamicTable({
       setLocalFilterActive={setLocalFilterActive}
       customJsxSideFilterButton={customJsxSideFilterButton}
       onClick={onClick}
-      elevationTable={elevationTable}
       minHeight={minHeight}
       maxHeight={maxHeight}
     />
