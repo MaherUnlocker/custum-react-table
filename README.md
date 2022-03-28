@@ -26,8 +26,7 @@
 ## Installation
 
 You can install React Table with [NPM](https://npmjs.com),
-[Yarn](https://yarnpkg.com), or a good ol' `<script>` via
-[unpkg.com](https://unpkg.com).
+[Yarn](https://yarnpkg.com)
 
 ```sh
 npm install @maherunlocker/custom-react-table
@@ -42,17 +41,7 @@ yarn add @maherunlocker/custom-react-table
 
 This package is compatible with React v16.8+ and works with ReactDOM.
 
-### Storybook
 
-Run inside another terminal:
-
-```bash
-yarn storybook
-```
-
-This loads the stories from `./stories`.
-
-> NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
 
 ### How to use
 

@@ -184,10 +184,11 @@ export const useStyles = makeStyles({
     height: '100%',
   },
   cardHeaderCss: {
-    padding: 0,
+    padding: '0 ',
     backgroundColor: 'white',
     boxShadow: 'rgb(209 197 197) 0px 1px 4px',
-    borderRadius: '5px',
+    borderRadius: '5px !important',
+    marginBottom: '4px !important',
   },
 });
 

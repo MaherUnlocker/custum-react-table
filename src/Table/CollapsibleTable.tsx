@@ -130,7 +130,7 @@ export default function CollapsibleTable(props: any): React.ReactElement {
   return (
     <TableContainer component={Paper} style={{ minHeight: '200', maxHeight: '99vh', overflowX: 'hidden' }}>
       <Table aria-label='collapsible table' stickyHeader>
-        <TableHead style={{ zIndex: '200', position: 'sticky', borderTop: '0', top: '0' }}>
+        <TableHead id='TableHeader' style={{ zIndex: '200', position: 'sticky', borderTop: '0', top: '0' }}>
           <TableRow>
             {headerGroups[0]?.headers
 

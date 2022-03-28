@@ -20,7 +20,6 @@ import {
   useFlexLayout,
   useGlobalFilter,
   useGroupBy,
-  useMountedLayoutEffect,
   usePagination,
   useResizeColumns,
   useRowSelect,
@@ -208,7 +207,7 @@ export function Table<T extends Record<string, unknown>>({
   setLocalFilterActive,
   customJsxSideFilterButton,
   setSelectedRows,
-
+  elevationTable,
   minHeight,
   maxHeight,
   ...props
@@ -217,7 +216,6 @@ export function Table<T extends Record<string, unknown>>({
   if (name === undefined || name === null) {
     name = 'mytable';
   }
-
   const [initialState, setInitialState] = useLocalStorage(`tableState:${name}`, {});
 
   const customHooks = (hooks: Hooks<any>) => {
@@ -292,9 +290,7 @@ export function Table<T extends Record<string, unknown>>({
   );
   const { headerGroups, getTableBodyProps, page, prepareRow, state, selectedFlatRows } = instance;
   const debouncedState = useDebounce(state, 200);
-  useMountedLayoutEffect(() => {
-    setSelectedRows && setSelectedRows(selectedFlatRows.map((row) => row.original));
-  }, [setSelectedRows, selectedFlatRows]);
+
   useEffect(() => {
     const { sortBy, filters, pageSize, columnResizing, hiddenColumns } = debouncedState;
     setInitialState({
@@ -304,6 +300,11 @@ export function Table<T extends Record<string, unknown>>({
       columnResizing,
       hiddenColumns,
     });
+
+    if (setSelectedRows !== undefined) {
+      setSelectedRows!(selectedFlatRows.map((row: any) => row.original));
+    }
+    // eslint-disable-next-line
   }, [setInitialState, debouncedState]);
 
   const cellClickHandler = (cell: Cell<T>) => () => {
@@ -323,6 +324,7 @@ export function Table<T extends Record<string, unknown>>({
         >
           <Card>
             <CardHeader
+              id='TableToolbar'
               className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : classes.cardHeaderCss}
             >
               <TableToolbar
@@ -339,7 +341,10 @@ export function Table<T extends Record<string, unknown>>({
               <FilterChipBar instance={instance} />
             </CardHeader>
 
-            <CardBody id={name} style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px ' }}>
+            <CardBody
+              id={name}
+              style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px !important ' }}
+            >
               <Grid container id='tablecontainer' direction={'row'} sx={{ display: 'grid' }}>
                 <TableContainer
                   sx={{
@@ -413,7 +418,6 @@ export function Table<T extends Record<string, unknown>>({
                         );
                       })}
                     </TableHead>
-                    {/* <Divider className={classes.DividerCss} /> */}
                     <TableBody {...getTableBodyProps()} className={page.length === 0 ? classes.SvgNoDataCss : ''}>
                       {page.length !== 0
                         ? page.map((row) => {
@@ -473,7 +477,7 @@ export function Table<T extends Record<string, unknown>>({
                 </TableContainer>
               </Grid>
             </CardBody>
-            <CardFooter style={{ backgroundColor: 'white' }}>
+            <CardFooter id='TablePagination' style={{ backgroundColor: 'white' }}>
               <TablePagination<T> instance={instance} />
             </CardFooter>
           </Card>
@@ -484,11 +488,12 @@ export function Table<T extends Record<string, unknown>>({
                 style={{
                   display: 'flex',
                   alignItems: 'center',
-                  marginBottom: '2px',
-
+                  // marginBottom: '2px',
+                  maxHeight: '64px !important',
                   justifyContent: 'space-between',
                 }}
-                className={classes.FiltersCss}
+                // className={classes.FiltersCss}
+                className={`${classes.FiltersCss} ${classes.cardHeaderCss}`}
               >
                 <Box
                   sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingLeft: '10px' }}
@@ -519,8 +524,8 @@ export function Table<T extends Record<string, unknown>>({
       ) : (
         <React.Fragment>
           {/* MOBILE EXPANDABLE LIST OF CARDS */}
-          {/* <Card> */}
           <CardHeader
+            id='TablePagination'
             style={{ marginBottom: '2px' }}
             className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : classes.cardHeaderCss}
           >
@@ -537,13 +542,15 @@ export function Table<T extends Record<string, unknown>>({
             />
             <FilterChipBar instance={instance} />
           </CardHeader>
-          <CardBody style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px ', minHeight: '100vh' }}>
+          <CardBody
+            id={name}
+            style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px ', minHeight: '100vh' }}
+          >
             <CollapsibleTable props={instance} />
           </CardBody>
-          <CardFooter style={{ backgroundColor: 'white', padding: '0' }}>
+          <CardFooter id='TablePagination' style={{ backgroundColor: 'white', padding: '0' }}>
             <TablePagination<T> instance={instance} />
           </CardFooter>
-          {/* </Card> */}
           {filterActive ? (
             <FilterModalMobile
               instance={instance}

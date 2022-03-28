@@ -22,19 +22,19 @@ export interface DynamicTableProps {
   canGroupBy?: boolean;
   canSort?: boolean;
   canSelect?: boolean;
+  setSelectedRows?: React.Dispatch<React.SetStateAction<any[]>>;
   canResize?: boolean;
   showGlobalFilter?: boolean;
   showFilter?: boolean;
   showColumnIcon?: boolean;
   canExpand?: boolean;
   canDeleteOrDuplicate?: boolean;
-
+  elevationTable?: number;
   filterActive?: boolean;
   actionColumn?: React.ReactNode;
   customJsxSideFilterButton?: React.ReactNode;
   arrayOfCustomColumns?: customColumnProps[] | undefined;
   setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedRows?: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
 type DataType = {
@@ -68,6 +68,7 @@ export function DynamicTable({
   canResize,
   canExpand,
   canSelect,
+
   showGlobalFilter,
   showFilter,
   showColumnIcon,
@@ -77,7 +78,7 @@ export function DynamicTable({
   setLocalFilterActive,
   customJsxSideFilterButton,
   onClick,
-
+  elevationTable,
   setSelectedRows,
   setDataIsUpdated,
   dataIsUpdated,
@@ -102,7 +103,9 @@ export function DynamicTable({
         setLoading(false);
       });
   }
-
+  if (elevationTable === undefined) {
+    elevationTable = 0;
+  }
   const apiResultColumns = useMemo(
     () =>
       apiResult
@@ -240,7 +243,8 @@ export function DynamicTable({
   }, [url, dataIsUpdated]);
 
   if (loading) return <LoadingDataAnimation />;
-  if (error || apiResult === undefined || apiResult?.structure.length === 0) return <LoadingErrorAnimation />;
+  if (error || apiResult === undefined || apiResult?.structure.length === 0 || apiResult?.structure === undefined)
+    return <LoadingErrorAnimation />;
 
   return (
     <Table
@@ -260,6 +264,7 @@ export function DynamicTable({
       setLocalFilterActive={setLocalFilterActive}
       customJsxSideFilterButton={customJsxSideFilterButton}
       onClick={onClick}
+      elevationTable={elevationTable}
       minHeight={minHeight}
       maxHeight={maxHeight}
     />
