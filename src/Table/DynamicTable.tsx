@@ -68,7 +68,6 @@ export function DynamicTable({
   canResize,
   canExpand,
   canSelect,
-
   showGlobalFilter,
   showFilter,
   showColumnIcon,
@@ -103,12 +102,14 @@ export function DynamicTable({
         setLoading(false);
       });
   }
+
   if (elevationTable === undefined) {
     elevationTable = 0;
   }
+
   const apiResultColumns = useMemo(
     () =>
-      apiResult
+      apiResult !== undefined && apiResult.structure !== undefined && Array.isArray(apiResult?.structure)
         ? apiResult.structure
             .filter((key) => key !== 'subRows')
             .map((key) => {
@@ -234,7 +235,7 @@ export function DynamicTable({
     return modifiedColumns;
     // eslint-disable-next-line
   }, [apiResultColumns]);
-  const data = React.useMemo(() => apiResult?.data, [apiResult]);
+  const data = React.useMemo(() => (apiResult?.data !== undefined ? apiResult?.data : []), [apiResult]);
   useEffect(() => {
     fetchData(url!);
     setDataIsUpdated !== undefined && setDataIsUpdated(false);
@@ -243,7 +244,7 @@ export function DynamicTable({
   }, [url, dataIsUpdated]);
 
   if (loading) return <LoadingDataAnimation />;
-  if (error || apiResult === undefined || apiResult?.structure.length === 0 || apiResult?.structure === undefined)
+  if (error || apiResult === undefined || apiResult?.structure === undefined || apiResult?.structure.length === 0)
     return <LoadingErrorAnimation />;
 
   return (
