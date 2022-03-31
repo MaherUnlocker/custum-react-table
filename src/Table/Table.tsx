@@ -1,5 +1,3 @@
-import './table.css';
-
 import { Box, Grid, TableContainer, TableSortLabel, Tooltip } from '@mui/material';
 import { Card, CardBody, CardFooter, CardHeader } from 'reactstrap';
 import {
@@ -315,14 +313,14 @@ export function Table<T extends Record<string, unknown>>({
   return (
     <>
       {!isMobile ? (
-        <Card
+        <div
           style={{
             display: 'grid',
             gridTemplateColumns: filterActive ? '2fr 1fr ' : 'auto',
             gridColumnGap: '4px',
           }}
         >
-          <Card>
+          <Card style={{ border: '0px' }}>
             <CardHeader
               id='TableToolbar'
               className={!showGlobalFilter && !showFilter && !showColumnIcon ? 'd-none' : classes.cardHeaderCss}
@@ -343,7 +341,14 @@ export function Table<T extends Record<string, unknown>>({
 
             <CardBody
               id={name}
-              style={{ marginRight: '0', marginLeft: '0', padding: 0, paddingTop: '4px !important ' }}
+              style={{
+                marginRight: '0',
+                marginLeft: '0',
+                padding: 0,
+                paddingTop: '4px !important ',
+
+                border: '1px solid rgba(0,0,0,.125)',
+              }}
             >
               <Grid container id='tablecontainer' direction={'row'} sx={{ display: 'grid' }}>
                 <TableContainer
@@ -477,13 +482,21 @@ export function Table<T extends Record<string, unknown>>({
                 </TableContainer>
               </Grid>
             </CardBody>
-            <CardFooter id='TablePagination' style={{ backgroundColor: 'white' }}>
+            <CardFooter
+              id='TablePagination'
+              style={{
+                backgroundColor: 'white',
+                border: '1px solid rgba(0,0,0,.125)',
+                borderTop: '0px',
+                borderRadius: '0px 0px 12px 12px',
+              }}
+            >
               <TablePagination<T> instance={instance} />
             </CardFooter>
           </Card>
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
-            <Card>
+            <Card style={{ border: '0px' }}>
               <CardHeader
                 style={{
                   display: 'flex',
@@ -510,17 +523,29 @@ export function Table<T extends Record<string, unknown>>({
                   }}
                 />
               </CardHeader>
-              {/* <Divider className={classes.DividerCss} /> */}
-              <Card>
+              <CardBody
+                id='filterbody'
+                style={{
+                  marginRight: '0',
+                  marginLeft: '0',
+                  padding: 0,
+                  paddingTop: '4px !important ',
+                  border: '1px solid rgba(0,0,0,.125)',
+                  backgroundColor: 'white',
+                  borderTop: '1px solid rgba(0,0,0,.125)',
+                  borderRadius: '0px 0px 12px 12px ',
+                  // borderRadius: '20px 20px 12px 12px !important;',
+                }}
+              >
                 <FilterPageCustom<T>
                   instance={instance}
                   setLocalFilterActive={setLocalFilterActive}
                   filterActive={filterActive}
                 />
-              </Card>
+              </CardBody>
             </Card>
           ) : null}
-        </Card>
+        </div>
       ) : (
         <React.Fragment>
           {/* MOBILE EXPANDABLE LIST OF CARDS */}
