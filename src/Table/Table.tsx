@@ -31,13 +31,6 @@ import {
   useTable,
 } from 'react-table';
 import {
-  CrossIcon,
-  FilterIcon,
-  StyledH2,
-  StyledLabel,
-  StyledSelectInput,
-} from '@aureskonnect/react-ui';
-import {
   HeaderCheckbox,
   RawTable,
   RowCheckbox,
@@ -50,43 +43,40 @@ import {
   TableRow,
   useStyles,
 } from './TableStyle';
-import React, {
-  CSSProperties,
-  MouseEventHandler,
-  PropsWithChildren,
-  ReactElement,
-  useEffect,
-} from 'react';
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
 import { ColumnHidePageCustom } from './ColumnHidePageCustom';
+import { CrossIcon } from '../components/assets/CrossIcon';
 import DefaultGlobalFilter from './filters/defaultGlobalFilter';
 import { DynamicTableProps } from './DynamicTable';
 import { FilterChipBar } from './FilterChipBar';
+import { FilterIcon } from '../components/assets/FilterIcon';
 import FilterModalMobile from './FilterModalMobile';
 import { FilterPageCustom } from './FilterPageCustom';
 import { IsMobileView } from './isMobileView';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import React from 'react';
 import { ResizeHandle } from './ResizeHandle';
-import SvgNoData from './SvgNoData';
+import { StyledH2 } from '../components/assets/StyledH2';
+import { StyledLabel } from '../components/assets/StyledLabel';
+import { StyledSelectInput } from '../components/assets/StyledSelectInput';
+import SvgNoData from '../components/assets/SvgNoData';
 import { TablePagination } from './TablePagination';
 import { TableToolbar } from './TableToolbar';
 import { TooltipCellRenderer } from './TooltipCell';
-// import _concat from 'lodash.concat';
 import _uniqby from 'lodash.uniqby';
-// import _without from 'lodash.without';
 import cx from 'classnames';
 
 export interface TableProperties<T extends Record<string, unknown>>
   extends TableOptions<T>,
     DynamicTableProps {
-  onAdd?: (instance: TableInstance<T>) => MouseEventHandler;
-  onDelete?: (instance: TableInstance<T>) => MouseEventHandler;
-  onEdit?: (instance: TableInstance<T>) => MouseEventHandler;
+  onAdd?: (instance: TableInstance<T>) => React.MouseEventHandler;
+  onDelete?: (instance: TableInstance<T>) => React.MouseEventHandler;
+  onEdit?: (instance: TableInstance<T>) => React.MouseEventHandler;
   onClick?: (row: Row<T>) => void;
 }
 
@@ -110,7 +100,7 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
   const [, setValue] = React.useState(filterValue || '');
 
   // ensure that reset loads the new value
-  useEffect(() => {
+  React.useEffect(() => {
     setValue(filterValue || '');
   }, [filterValue]);
 
@@ -153,8 +143,8 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
     <React.Fragment>
       <StyledLabel htmlFor={column.id}>{render('Header')}</StyledLabel>
       <StyledSelectInput
-        id={render('Header')}
-        name={render('Header')}
+        id={column.id}
+        name={column.id}
         options={unique}
         placeholder="Sélectionner ..."
         onChange={handleSelectOnChangeEvent}
@@ -250,7 +240,7 @@ export function Table<T extends Record<string, unknown>>({
   minHeight,
   maxHeight,
   ...props
-}: PropsWithChildren<TableProperties<T>>): ReactElement {
+}: React.PropsWithChildren<TableProperties<T>>): React.ReactElement {
   const classes = useStyles();
   if (name === undefined || name === null) {
     name = 'mytable';
@@ -291,7 +281,7 @@ export function Table<T extends Record<string, unknown>>({
 
         Cell(cell: any) {
           const ActionColumnComponent = actionColumn as React.ElementType;
-          return <ActionColumnComponent selectedRow={cell.row.original} />;
+          return <ActionColumnComponent selectedRow={cell.row} />;
         },
       },
     ]);
@@ -344,7 +334,7 @@ export function Table<T extends Record<string, unknown>>({
   } = instance;
   const debouncedState = useDebounce(state, 200);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const { sortBy, filters, pageSize, columnResizing, hiddenColumns } =
       debouncedState;
     setInitialState({
@@ -425,6 +415,14 @@ export function Table<T extends Record<string, unknown>>({
                     paddingRight: '0!important',
                     paddingLeft: '0!important',
                     overflowX: 'auto',
+                    display: 'block',
+                    width: '100%',
+                    WebkitOverflowScrolling: 'touch',
+                    MsOverflowStyle: '-ms-autohiding-scrollbar',
+                    flex: '1 1 auto',
+                    paddingBottom: '1rem',
+                    marginTop: '0 !important',
+                    paddingTop: '0 !important',
                     maxHeight:
                       maxHeight === 0 ||
                       maxHeight === '' ||
@@ -459,7 +457,7 @@ export function Table<T extends Record<string, unknown>>({
                                 textAlign: column.align
                                   ? column.align
                                   : 'left ',
-                              } as CSSProperties;
+                              } as React.CSSProperties;
                               const {
                                 key: headerKey,
                                 role: headerRole,

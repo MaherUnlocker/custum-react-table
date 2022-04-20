@@ -1,18 +1,16 @@
-import {
-  DiskIcon,
-  StyledButton,
-  StyledIconButton,
-  StyledLabel,
-  StyledSelectInput,
-  VerticalDotsIcon,
-} from '@aureskonnect/react-ui';
-import React, { ReactElement, useCallback, useRef } from 'react';
 import { createStyles, makeStyles } from '@mui/styles';
 
 import { Box } from '@mui/material';
+import { DiskIcon } from '../components/assets/DiskIcon';
 import { FilterChipBarCollapsible } from './FilterChipBarCollapsible';
 import { IsMobileView } from './isMobileView';
+import React from 'react';
+import { StyledButton } from '../components/assets/StyledButton';
+import { StyledIconButton } from '../components/assets/StyledIconButton';
+import { StyledLabel } from '../components/assets/StyledLabel';
+import { StyledSelectInput } from '../components/assets/StyledSelectInput';
 import { TableInstance } from 'react-table';
+import VerticalDotsIcon from '../components/assets/VerticalDotsIcon';
 import { useLocalStorage } from '../utils';
 
 const useStyles = makeStyles(
@@ -67,14 +65,14 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
   onClose,
   filterActive,
   setLocalFilterActive,
-}: FilterPageCustomProps<T>): ReactElement {
+}: FilterPageCustomProps<T>): React.ReactElement {
   const classes = useStyles({});
   const {
     allColumns,
     setAllFilters,
     state: { filters },
   } = instance;
-  const heightRef = useRef(null);
+  const heightRef = React.useRef(null);
   // eslint-disable-next-line
   const [showMore, setShowMore] = React.useState(() => false);
   // eslint-disable-next-line
@@ -91,22 +89,29 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       setCurrentHeight(document.getElementById('maher')!.offsetHeight!);
     }
   }, []);
-  const handleSavedFiltersClick = useCallback(() => {
+  const handleSavedFiltersClick = React.useCallback(() => {
     const found = savedFilters.find((f: any) => f.label === designationFilter);
     if (found) {
-      savedFilters[savedFilters.findIndex((f: any) => f.label === designationFilter)] = {
+      savedFilters[
+        savedFilters.findIndex((f: any) => f.label === designationFilter)
+      ] = {
         label: designationFilter,
         value: filters,
       };
     } else {
-      setSavedFilters([...savedFilters, { label: designationFilter, value: filters }]);
+      setSavedFilters([
+        ...savedFilters,
+        { label: designationFilter, value: filters },
+      ]);
     }
   }, [designationFilter, filters, setSavedFilters, savedFilters]);
 
-  const handleSavedFiltersSelect = useCallback(
+  const handleSavedFiltersSelect = React.useCallback(
     (selectedValue: any) => {
       setDesignationFilter(selectedValue.label);
-      const indexofSelected = savedFilters.findIndex((f: any) => f.label === selectedValue.label);
+      const indexofSelected = savedFilters.findIndex(
+        (f: any) => f.label === selectedValue.label
+      );
       if (indexofSelected) {
         setAllFilters(savedFilters[indexofSelected].value);
       }
@@ -115,61 +120,106 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
   );
   const isMobile = IsMobileView();
   return (
-    <div className={(classes.columnsPopOver, classes.grid, classes.cell)} style={{ marginLeft: 5, marginRight: 5 }}>
-      <StyledLabel style={{ borderBottom: '2px solid', marginLeft: 1, marginRight: 1, marginTop: 10 }}>
+    <div
+      className={(classes.columnsPopOver, classes.grid, classes.cell)}
+      style={{ marginLeft: 5, marginRight: 5 }}
+    >
+      <StyledLabel
+        style={{
+          borderBottom: '2px solid',
+          marginLeft: 1,
+          marginRight: 1,
+          marginTop: 10,
+        }}
+      >
         Filtres enregistrés
       </StyledLabel>
 
-      <Box component='div' sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box
+        component="div"
+        sx={{ display: 'flex', justifyContent: 'space-between' }}
+      >
         <div style={{ width: ' 100%', marginTop: 10 }}>
-          <StyledLabel htmlFor='savedFilter'>Sélectionner un filtre</StyledLabel>
+          <StyledLabel htmlFor="savedFilter">
+            Sélectionner un filtre
+          </StyledLabel>
           <StyledSelectInput
             onInputChange={(e: string) => {
               if (e !== '') setDesignationFilter(e);
             }}
             inputValue={designationFilter}
-            id='savedFilter'
-            name='savedFilter'
+            id="savedFilter"
+            name="savedFilter"
             options={savedFilters.length > 0 ? savedFilters : []}
-            placeholder={savedFilters.length > 0 ? 'Sélectionner ...' : 'Aucune'}
+            placeholder={
+              savedFilters.length > 0 ? 'Sélectionner ...' : 'Aucune'
+            }
             onChange={handleSavedFiltersSelect}
-            allowCreateWhileLoading
+            // allowCreateWhileLoading
           />
         </div>
 
-        <Box component='div' sx={{ display: 'flex', alignItems: 'end' }}>
+        <Box component="div" sx={{ display: 'flex', alignItems: 'end' }}>
           <StyledIconButton
-            icon='DiskIcon'
-            style={{ margin: '5px', marginBottom: '0', border: '1px solid', borderRadius: '6px' }}
+            icon="DiskIcon"
+            style={{
+              margin: '5px',
+              marginBottom: '0',
+              border: '1px solid',
+              borderRadius: '6px',
+            }}
             onClick={handleSavedFiltersClick}
           >
             <DiskIcon height={20} width={20} />
           </StyledIconButton>
 
           <StyledIconButton
-            icon='VerticalDotsIcon'
-            style={{ margin: '5px', marginBottom: '0', border: '1px solid', borderRadius: '6px' }}
+            icon="VerticalDotsIcon"
+            style={{
+              margin: '5px',
+              marginBottom: '0',
+              border: '1px solid',
+              borderRadius: '6px',
+            }}
           >
             <VerticalDotsIcon height={20} width={20} />
           </StyledIconButton>
         </Box>
       </Box>
 
-      <StyledLabel style={{ borderBottom: '2px solid', marginLeft: 1, marginRight: 1, marginTop: 10 }}>
+      <StyledLabel
+        style={{
+          borderBottom: '2px solid',
+          marginLeft: 1,
+          marginRight: 1,
+          marginTop: 10,
+        }}
+      >
         Filtrer
       </StyledLabel>
 
       {Object.keys(instance.state.filters).length > 0 ? (
-        <Box id='maher' component='div' ref={heightRef}>
-          <FilterChipBarCollapsible instance={instance} showMore={showMore} currentHeight={currentHeight} />
+        <Box id="maher" component="div" ref={heightRef}>
+          <FilterChipBarCollapsible
+            instance={instance}
+            showMore={showMore}
+            currentHeight={currentHeight}
+          />
         </Box>
       ) : (
-        <StyledButton rounded variant='light' style={{ width: '100%' }}>
+        <StyledButton rounded variant="light" style={{ width: '100%' }}>
           Aucun filtre actif
         </StyledButton>
       )}
 
-      <Box component='div' style={{ maxHeight: !isMobile ? '50vh' : 'auto', overflow: 'auto', alignItems: 'center' }}>
+      <Box
+        component="div"
+        style={{
+          maxHeight: !isMobile ? '50vh' : 'auto',
+          overflow: 'auto',
+          alignItems: 'center',
+        }}
+      >
         {allColumns
           .filter(
             (it) =>
@@ -183,7 +233,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
           .map((column) => (
             <div
               key={column.id}
-              className='my-2'
+              className="my-2"
               // sx={{ height: 50, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
             >
               {column.render('Filter')}

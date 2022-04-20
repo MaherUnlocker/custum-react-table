@@ -1,4 +1,4 @@
-# Custom react table / Storybook User Guide
+# Custom react table By M@HeR
 
 **Custom-react-table** is based on <code>React-Table v7</code>: collection of hooks for **building powerful tables and datagrid experiences**. These hooks are lightweight, composable, and ultra-extensible, but **do not render any markup or styles for you**. This effectively means that React Table is a "headless" UI library.
 
@@ -50,6 +50,9 @@ This package is compatible with React v16.8+ and works with ReactDOM.
 
 
 ```jsx
+
+
+
 import { DynamicTable } from @maherunlocker/custom-react-table
 
 //this the format of object if you need to add custom columns to table with your personal jsx
@@ -166,6 +169,10 @@ export default function App(): JSX.Element {
 ```
 
 ### other info
+<span style="color:red">if you use vitejs` project  add thisto main  :</span>.
+```sh
+ import "regenerator-runtime/runtime";
+```
 ---> if you need click on row and click on custom cell add to your custom jsx  `onClick={(e) => {
              put here your function;
               e.stopPropagation(); 

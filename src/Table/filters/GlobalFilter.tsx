@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-
-import { StyledSearchInput } from '@aureskonnect/react-ui';
+import React from 'react';
+import { StyledSearchInput } from '../../components/assets/StyledSearchInput';
 import { useAsyncDebounce } from 'react-table';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -15,8 +14,8 @@ export default function GlobalFilter({
   setGlobalFilter,
   style,
 }: GlobalFilterProps): React.ReactElement {
-  const count = preGlobalFilteredRows.length;
-  const [value, setValue] = useState<string>('');
+  // const count = preGlobalFilteredRows.length;
+  const [value, setValue] = React.useState<string>('');
   const onChange = useAsyncDebounce((value) => {
     setGlobalFilter(value || undefined);
   }, 300);

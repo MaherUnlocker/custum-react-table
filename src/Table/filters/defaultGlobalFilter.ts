@@ -1,6 +1,10 @@
-// eslint-disable-next-line 
-const DefaultGlobalFilter = (rows: any[], columnIds: any[], filterValue: string, options?: any): any => {
-
+// eslint-disable-next-line
+const DefaultGlobalFilter = (
+  rows: any[],
+  columnIds: any[],
+  filterValue: string,
+  options?: any
+): any => {
   // Do not filter
   if (filterValue === '' || filterValue === null || filterValue === undefined) {
     return rows;
@@ -14,7 +18,11 @@ const DefaultGlobalFilter = (rows: any[], columnIds: any[], filterValue: string,
   return rows.filter((row: any) => {
     // If the id exists in options then the parent was filtred
     // And we want to display the children as well
-    if (options && Array.isArray(options.filteredIds) && options.filteredIds.some((fid: any) => row.id.startsWith(fid))) {
+    if (
+      options &&
+      Array.isArray(options.filteredIds) &&
+      options.filteredIds.some((fid: any) => row.id.startsWith(fid))
+    ) {
       options.filteredIds.push(row.id);
       return true;
     }
@@ -41,7 +49,9 @@ const DefaultGlobalFilter = (rows: any[], columnIds: any[], filterValue: string,
 
     // Check if there subRows that match the filter then return the parent level
     const nestedExist =
-      exist || (Array.isArray(row.subRows) && !!DefaultGlobalFilter(row.subRows, columnIds, filterValue).length);
+      exist ||
+      (Array.isArray(row.subRows) &&
+        !!DefaultGlobalFilter(row.subRows, columnIds, filterValue).length);
 
     // If this row matchs (not the nestedExist) the filter then add its id to filtred Ids
     if (exist && options && Array.isArray(options.filteredIds)) {

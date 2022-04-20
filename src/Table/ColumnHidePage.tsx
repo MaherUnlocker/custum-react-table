@@ -1,6 +1,7 @@
 import { Checkbox, FormControlLabel, Popover, Typography } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
-import React, { ReactElement } from 'react';
+
+import React from 'react';
 import { TableInstance } from 'react-table';
 const useStyles = makeStyles(
   createStyles({
@@ -50,13 +51,19 @@ export function ColumnHidePage<T extends Record<string, unknown>>({
   anchorEl,
   onClose,
   show,
-}: ColumnHidePageProps<T>): ReactElement | null {
+}: ColumnHidePageProps<T>): React.ReactElement | null {
   const classes = useStyles({});
   const { allColumns, toggleHideColumn } = instance;
   const hideableColumns = allColumns.filter(
-    (column) => !(column.id === '_selector') && !(column.id === 'expander') && !(column.id === 'hidecolumns')
+    (column) =>
+      !(column.id === '_selector') &&
+      !(column.id === 'expander') &&
+      !(column.id === 'hidecolumns')
   );
-  const checkedCount = hideableColumns.reduce((acc, val) => acc + (val.isVisible ? 0 : 1), 0);
+  const checkedCount = hideableColumns.reduce(
+    (acc, val) => acc + (val.isVisible ? 0 : 1),
+    0
+  );
 
   const onlyOneOptionLeft = checkedCount + 1 >= hideableColumns.length;
 
@@ -78,12 +85,19 @@ export function ColumnHidePage<T extends Record<string, unknown>>({
         style={{ padding: 24 }}
       >
         <div className={(classes.columnsPopOver, classes.grid, classes.cell)}>
-          <Typography className={classes.popoverTitle}>Visible Columns</Typography>
+          <Typography className={classes.popoverTitle}>
+            Visible Columns
+          </Typography>
           <div style={{ display: 'grid' }}>
             {hideableColumns.map((column) => (
               <FormControlLabel
                 key={column.id}
-                control={<Checkbox value={`${column.id}`} disabled={column.isVisible && onlyOneOptionLeft} />}
+                control={
+                  <Checkbox
+                    value={`${column.id}`}
+                    disabled={column.isVisible && onlyOneOptionLeft}
+                  />
+                }
                 label={column.id}
                 // label={column.render('Header')}
                 checked={column.isVisible}

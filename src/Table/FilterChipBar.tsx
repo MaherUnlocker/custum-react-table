@@ -1,9 +1,14 @@
-import { ColumnInstance, FilterValue, IdType, TableInstance } from 'react-table';
-import React, { ReactElement, useCallback } from 'react';
+import {
+  ColumnInstance,
+  FilterValue,
+  IdType,
+  TableInstance,
+} from 'react-table';
 import { createStyles, makeStyles } from '@mui/styles';
 
 import { Chip } from '@mui/material';
-import { CrossIcon } from '@aureskonnect/react-ui';
+import { CrossIcon } from '../components/assets/CrossIcon';
+import React from 'react';
 
 const useStyles = makeStyles(
   createStyles({
@@ -34,7 +39,10 @@ type FilterChipBarProps<T extends Record<string, unknown>> = {
   instance: TableInstance<T>;
 };
 
-const getFilterValue = (column: ColumnInstance<any>, filterValue: FilterValue) => {
+const getFilterValue = (
+  column: ColumnInstance<any>,
+  filterValue: FilterValue
+) => {
   switch (column.filter) {
     case 'between':
       const min = filterValue[0];
@@ -46,7 +54,7 @@ const getFilterValue = (column: ColumnInstance<any>, filterValue: FilterValue) =
 
 export function FilterChipBar<T extends Record<string, unknown>>({
   instance,
-}: FilterChipBarProps<T>): ReactElement | null {
+}: FilterChipBarProps<T>): React.ReactElement | null {
   const classes = useStyles({});
   const {
     allColumns,
@@ -55,14 +63,14 @@ export function FilterChipBar<T extends Record<string, unknown>>({
     state: { filters },
   } = instance;
 
-  const handleDelete = useCallback(
+  const handleDelete = React.useCallback(
     (id: string | number) => {
       setFilter(id as IdType<T>, undefined);
     },
     [setFilter]
   );
 
-  const resetFilters = useCallback(() => {
+  const resetFilters = React.useCallback(() => {
     setAllFilters([]);
   }, [setAllFilters]);
 
@@ -70,7 +78,12 @@ export function FilterChipBar<T extends Record<string, unknown>>({
     <div className={classes.chipZone}>
       <span
         className={classes.filtersActiveLabel}
-        style={{ color: '#FF0000', textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bold' }}
+        style={{
+          color: '#FF0000',
+          textDecoration: 'underline',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+        }}
         onClick={() => resetFilters()}
       >
         Effacer tous
@@ -85,15 +98,19 @@ export function FilterChipBar<T extends Record<string, unknown>>({
               <Chip
                 className={classes.filterChip}
                 key={column.id}
-                deleteIcon={<CrossIcon height={10} width={10} fill='#2B2828' />}
+                deleteIcon={<CrossIcon height={10} width={10} fill="#2B2828" />}
                 label={
                   <React.Fragment>
-                    <span className={classes.chipLabel}>{column.render('Header')}: </span>
-                    <span className={classes.chipLabel}>{getFilterValue(column, value)} </span>
+                    <span className={classes.chipLabel}>
+                      {column.render('Header')}:{' '}
+                    </span>
+                    <span className={classes.chipLabel}>
+                      {getFilterValue(column, value)}{' '}
+                    </span>
                   </React.Fragment>
                 }
                 onDelete={() => handleDelete(column.id)}
-                variant='outlined'
+                variant="outlined"
               />
             )
           );

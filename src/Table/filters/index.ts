@@ -1,2 +1,2 @@
-export * from './fuzzyFilter'
-export * from './numericFilter'
+export * from './fuzzyFilter';
+export * from './numericFilter';
