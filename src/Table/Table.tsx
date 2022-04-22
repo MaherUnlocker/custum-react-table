@@ -415,6 +415,7 @@ export function Table<T extends Record<string, unknown>>({
                     paddingRight: '0!important',
                     paddingLeft: '0!important',
                     overflowX: 'auto',
+                    overflowY: page.length === 0 ? 'hidden' : 'auto',
                     display: 'block',
                     width: '100%',
                     WebkitOverflowScrolling: 'touch',
