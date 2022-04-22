@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Box,
   Grid,
@@ -30,6 +31,7 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
+
 import {
   HeaderCheckbox,
   RawTable,
@@ -45,7 +47,6 @@ import {
 } from './TableStyle';
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
-
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
 import { ColumnHidePageCustom } from './ColumnHidePageCustom';
@@ -59,7 +60,6 @@ import { FilterPageCustom } from './FilterPageCustom';
 import { IsMobileView } from './isMobileView';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
-import React from 'react';
 import { ResizeHandle } from './ResizeHandle';
 import { StyledH2 } from '../components/assets/StyledH2';
 import { StyledLabel } from '../components/assets/StyledLabel';
@@ -196,8 +196,6 @@ const filterTypes: any = {
 };
 const selectionHook = (hooks: Hooks<any>) => {
   hooks.allColumns.push((columns) => [
-    // Let's make a column for selection
-
     {
       id: '_selector',
       disableResizing: true,
