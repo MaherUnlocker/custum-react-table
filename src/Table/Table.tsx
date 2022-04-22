@@ -135,7 +135,6 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
 
   function handleSelectOnChangeEvent(selectedValue: any) {
     setSelectedValueState(selectedValue);
-    //  add selected filter
     setFilter(selectedValue.value);
   }
 
