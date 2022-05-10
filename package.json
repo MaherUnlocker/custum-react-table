@@ -1,6 +1,6 @@
 {
   "name": "@maherunlocker/custom-react-table",
-  "version": "2.0.2",
+  "version": "2.2.0",
   "description": "dynamic table based on react table v7",
   "author": "M@HER BEN BACCAR",
   "license": "MIT",
@@ -50,6 +50,7 @@
     "react-select": "^5.3.0",
     "react-table": "^7.7.0",
     "reactstrap": "^8.10.1",
+    "framer-motion": "^6.3.3",
     "styled-components": "^5.3.5",
     "tss-react": "^3.3.1"
   },

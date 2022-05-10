@@ -113,16 +113,22 @@ export function DynamicTable({
   if (elevationTable === undefined) {
     elevationTable = 0;
   }
-
   const apiResultColumns = React.useMemo(
     () =>
       apiResult !== undefined &&
       apiResult.structure !== undefined &&
       Array.isArray(apiResult?.structure)
         ? apiResult.structure
-            .filter((key) => key !== 'subRows')
-            .map((key) => {
-              if (key === 'image' || key === 'picture') {
+            .filter((key: any) => key !== 'subRows')
+            .map((key: any) => {
+              if (
+                key.toLowerCase().includes('image') ||
+                key.toLowerCase().includes('picture') ||
+                key.toLowerCase().includes('logo') ||
+                key.toLowerCase().includes('icon') ||
+                key.toLowerCase().includes('pic') ||
+                key.toLowerCase().includes('img')
+              ) {
                 return {
                   id: key,
                   Header: key,
@@ -221,8 +227,8 @@ export function DynamicTable({
       modifiedColumns = [
         ...modifiedColumns,
         {
-          Header: 'Actions',
-          id: 'Actions',
+          Header: '_Actions',
+          id: '_Actions',
           accessor: (str: any) => 'delete',
           canFilter: false,
           disableFilters: true,

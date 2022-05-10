@@ -1,69 +1,64 @@
+import React from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Paper from '@mui/material/Paper';
-import React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { makeStyles } from '@mui/styles';
+import { motion } from 'framer-motion/dist/framer-motion';
+import { useStyles } from './TableStyle';
+import { headerProps } from './Table';
+import SvgNoData from '../components/assets/SvgNoData';
 
-const useStyles = makeStyles({
-  cell_short: {
-    lineHeight: '1.5rem',
-    fontWeight: '700!important',
-    // width: 100,
-    border: '0 !important',
-  },
-});
+const variants = {
+  open: { opacity: 1, height: 'auto' },
+  collapsed: { opacity: 0, height: 0 },
+};
 
 function MobileRow(props: any): React.ReactElement {
-  const { row, headerGroups } = props;
-  const dataRow = row.original;
-  const classes = useStyles(props);
+  const { row, cellProps } = props;
+  const classes = useStyles();
   const [open, setOpen] = React.useState(false);
 
   return (
     <React.Fragment>
-      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-        {headerGroups[0]?.headers
+      <TableRow
+        key={`ttt+${row.id}`}
+        sx={{ '& > *': { borderBottom: 'unset' }, alignItems: 'center' }}
+        style={{
+          display: 'grid',
+          minWidth: '100vw',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+        }}
+      >
+        {row.cells
 
           .filter(
-            (headerGroup: any) =>
-              headerGroup.id !== '_selector' &&
-              headerGroup.id !== 'rating' &&
-              headerGroup.id !== 'subRows' &&
-              headerGroup.id !== 'hidecolumns' &&
-              headerGroup.id !== 'expander' &&
-              headerGroup.id !== 'Actions'
+            (cell: any) =>
+              cell.column.id !== 'rating' &&
+              cell.column.id !== 'subRows' &&
+              cell.column.id !== 'hidecolumns' &&
+              cell.column.id !== 'expander' &&
+              cell.column.id !== '_Actions'
           )
           .slice(0, 3)
 
-          .map((headerGroup: any) => {
-            if (headerGroup.id === 'image' || headerGroup.id === 'picture') {
-              return (
-                <TableCell
-                  component="th"
-                  scope="key"
-                  variant="body"
-                  key={headerGroup.id}
-                >
-                  <img
-                    src={dataRow[headerGroup.id]}
-                    className="w-25 h-25"
-                    alt=""
-                  />
-                </TableCell>
-              );
-            }
+          .map((cell: any) => {
+            const {
+              key: cellKey,
+              role: cellRole,
+              ...getCellProps
+            } = cell.getCellProps(cellProps);
+
             return (
-              <TableCell component="th" scope="row" key={headerGroup.id}>
-                {dataRow[headerGroup.id]}
+              <TableCell key={`cell ${cellKey}`}>
+                {' '}
+                {cell.render('Cell')}
               </TableCell>
             );
           })}
@@ -78,89 +73,81 @@ function MobileRow(props: any): React.ReactElement {
           </IconButton>
         </TableCell>
       </TableRow>
-
+      {/* collapse rest of data of selected row */}
       <TableRow style={{ marginTop: '2px' }}>
         <TableCell
           style={{ paddingBottom: 0, paddingTop: 0, paddingLeft: 0 }}
           colSpan={6}
         >
           <Collapse in={open} timeout="auto" unmountOnExit>
-            <Box sx={{ marginLeft: 0, marginRight: 0 }}>
+            <motion.div
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
+              variants={variants}
+              transition={{
+                duration: 0.5,
+                cubicbezier: [0.29, 1.01, 1, -0.68],
+              }}
+              style={{ marginLeft: 0, marginRight: 0 }}
+            >
               <Table aria-label={row.id}>
                 <TableBody>
-                  <TableRow key={row.id} sx={{ alignItems: 'between' }}>
-                    {headerGroups[0]?.headers
+                  {row.cells
 
-                      .filter(
-                        (headerGroup: any) =>
-                          headerGroup.id !== '_selector' &&
-                          headerGroup.id !== 'rating' &&
-                          headerGroup.id !== 'subRows' &&
-                          headerGroup.id !== 'hidecolumns' &&
-                          headerGroup.id !== 'expander' &&
-                          headerGroup.id !== 'Actions'
-                      )
-                      .slice(3)
-                      .map((headerGroup: any) => {
-                        if (
-                          headerGroup.id === 'image' ||
-                          headerGroup.id === 'picture'
-                        ) {
-                          return (
-                            <TableRow
-                              component="th"
-                              scope="row"
-                              key={headerGroup.id}
-                            >
-                              <TableCell
-                                className="tableCellLabel"
-                                scope="key"
-                                variant="body"
-                                align="right"
-                              >
-                                {headerGroup.id}
-                              </TableCell>
-                              <TableCell
-                                component="th"
-                                scope="row"
-                                variant="body"
-                              >
-                                <img
-                                  src={dataRow[headerGroup.id]}
-                                  className="w-25 h-25"
-                                  alt=""
-                                />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        }
-                        return (
-                          <TableRow
-                            component="th"
-                            scope="row"
-                            key={headerGroup.id}
+                    .filter(
+                      (cell: any) =>
+                        cell.column.id !== 'rating' &&
+                        cell.column.id !== 'subRows' &&
+                        cell.column.id !== 'hidecolumns' &&
+                        cell.column.id !== 'expander' &&
+                        cell.column.id !== '_Actions'
+                    )
+                    .slice(3)
+                    .map((cell: any) => {
+                      const {
+                        key: cellKey,
+                        role: cellRole,
+                        ...getCellProps
+                      } = cell.getCellProps(cellProps);
+
+                      return (
+                        <TableRow
+                          key={`celrow+${cellKey}`}
+                          style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(4, 1fr)',
+                          }}
+                        >
+                          <TableCell
+                            align="left"
+                            scope="key"
+                            variant="body"
+                            className={classes.cell_short}
+                          >
+                            {cell.column.Header}
+                          </TableCell>
+                          <TableCell className={classes.cell_short} />
+                          <TableCell
+                            key={cellKey}
+                            // {...getCellProps}
                             style={{
+                              width: 'auto',
+                              // flex: 'inherit',
+                              alignContent: 'end',
                               display: 'flex',
-                              justifyContent: 'space-between',
+                              justifyContent: 'start',
+                              border: 0,
                             }}
                           >
-                            <TableCell
-                              scope="key"
-                              variant="body"
-                              className={classes.cell_short}
-                            >
-                              {headerGroup.id}
-                            </TableCell>
-                            <TableCell scope="key" style={{ border: 0 }}>
-                              {dataRow[headerGroup.id]}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                  </TableRow>
+                            {cell.render('Cell')}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                 </TableBody>
               </Table>
-            </Box>
+            </motion.div>
           </Collapse>
         </TableCell>
       </TableRow>
@@ -168,8 +155,12 @@ function MobileRow(props: any): React.ReactElement {
   );
 }
 // eslint-disable-next-line
-export default function CollapsibleTable(props: any): React.ReactElement {
-  const { headerGroups, page } = props.props;
+export default function CollapsibleTable(
+  instance: any,
+  cellClickHandler: any
+): React.ReactElement {
+  const classes = useStyles();
+  const { headerGroups, page, prepareRow } = instance.props;
   return (
     <TableContainer
       component={Paper}
@@ -185,30 +176,68 @@ export default function CollapsibleTable(props: any): React.ReactElement {
             top: '0',
           }}
         >
-          <TableRow>
-            {headerGroups[0]?.headers
-
-              .filter(
-                (headerGroup: any) =>
-                  headerGroup.id !== '_selector' &&
-                  headerGroup.id !== 'rating' &&
-                  headerGroup.id !== 'subRows' &&
-                  headerGroup.id !== 'hidecolumns' &&
-                  headerGroup.id !== 'expander' &&
-                  headerGroup.id !== 'Actions'
-              )
-              .slice(0, 3)
-
-              .map((headerGroup: any) => (
-                <TableCell key={headerGroup.id}>{headerGroup.id}</TableCell>
-              ))}
-            <TableCell align="right">actions</TableCell>
+          <TableRow
+            style={{
+              display: 'grid',
+              minWidth: '100vw',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+            }}
+          >
+            {headerGroups.map((headerGroup: any, index: number) => {
+              return (
+                <React.Fragment key={`headerKey${index}`}>
+                  {headerGroup.headers
+                    .filter(
+                      (column: any) =>
+                        // column.id !== '_selector' &&
+                        column.id !== 'rating' &&
+                        column.id !== 'subRows' &&
+                        column.id !== 'hidecolumns' &&
+                        column.id !== 'expander' &&
+                        column.id !== '_Actions'
+                    )
+                    .slice(0, 3)
+                    .map((column: any) => {
+                      const style = {
+                        textAlign: column.align ? column.align : 'left ',
+                      } as React.CSSProperties;
+                      const {
+                        key: headerKey,
+                        role: headerRole,
+                        ...getHeaderProps
+                      } = column.getHeaderProps(headerProps);
+                      return (
+                        <TableCell key={headerKey}>
+                          {column.render('Header')}
+                        </TableCell>
+                      );
+                    })}
+                  <TableCell key="actions" align="right">
+                    actions
+                  </TableCell>
+                </React.Fragment>
+              );
+            })}
           </TableRow>
         </TableHead>
         <TableBody>
-          {page?.map((row: any) => (
-            <MobileRow key={row.id} row={row} headerGroups={headerGroups} />
-          ))}
+          {page.length === 0 ? (
+            <div className={classes.SvgNoDataCss}>
+              <SvgNoData />
+            </div>
+          ) : (
+            page?.map((row: any) => {
+              prepareRow(row);
+              return (
+                <MobileRow
+                  key={`mobRoww ${row.id}`}
+                  row={row}
+                  headerGroups={headerGroups}
+                  cellClickHandler={cellClickHandler}
+                />
+              );
+            })
+          )}
         </TableBody>
       </Table>
     </TableContainer>

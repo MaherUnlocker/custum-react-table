@@ -226,7 +226,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
               it.canFilter &&
               it.isVisible &&
               it.id !== 'delete' &&
-              it.id !== 'Actions' &&
+              it.id !== '_Actions' &&
               it.id !== 'expander' &&
               it.id !== 'hidecolumns'
           )

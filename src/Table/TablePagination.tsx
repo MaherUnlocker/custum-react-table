@@ -76,7 +76,7 @@ export function TablePagination<T extends Record<string, unknown>>({
     return (
       <div className="d-flex justify-content-end  pagination">
         <div className="d-flex align-items-center">
-          Lignes par page :
+          Lignes par page
           <select
             value={pageSize}
             onChange={(e) => {

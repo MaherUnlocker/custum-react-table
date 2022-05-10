@@ -181,13 +181,19 @@ export const useStyles = makeStyles({
     alignContent: 'center!important',
     alignItems: 'center!important',
     border: '0',
-    height: '100%',
+    height: '60%',
   },
   cardHeaderCss: {
     padding: '0 ',
     backgroundColor: 'white',
     marginBottom: '4px !important',
     border: '1px solid rgba(0,0,0,.125)',
+  },
+  cell_short: {
+    lineHeight: '1.5rem',
+    fontWeight: '700!important',
+    // width: 100,
+    border: '0 !important',
   },
 });
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   Grid,
@@ -31,7 +30,6 @@ import {
   useSortBy,
   useTable,
 } from 'react-table';
-
 import {
   HeaderCheckbox,
   RawTable,
@@ -47,6 +45,7 @@ import {
 } from './TableStyle';
 import { camelToWords, useDebounce, useLocalStorage } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
+
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
 import { ColumnHidePageCustom } from './ColumnHidePageCustom';
@@ -60,6 +59,7 @@ import { FilterPageCustom } from './FilterPageCustom';
 import { IsMobileView } from './isMobileView';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import React from 'react';
 import { ResizeHandle } from './ResizeHandle';
 import { StyledH2 } from '../components/assets/StyledH2';
 import { StyledLabel } from '../components/assets/StyledLabel';
@@ -135,6 +135,7 @@ function DefaultColumnFilter<T extends Record<string, unknown>>({
 
   function handleSelectOnChangeEvent(selectedValue: any) {
     setSelectedValueState(selectedValue);
+    //  add selected filter
     setFilter(selectedValue.value);
   }
 
@@ -164,11 +165,6 @@ const getStyles = (props: any, disableResizing = false, align = 'left') => [
   },
 ];
 
-const headerProps = <T extends Record<string, unknown>>(
-  props: any,
-  { column }: Meta<T, { column: HeaderGroup<T> }>
-) => getStyles(props, column && column.disableResizing, column && column.align);
-
 const cellProps = <T extends Record<string, unknown>>(
   props: any,
   { cell }: Meta<T, { cell: Cell<T> }>
@@ -195,6 +191,8 @@ const filterTypes: any = {
 };
 const selectionHook = (hooks: Hooks<any>) => {
   hooks.allColumns.push((columns) => [
+    // Let's make a column for selection
+
     {
       id: '_selector',
       disableResizing: true,
@@ -217,6 +215,11 @@ const selectionHook = (hooks: Hooks<any>) => {
     ...columns,
   ]);
 };
+
+export const headerProps = <T extends Record<string, unknown>>(
+  props: any,
+  { column }: Meta<T, { column: HeaderGroup<T> }>
+) => getStyles(props, column && column.disableResizing, column && column.align);
 export function Table<T extends Record<string, unknown>>({
   name,
   columns,
