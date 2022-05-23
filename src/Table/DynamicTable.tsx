@@ -119,8 +119,8 @@ export function DynamicTable({
       apiResult.structure !== undefined &&
       Array.isArray(apiResult?.structure)
         ? apiResult.structure
-            .filter((key: any) => key !== 'subRows')
-            .map((key: any) => {
+            .filter((key) => key !== 'subRows')
+            .map((key) => {
               if (
                 key.toLowerCase().includes('image') ||
                 key.toLowerCase().includes('picture') ||
@@ -155,6 +155,11 @@ export function DynamicTable({
     [apiResult]
   );
 
+  const deleteRow = (index: number) => {
+    const dataCopy: any = { ...apiResult };
+    dataCopy.data.splice(index, 1);
+    setApiResult(dataCopy);
+  };
   function duplicateRow(index: number) {
     const duplicatedData: any = { ...apiResult };
     const duplicateRow = duplicatedData?.data[index];
@@ -239,11 +244,7 @@ export function DynamicTable({
               <TrashIcon
                 width={25}
                 height={25}
-                onClick={() => {
-                  const dataCopy: any = { ...apiResult };
-                  dataCopy.data.splice(row.index, 1);
-                  setApiResult(dataCopy);
-                }}
+                onClick={() => deleteRow(row.index)}
               />
               <DuplicateIcon
                 width={25}

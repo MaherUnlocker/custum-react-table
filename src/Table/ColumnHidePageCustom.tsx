@@ -17,7 +17,9 @@ export function ColumnHidePageCustom<T extends Record<string, unknown>>({
     (column) =>
       !(column.id === '_selector') &&
       !(column.id === 'expander') &&
-      !(column.id === 'hidecolumns')
+      !(column.id === 'hidecolumns') &&
+      !(column.id === '_Actions') &&
+      !column.id.toLowerCase().includes('action')
   );
 
   const uncheckedCount = hideableColumns.reduce(

@@ -158,7 +158,7 @@ const getStyles = (props: any, disableResizing = false, align = 'left') => [
   props,
   {
     style: {
-      justifyContent: 'center',
+      justifyContent: 'start',
       alignItems: 'center',
       display: 'flex',
     },
@@ -216,7 +216,9 @@ const selectionHook = (hooks: Hooks<any>) => {
   ]);
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const headerProps = <T extends Record<string, unknown>>(
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   props: any,
   { column }: Meta<T, { column: HeaderGroup<T> }>
 ) => getStyles(props, column && column.disableResizing, column && column.align);
@@ -627,7 +629,6 @@ export function Table<T extends Record<string, unknown>>({
                   maxHeight: '64px !important',
                   justifyContent: 'space-between',
                 }}
-                // className={classes.FiltersCss}
                 className={`${classes.FiltersCss} ${classes.cardHeaderCss}`}
               >
                 <Box

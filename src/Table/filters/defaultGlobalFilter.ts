@@ -3,6 +3,7 @@ const DefaultGlobalFilter = (
   rows: any[],
   columnIds: any[],
   filterValue: string,
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   options?: any
 ): any => {
   // Do not filter

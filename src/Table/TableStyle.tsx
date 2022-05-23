@@ -60,12 +60,17 @@ export const useStyles = makeStyles({
     // borderBottom: '1px solid #555B6D',
   },
   tableBody: {},
+
   tableRow: {
     color: 'inherit',
+    maxHeight: 60,
     outline: 0,
     verticalAlign: 'middle',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.07)',
+    },
+    '&:nth-child(even)': {
+      backgroundColor: 'hsl(0, 0%, 98%,1)',
     },
 
     borderBottom: '1px rgb(239, 239, 239)',
@@ -94,6 +99,7 @@ export const useStyles = makeStyles({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+
     // borderRight: '1px solid rgba(224, 224, 224, 1)',
     // '&:last-child': {
     //   borderRight: 'none',

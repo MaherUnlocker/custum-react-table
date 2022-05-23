@@ -145,7 +145,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
           </StyledLabel>
           <StyledSelectInput
             onInputChange={(e: string) => {
-              if (e !== '') setDesignationFilter(e);
+              setDesignationFilter(e);
             }}
             inputValue={designationFilter}
             id="savedFilter"
@@ -155,7 +155,6 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
               savedFilters.length > 0 ? 'Sélectionner ...' : 'Aucune'
             }
             onChange={handleSavedFiltersSelect}
-            // allowCreateWhileLoading
           />
         </div>
 
