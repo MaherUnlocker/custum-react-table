@@ -15,7 +15,6 @@
     "build:esm": "tsc",
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs",
     "lint": "npm lint",
-    "semantic-release": "semantic-release --branches main",
     "commit": "cz"
   },
   "husky": {
@@ -84,7 +83,6 @@
     "react-dom": "^17.0.2",
     "react-error-overlay": "6.0.9",
     "react-scripts": "4.0.3",
-    "semantic-release": "^19.0.2",
     "typescript": "^4.5.4",
     "typesync": "^0.9.0"
   },
