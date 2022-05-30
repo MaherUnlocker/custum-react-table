@@ -645,7 +645,9 @@ export function Table<T extends Record<string, unknown>>({
                     className={classes.tableFilterAltOutlinedIcon}
                     style={{ flexDirection: 'row-reverse' }}
                   />
-                  <StyledH2>{t('Filtre(s)')}</StyledH2>
+                  <StyledH2 style={{ marginBottom: 0 }}>
+                    {t('Filter(s)')}
+                  </StyledH2>
                 </Box>
 
                 <CrossIcon
