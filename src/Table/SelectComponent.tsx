@@ -62,17 +62,15 @@ export function SelectComponent({
   };
 
   return (
-    <div className="App">
-      <Select
-        id="savedFilter"
-        name="savedFilter"
-        placeholder={options.length > 0 ? "t('Select...')" : t('None')}
-        options={options}
-        onChange={onChange}
-        onInputChange={onInputChange}
-        inputValue={inputValue}
-        value={value}
-      />
-    </div>
+    <Select
+      id="savedFilter"
+      name="savedFilter"
+      placeholder={options.length > 0 ? "t('Select...')" : t('None')}
+      options={options}
+      onChange={onChange}
+      onInputChange={onInputChange}
+      inputValue={inputValue}
+      value={value}
+    />
   );
 }
