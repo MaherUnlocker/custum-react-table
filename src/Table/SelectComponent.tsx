@@ -19,10 +19,16 @@ export function SelectComponent({
 }: selectComponentType): JSX.Element {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = React.useState('');
-  const [value, setValue] = React.useState({ label: options.length > 0 ? t('Select...') : t('None'), value: '' });
+  const [value, setValue] = React.useState({
+    label: options.length > 0 ? t('Select...') : t('None'),
+    value: '',
+  });
   // const [value, setValue] = React.useState(options[0]); //{ label: '', value: '' });
   const onInputChange = (option: any, { action }: any) => {
-    console.log('🚀 ~ file: SelectComponent.tsx ~ line 24 ~ onInputChange ~ option', option);
+    console.log(
+      '🚀 ~ file: SelectComponent.tsx ~ line 24 ~ onInputChange ~ option',
+      option
+    );
     if (action === 'input-change') {
       const optionLength = option.length;
       const inputValueLength = inputValue.length;
@@ -36,12 +42,18 @@ export function SelectComponent({
         optionLength < inputValueLength
           ? myObject
           : options.length > 0
-          ? { value: value.value + option[option.length - 1], label: value.label + option[option.length - 1] }
+          ? {
+              value: value.value + option[option.length - 1],
+              label: value.label + option[option.length - 1],
+            }
           : myObject;
 
       setValue(newValue);
 
-      const newInputValue = optionLength < inputValueLength ? option : inputValue + option[option.length - 1];
+      const newInputValue =
+        optionLength < inputValueLength
+          ? option
+          : inputValue + option[option.length - 1];
       setInputValue(newInputValue);
       setDesignationFilter(newInputValue);
     }
@@ -52,13 +64,16 @@ export function SelectComponent({
     setDesignationFilter(option);
     handleSavedFiltersSelect(option);
   };
-  console.log('🚀 ~ file: SelectComponent.tsx ~ line 53 ~ onChange ~ value', value);
+  console.log(
+    '🚀 ~ file: SelectComponent.tsx ~ line 53 ~ onChange ~ value',
+    value
+  );
 
   return (
-    <div className='App'>
+    <div className="App">
       <Select
-        id='savedFilter'
-        name='savedFilter'
+        id="savedFilter"
+        name="savedFilter"
         placeholder={options.length > 0 ? "t('Select...')" : t('None')}
         options={options}
         onChange={onChange}

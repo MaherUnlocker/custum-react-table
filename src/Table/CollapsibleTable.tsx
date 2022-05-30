@@ -52,25 +52,40 @@ function MobileRow(props: any): React.ReactElement {
           .map((cell: any) => {
             const { key: cellKey } = cell.getCellProps(cellProps);
 
-            return <TableCell key={`cell ${cellKey}`}> {cell.render('Cell')}</TableCell>;
+            return (
+              <TableCell key={`cell ${cellKey}`}>
+                {' '}
+                {cell.render('Cell')}
+              </TableCell>
+            );
           })}
 
-        <TableCell align='right'>
-          <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
+        <TableCell align="right">
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
             {open ? <KeyboardArrowDownIcon /> : <ArrowForwardIosIcon />}
           </IconButton>
         </TableCell>
       </TableRow>
       {/* collapse rest of data of selected row */}
       <TableRow style={{ marginTop: '2px' }}>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0, paddingLeft: 0 }} colSpan={6}>
-          <Collapse in={open} timeout='auto' unmountOnExit>
+        <TableCell
+          style={{ paddingBottom: 0, paddingTop: 0, paddingLeft: 0 }}
+          colSpan={6}
+        >
+          <Collapse in={open} timeout="auto" unmountOnExit>
             <motion.div
-              initial='collapsed'
-              animate='open'
-              exit='collapsed'
+              initial="collapsed"
+              animate="open"
+              exit="collapsed"
               variants={variants}
-              transition={{ duration: 0.5, cubicbezier: [0.29, 1.01, 1, -0.68] }} //good for mobile
+              transition={{
+                duration: 0.5,
+                cubicbezier: [0.29, 1.01, 1, -0.68],
+              }} //good for mobile
               style={{ marginLeft: 0, marginRight: 0 }}
             >
               <Table aria-label={row.id}>
@@ -96,7 +111,12 @@ function MobileRow(props: any): React.ReactElement {
                             gridTemplateColumns: 'repeat(4, 1fr)',
                           }}
                         >
-                          <TableCell align='left' scope='key' variant='body' className={classes.cell_short}>
+                          <TableCell
+                            align="left"
+                            scope="key"
+                            variant="body"
+                            className={classes.cell_short}
+                          >
                             {cell.column.Header}
                           </TableCell>
                           <TableCell className={classes.cell_short} />
@@ -127,15 +147,21 @@ function MobileRow(props: any): React.ReactElement {
   );
 }
 // eslint-disable-next-line
-export default function CollapsibleTable(instance: any, cellClickHandler: any): React.ReactElement {
+export default function CollapsibleTable(
+  instance: any,
+  cellClickHandler: any
+): React.ReactElement {
   const { t } = useTranslation();
   const classes = useStyles();
   const { headerGroups, page, prepareRow } = instance.props;
   return (
-    <TableContainer component={Paper} style={{ minHeight: '200', maxHeight: '99vh', overflowX: 'hidden' }}>
-      <Table aria-label='collapsible table' stickyHeader>
+    <TableContainer
+      component={Paper}
+      style={{ minHeight: '200', maxHeight: '99vh', overflowX: 'hidden' }}
+    >
+      <Table aria-label="collapsible table" stickyHeader>
         <TableHead
-          id='TableHeader'
+          id="TableHeader"
           style={{
             zIndex: '200',
             position: 'sticky',
@@ -164,10 +190,15 @@ export default function CollapsibleTable(instance: any, cellClickHandler: any): 
                   )
                   .slice(0, 3)
                   .map((column: any) => {
-                    const { key: headerKey } = column.getHeaderProps(headerProps);
-                    return <TableCell key={headerKey}>{column.render('Header')}</TableCell>;
+                    const { key: headerKey } =
+                      column.getHeaderProps(headerProps);
+                    return (
+                      <TableCell key={headerKey}>
+                        {column.render('Header')}
+                      </TableCell>
+                    );
                   })}
-                <TableCell key='actions' align='right'>
+                <TableCell key="actions" align="right">
                   {t('Actions')}
                 </TableCell>
               </React.Fragment>
