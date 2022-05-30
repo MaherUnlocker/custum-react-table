@@ -1,14 +1,11 @@
-import {
-  ColumnInstance,
-  FilterValue,
-  IdType,
-  TableInstance,
-} from 'react-table';
-import { createStyles, makeStyles } from '@mui/styles';
-
-import { Chip } from '@mui/material';
-import { CrossIcon } from '../components/assets/CrossIcon';
 import React from 'react';
+
+import { ColumnInstance, FilterValue, IdType, TableInstance } from 'react-table';
+import { createStyles, makeStyles } from '@mui/styles';
+import { useTranslation } from 'react-i18next';
+import { Chip } from '@mui/material';
+
+import { CrossIcon } from '../components/assets/CrossIcon';
 
 const useStyles = makeStyles(
   createStyles({
@@ -39,10 +36,7 @@ type FilterChipBarProps<T extends Record<string, unknown>> = {
   instance: TableInstance<T>;
 };
 
-const getFilterValue = (
-  column: ColumnInstance<any>,
-  filterValue: FilterValue
-) => {
+const getFilterValue = (column: ColumnInstance<any>, filterValue: FilterValue) => {
   switch (column.filter) {
     case 'between':
       const min = filterValue[0];
@@ -55,6 +49,7 @@ const getFilterValue = (
 export function FilterChipBar<T extends Record<string, unknown>>({
   instance,
 }: FilterChipBarProps<T>): React.ReactElement | null {
+  const { t } = useTranslation();
   const classes = useStyles({});
   const {
     allColumns,
@@ -86,7 +81,7 @@ export function FilterChipBar<T extends Record<string, unknown>>({
         }}
         onClick={() => resetFilters()}
       >
-        Effacer tous
+        {t('Delete all')}
       </span>
       {filters &&
         allColumns.map((column) => {
@@ -98,19 +93,15 @@ export function FilterChipBar<T extends Record<string, unknown>>({
               <Chip
                 className={classes.filterChip}
                 key={column.id}
-                deleteIcon={<CrossIcon height={10} width={10} fill="#2B2828" />}
+                deleteIcon={<CrossIcon height={10} width={10} fill='#2B2828' />}
                 label={
                   <React.Fragment>
-                    <span className={classes.chipLabel}>
-                      {column.render('Header')}:{' '}
-                    </span>
-                    <span className={classes.chipLabel}>
-                      {getFilterValue(column, value)}{' '}
-                    </span>
+                    <span className={classes.chipLabel}>{column.render('Header')}: </span>
+                    <span className={classes.chipLabel}>{getFilterValue(column, value)} </span>
                   </React.Fragment>
                 }
                 onDelete={() => handleDelete(column.id)}
-                variant="outlined"
+                variant='outlined'
               />
             )
           );
