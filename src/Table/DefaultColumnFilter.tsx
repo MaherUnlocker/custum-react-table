@@ -1,9 +1,11 @@
 import React from 'react';
 import _uniqby from 'lodash.uniqby';
+import { useTranslation } from 'react-i18next';
+import { FilterProps } from 'react-table';
+
 import { findFirstColumn } from './Table';
 import { StyledLabel } from '../components/assets/StyledLabel';
 import { StyledSelectInput } from '../components/assets/StyledSelectInput';
-import { FilterProps } from 'react-table';
 
 export default function DefaultColumnFilter<T extends Record<string, unknown>>({
   columns,
@@ -11,6 +13,7 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
   rows,
   prepareRow,
 }: FilterProps<T>): React.ReactElement {
+  const { t } = useTranslation();
   const { filterValue, setFilter, render } = column;
   const [, setValue] = React.useState(filterValue || '');
 
@@ -49,13 +52,11 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
   const [, setSelectedValueState] = React.useState<any[]>([]);
 
   function handleSelectOnChangeEvent(selectedValue: any) {
-    console.log(
-      '🚀 ~ file: Table.tsx ~ line 120 ~ handleSelectOnChangeEvent ~ selectedValue',
-      selectedValue
-    );
-    setSelectedValueState(selectedValue);
-    //  add selected filter
-    setFilter(selectedValue.value);
+    if (selectedValue) {
+      setSelectedValueState(selectedValue);
+      //  add selected filter
+      setFilter(selectedValue.value);
+    }
   }
 
   return (
@@ -67,7 +68,7 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
         id={column.id}
         name={column.id}
         options={unique}
-        placeholder="Sélectionner ..."
+        placeholder={unique.length > 0 ? t('Select...') : t('None')}
         onChange={handleSelectOnChangeEvent}
         // onInputChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}
