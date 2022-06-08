@@ -50,7 +50,7 @@ export const useStyles = makeStyles({
     // textAlign: 'center',
     maxHeight: 45,
     verticalAlign: 'inherit',
-    justifyContent: 'start !important',
+    justifyContent: 'center !important',
     display: 'flex',
     // color: theme.palette.text.primary,
     fontWeight: '700 !important',
