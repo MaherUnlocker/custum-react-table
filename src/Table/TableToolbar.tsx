@@ -10,6 +10,7 @@ import { ColumnHidePage } from './ColumnHidePage';
 import GlobalFilter from './filters/GlobalFilter';
 import { StyledButton } from '../components/assets/StyledButton';
 import { TableMouseEventHandler } from '../../types/react-table-config';
+import { FilterIcon } from '../components/assets/FilterIcon';
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -245,6 +246,16 @@ export function TableToolbar<T extends Record<string, unknown>>({
               }}
               label="Filter by columns"
             >
+              <FilterIcon
+                style={{
+                  height: '20px',
+                  flexDirection: 'row-reverse',
+                  marginTop: '0px',
+                  marginRight: '9px',
+                  width: '20px',
+                  fill: 'white',
+                }}
+              />
               {t('Filter(s)')}
             </StyledButton>
           </React.Fragment>
