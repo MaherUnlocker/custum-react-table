@@ -1,16 +1,21 @@
 import 'regenerator-runtime/runtime';
+import React from 'react';
 
+import { I18nextProvider } from 'react-i18next';
 import { FilterValue, IdType, Row, customColumnProps } from 'react-table';
+import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
 
 import { AngleSmallRightIcon } from '../components/assets/AngleSmallRightIcon';
 import { DuplicateIcon } from '../components/assets/DuplicateIcon';
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
-import React from 'react';
 import { Table } from './Table';
 import { TrashIcon } from '../components/assets/TrashIcon';
-import axios from 'axios';
 import { useStyles } from './TableStyle';
+import i18n from '../i18n';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 // import './index.css';
 export interface DynamicTableProps {
@@ -296,26 +301,29 @@ export function DynamicTable({
     return <LoadingErrorAnimation />;
 
   return (
-    <Table
-      name={name}
-      columns={columns}
-      setSelectedRows={setSelectedRows}
-      data={data as any}
-      canGroupBy={canGroupBy}
-      canSort={canSort}
-      canSelect={canSelect}
-      canResize={canResize}
-      actionColumn={actionColumn}
-      showGlobalFilter={showGlobalFilter}
-      showFilter={showFilter}
-      showColumnIcon={showColumnIcon}
-      filterActive={filterActive}
-      setLocalFilterActive={setLocalFilterActive}
-      customJsxSideFilterButton={customJsxSideFilterButton}
-      onClick={onClick}
-      elevationTable={elevationTable}
-      minHeight={minHeight}
-      maxHeight={maxHeight}
-    />
+    <I18nextProvider i18n={i18n}>
+      <Table
+        name={name}
+        columns={columns}
+        setSelectedRows={setSelectedRows}
+        data={data as any}
+        canGroupBy={canGroupBy}
+        canSort={canSort}
+        canSelect={canSelect}
+        canResize={canResize}
+        actionColumn={actionColumn}
+        showGlobalFilter={showGlobalFilter}
+        showFilter={showFilter}
+        showColumnIcon={showColumnIcon}
+        filterActive={filterActive}
+        setLocalFilterActive={setLocalFilterActive}
+        customJsxSideFilterButton={customJsxSideFilterButton}
+        onClick={onClick}
+        elevationTable={elevationTable}
+        minHeight={minHeight}
+        maxHeight={maxHeight}
+      />
+      <ToastContainer />
+    </I18nextProvider>
   );
 }
