@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 
 import { CheckboxIcon } from './assets/CheckboxIcon';
 
-import './Style.css';
 export default function SuccessToast(message: string): React.ReactElement {
   return (
     <React.Fragment>
