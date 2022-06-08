@@ -65,6 +65,8 @@ export function SelectComponent({
     <Select
       id="savedFilter"
       name="savedFilter"
+      menuPlacement="auto"
+      menuPosition="fixed"
       placeholder={options.length > 0 ? "t('Select...')" : t('None')}
       options={options}
       onChange={onChange}
