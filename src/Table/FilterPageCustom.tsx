@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 
 import { TableInstance } from 'react-table';
@@ -16,6 +17,7 @@ import { useLocalStorage } from '../utils';
 import { SelectComponent } from './SelectComponent';
 import { TrashIcon } from '../components/assets/TrashIcon';
 import { PencilIcon } from '../components/assets/PencilIcon';
+import SuccessToast from '../components/SuccessToast';
 
 const useStyles = makeStyles(
   createStyles({
@@ -109,7 +111,10 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
             { label: designationFilter, value: filters },
           ]);
     }
+    SuccessToast(t('Filter successfully added'));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [designationFilter, filters, setSavedFilters, savedFilters]);
+
   const handleModifyFilter = React.useCallback(() => {
     const found = savedFilters.find((f: any) => f.label === oldFilterName);
     found &&
@@ -119,20 +124,23 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
         label: oldFilterName,
         value: filters,
       });
+    SuccessToast(t('Filter successfully updated'));
   }, [filters, savedFilters, oldFilterName]);
 
   const handleSavedFiltersSelect = React.useCallback(
     (selectedValue: any) => {
-      setDesignationFilter(selectedValue.label);
-      const indexofSelected = savedFilters.findIndex(
-        (f: any) => f.label === selectedValue.label
-      );
-      indexofSelected > -1
-        ? (function () {
-            setAllFilters(savedFilters[indexofSelected].value);
-            setOldFilterName(selectedValue.label);
-          })()
-        : setAllFilters([]);
+      if (selectedValue) {
+        setDesignationFilter(selectedValue.label);
+        const indexofSelected = savedFilters.findIndex(
+          (f: any) => f.label === selectedValue.label
+        );
+        indexofSelected > -1
+          ? (function () {
+              setAllFilters(savedFilters[indexofSelected].value);
+              setOldFilterName(selectedValue.label);
+            })()
+          : setAllFilters([]);
+      }
     },
     [savedFilters, setAllFilters]
   );
@@ -147,6 +155,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
     setSavedFilters(savedFilters);
     setAllFilters([]);
     setDesignationFilter('');
+    SuccessToast(t('Filter successfully removed'));
   }
 
   React.useEffect(() => {
