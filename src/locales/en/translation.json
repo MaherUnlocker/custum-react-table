@@ -15,5 +15,8 @@
   "Show all :": "Show all :",
   "Actions": "Actions",
   "Rows per page": "Rows per page",
-  "of": "of"
+  "of": "of",
+  "Filter successfully removed": "Filter successfully removed",
+  "Filter successfully updated": "Filter successfully updated",
+  "Filter successfully added": "Filter successfully added"
 }

@@ -15,5 +15,8 @@
   "Show all :": "Afficher tous:",
   "Actions": "Actions",
   "Rows per page": "Lignes par page",
-  "of": "sur"
+  "of": "sur",
+  "Filter successfully removed": "Filtre supprimé avec succès",
+  "Filter successfully updated": "Filtre modifié avec succès",
+  "Filter successfully added": "Filtre ajouté  avec succès"
 }
