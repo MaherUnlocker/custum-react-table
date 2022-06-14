@@ -68,7 +68,7 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
         id={column.id}
         name={column.id}
         options={unique}
-        placeholder={unique.length > 0 ? t('Select...') : t('None')}
+        placeholder={unique.length > 0 ? 'Sélectionner...' : 'Aucune'}
         onChange={handleSelectOnChangeEvent}
         // onInputChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}

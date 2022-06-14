@@ -199,7 +199,7 @@ export default function CollapsibleTable(
                     );
                   })}
                 <TableCell key="actions" align="right">
-                  {t('Actions')}
+                  Actions
                 </TableCell>
               </React.Fragment>
             ))}

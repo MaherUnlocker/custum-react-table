@@ -51,7 +51,7 @@ export function ColumnHidePageCustom<T extends Record<string, unknown>>({
             color: '#495057 ',
           }}
         >
-          {t('Show all :')}
+          Afficher tous:
         </label>
         <input
           type="checkbox"

@@ -256,7 +256,7 @@ export function TableToolbar<T extends Record<string, unknown>>({
                   fill: 'white',
                 }}
               />
-              {t('Filter(s)')}
+              Filtre(s)
             </StyledButton>
           </React.Fragment>
         ) : null}

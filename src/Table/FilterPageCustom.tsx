@@ -18,6 +18,7 @@ import { SelectComponent } from './SelectComponent';
 import { TrashIcon } from '../components/assets/TrashIcon';
 import { PencilIcon } from '../components/assets/PencilIcon';
 import SuccessToast from '../components/SuccessToast';
+import ErrorToast from '../components/ErrorToast';
 
 const useStyles = makeStyles(
   createStyles({
@@ -94,37 +95,51 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
   const [oldFilterName, setOldFilterName] = React.useState('');
 
   const handleSaveFiltersClick = React.useCallback(() => {
+    if (
+      designationFilter === null ||
+      designationFilter === undefined ||
+      designationFilter === ''
+    ) {
+      ErrorToast('Merci de saisir un nom pour votre filtre');
+      return;
+    }
+
     if (filters.length > 0) {
       const found = savedFilters.find(
         (f: any) => f.label === designationFilter
       );
 
       found
-        ? (savedFilters[
-            savedFilters.findIndex((f: any) => f.label === designationFilter)
-          ] = {
-            label: designationFilter,
-            value: filters,
-          })
+        ? (function () {
+            savedFilters[
+              savedFilters.findIndex((f: any) => f.label === designationFilter)
+            ] = {
+              label: designationFilter,
+              value: filters,
+            };
+            SuccessToast('Filtre ajouté  avec succès');
+          })()
         : setSavedFilters([
             ...savedFilters,
             { label: designationFilter, value: filters },
           ]);
     }
-    SuccessToast(t('Filter successfully added'));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [designationFilter, filters, setSavedFilters, savedFilters]);
 
   const handleModifyFilter = React.useCallback(() => {
     const found = savedFilters.find((f: any) => f.label === oldFilterName);
     found &&
-      (savedFilters[
-        savedFilters.findIndex((f: any) => f.label === oldFilterName)
-      ] = {
-        label: oldFilterName,
-        value: filters,
-      });
-    SuccessToast(t('Filter successfully updated'));
+      (function () {
+        savedFilters[
+          savedFilters.findIndex((f: any) => f.label === oldFilterName)
+        ] = {
+          label: oldFilterName,
+          value: filters,
+        };
+        SuccessToast('Filtre modifié avec succès');
+      })();
   }, [filters, savedFilters, oldFilterName]);
 
   const handleSavedFiltersSelect = React.useCallback(
@@ -147,15 +162,17 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
 
   function handleDeleteFilter() {
     const found = savedFilters.find((f: any) => f.label === designationFilter);
-    found &&
+
+    if (found) {
       savedFilters.splice(
         savedFilters.findIndex((f: any) => f.label === designationFilter),
         1
       );
-    setSavedFilters(savedFilters);
-    setAllFilters([]);
-    setDesignationFilter('');
-    SuccessToast(t('Filter successfully removed'));
+      setSavedFilters(savedFilters);
+      setAllFilters([]);
+      setDesignationFilter('');
+      SuccessToast('Filtre supprimé avec succès');
+    }
   }
 
   React.useEffect(() => {
@@ -178,7 +195,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
           marginTop: 10,
         }}
       >
-        {t('Saved filters')}
+        Filtres enregistrés
       </StyledLabel>
 
       <Box
@@ -187,75 +204,85 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       >
         <div style={{ width: ' 100%', marginTop: 10 }}>
           <StyledLabel htmlFor="savedFilter">
-            {t('Select a filter')}
+            Sélectionner un filtre
           </StyledLabel>
-
-          <SelectComponent
-            options={savedFilters.length > 0 ? savedFilters : []}
-            setDesignationFilter={setDesignationFilter}
-            handleSavedFiltersSelect={handleSavedFiltersSelect}
-          />
-        </div>
-
-        <Box component="div" sx={{ display: 'flex', alignItems: 'end' }}>
-          <StyledIconButton
-            icon="DiskIcon"
+          <div
             style={{
-              margin: '5px',
-              marginBottom: '0',
-              border: '1px solid',
-              borderRadius: '6px',
-            }}
-            onClick={handleSaveFiltersClick}
-          >
-            <DiskIcon height={20} width={20} />
-          </StyledIconButton>
-          <StyledIconButton
-            icon="VerticalDotsIcon"
-            style={{
-              margin: '5px',
-              marginBottom: '0',
-              border: '1px solid',
-              borderRadius: '6px',
+              display: 'grid',
+              gridTemplateColumns: '10fr 1fr',
+              alignItems: 'center',
             }}
           >
-            <VerticalDotsIcon
-              height={20}
-              width={20}
-              className="dropdown"
-              id="filteraction"
-              data-bs-toggle="dropdown"
+            <SelectComponent
+              options={savedFilters.length > 0 ? savedFilters : []}
+              setDesignationFilter={setDesignationFilter}
+              handleSavedFiltersSelect={handleSavedFiltersSelect}
+              designationFilter={designationFilter}
+              setAllFilters={setAllFilters}
             />
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <div
-                className="dropdown-item d-flex align-items-center"
-                onClick={() => handleModifyFilter()}
+            <Box component="div" sx={{ display: 'flex', alignItems: 'end' }}>
+              <StyledIconButton
+                icon="DiskIcon"
+                style={{
+                  margin: '0px 5px',
+
+                  border: '1px solid',
+                  borderRadius: '6px',
+                }}
+                onClick={handleSaveFiltersClick}
               >
-                <PencilIcon
-                  className="mx-2"
-                  style={{ cursor: 'pointer' }}
+                <DiskIcon height={20} width={20} />
+              </StyledIconButton>
+              <StyledIconButton
+                icon="VerticalDotsIcon"
+                style={{
+                  margin: '0px 5px',
+                  border: '1px solid',
+                  borderRadius: '6px',
+                }}
+              >
+                <VerticalDotsIcon
                   height={20}
                   width={20}
-                  onClick={() => {}}
+                  className="dropdown"
+                  id="filteraction"
+                  data-bs-toggle="dropdown"
                 />
-                {t('Modify')}
-              </div>
-              <div
-                className="dropdown-item d-flex align-items-center"
-                onClick={handleDeleteFilter}
-              >
-                <TrashIcon
-                  style={{ cursor: 'pointer' }}
-                  height={20}
-                  width={20}
-                  onClick={() => {}}
-                  className="mx-2"
-                />
-                {t('Delete')}
-              </div>
-            </div>
-          </StyledIconButton>
-        </Box>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  <div
+                    className="dropdown-item d-flex align-items-center"
+                    onClick={() => handleModifyFilter()}
+                  >
+                    <PencilIcon
+                      className="mx-2"
+                      style={{ cursor: 'pointer' }}
+                      height={20}
+                      width={20}
+                      onClick={() => {}}
+                    />
+                    Modifier
+                  </div>
+                  <div
+                    className="dropdown-item d-flex align-items-center"
+                    onClick={handleDeleteFilter}
+                  >
+                    <TrashIcon
+                      style={{ cursor: 'pointer' }}
+                      height={20}
+                      width={20}
+                      onClick={() => {}}
+                      className="mx-2"
+                    />
+                    Effacer
+                  </div>
+                </div>
+              </StyledIconButton>
+            </Box>
+          </div>
+        </div>
       </Box>
 
       <StyledLabel
@@ -266,7 +293,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
           marginTop: 10,
         }}
       >
-        {t('Filter')}
+        Filtrer
       </StyledLabel>
 
       {Object.keys(instance.state.filters).length > 0 ? (
@@ -279,14 +306,14 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
         </Box>
       ) : (
         <StyledButton rounded variant="light" style={{ width: '100%' }}>
-          {t('No active filter')}
+          Aucun filtre actif
         </StyledButton>
       )}
 
       <Box
         component="div"
         style={{
-          maxHeight: !isMobile ? '50vh' : 'auto',
+          maxHeight: !isMobile ? '35vh' : 'auto',
           overflow: 'auto',
           alignItems: 'center',
         }}

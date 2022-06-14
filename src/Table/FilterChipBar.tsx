@@ -89,7 +89,7 @@ export function FilterChipBar<T extends Record<string, unknown>>({
         }}
         onClick={() => resetFilters()}
       >
-        {t('Delete all')}
+        Effacer tous
       </span>
       {filters &&
         allColumns.map((column) => {

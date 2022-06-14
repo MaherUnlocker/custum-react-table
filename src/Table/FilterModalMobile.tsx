@@ -45,7 +45,7 @@ export default function FilterModalMobile({
             className={classes.tableFilterAltOutlinedIcon}
             style={{ flexDirection: 'row-reverse' }}
           />
-          <StyledH2> {t('Filter(s)')}</StyledH2>
+          <StyledH2> Filtre(s)</StyledH2>
         </Box>
       </ModalHeader>
       <ModalBody style={{ margin: '0 ', padding: '0 ', height: '100%' }}>

@@ -10,7 +10,6 @@ import {
   Tooltip,
 } from '@mui/material';
 import { Card, CardBody, CardFooter, CardHeader } from 'reactstrap';
-import _uniqby from 'lodash.uniqby';
 import cx from 'classnames';
 import { useTranslation } from 'react-i18next';
 import {
@@ -579,9 +578,7 @@ export function Table<T extends Record<string, unknown>>({
                     className={classes.tableFilterAltOutlinedIcon}
                     style={{ flexDirection: 'row-reverse' }}
                   />
-                  <StyledH2 style={{ marginBottom: 0 }}>
-                    {t('Filter(s)')}
-                  </StyledH2>
+                  <StyledH2 style={{ marginBottom: 0 }}>Filtre(s)</StyledH2>
                 </Box>
 
                 <CrossIcon

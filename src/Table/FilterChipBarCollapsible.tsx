@@ -146,7 +146,7 @@ export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
         }}
         onClick={() => resetFilters()}
       >
-        {t('Delete all')}
+        Effacer tous
       </span>
       {filters.length > 0 ? (
         <FilteredChipBar splicedFilter={false} showMore={showMore} />
@@ -170,7 +170,7 @@ export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
             marginRight: '11px',
           }}
         >
-          {expanded ? t('Show less') : t('Show more')}
+          {expanded ? 'Afficher moins' : 'Afficher plus'}
         </span>
       ) : null}
     </div>

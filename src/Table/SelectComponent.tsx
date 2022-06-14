@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Select from 'react-select';
-
+import { Filters } from 'react-table';
 type optionType = {
   label: string;
   value: string;
@@ -11,11 +11,15 @@ type selectComponentType = {
   options: optionType[];
   setDesignationFilter: React.Dispatch<React.SetStateAction<string>>;
   handleSavedFiltersSelect: (selectedValue: any) => void;
+  designationFilter: string;
+  setAllFilters: any;
 };
 export function SelectComponent({
   options,
   setDesignationFilter,
   handleSavedFiltersSelect,
+  designationFilter,
+  setAllFilters,
 }: selectComponentType): JSX.Element {
   const { t } = useTranslation();
   const [inputValue, setInputValue] = React.useState('');
@@ -53,26 +57,37 @@ export function SelectComponent({
       setInputValue(newInputValue);
       setDesignationFilter(newInputValue);
     }
+
+    if (action === 'clear') {
+      setValue(option);
+      setDesignationFilter(option);
+      setAllFilters([]);
+    }
   };
+  React.useEffect(() => {}, [designationFilter]);
 
   const onChange = (option: any, { action }: any) => {
     setValue(option);
     setDesignationFilter(option);
     handleSavedFiltersSelect(option);
+    if (action === 'clear') {
+      setAllFilters([]);
+    }
   };
 
   return (
     <Select
-      id="savedFilter"
-      name="savedFilter"
+      isClearable
       menuPlacement="auto"
       menuPosition="fixed"
-      placeholder={options.length > 0 ? "t('Select...')" : t('None')}
+      id="savedFilter"
+      name="savedFilter"
+      placeholder={options.length > 0 ? t('Select...') : t('None')}
       options={options}
       onChange={onChange}
       onInputChange={onInputChange}
       inputValue={inputValue}
-      value={value}
+      defaultValue={value}
     />
   );
 }

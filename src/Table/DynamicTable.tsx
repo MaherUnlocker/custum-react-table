@@ -1,9 +1,7 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 
-import { I18nextProvider } from 'react-i18next';
 import { FilterValue, IdType, Row, customColumnProps } from 'react-table';
-import { ToastContainer } from 'react-toastify';
 import axios from 'axios';
 
 import { AngleSmallRightIcon } from '../components/assets/AngleSmallRightIcon';
@@ -13,11 +11,8 @@ import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErr
 import { Table } from './Table';
 import { TrashIcon } from '../components/assets/TrashIcon';
 import { useStyles } from './TableStyle';
-import i18n from '../i18n';
 
 import 'react-toastify/dist/ReactToastify.css';
-
-// import './index.css';
 export interface DynamicTableProps {
   url?: string;
   onClick?: (row: any) => void;
@@ -43,6 +38,7 @@ export interface DynamicTableProps {
   customJsxSideFilterButton?: React.ReactNode;
   arrayOfCustomColumns?: customColumnProps[] | undefined;
   setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  i18config?: any;
 }
 
 type DataType = {
@@ -301,29 +297,28 @@ export function DynamicTable({
     return <LoadingErrorAnimation />;
 
   return (
-    <I18nextProvider i18n={i18n}>
-      <Table
-        name={name}
-        columns={columns}
-        setSelectedRows={setSelectedRows}
-        data={data as any}
-        canGroupBy={canGroupBy}
-        canSort={canSort}
-        canSelect={canSelect}
-        canResize={canResize}
-        actionColumn={actionColumn}
-        showGlobalFilter={showGlobalFilter}
-        showFilter={showFilter}
-        showColumnIcon={showColumnIcon}
-        filterActive={filterActive}
-        setLocalFilterActive={setLocalFilterActive}
-        customJsxSideFilterButton={customJsxSideFilterButton}
-        onClick={onClick}
-        elevationTable={elevationTable}
-        minHeight={minHeight}
-        maxHeight={maxHeight}
-      />
-      <ToastContainer />
-    </I18nextProvider>
+    // <I18nextProvider i18n={i18nConfig}>
+    <Table
+      name={name}
+      columns={columns}
+      setSelectedRows={setSelectedRows}
+      data={data as any}
+      canGroupBy={canGroupBy}
+      canSort={canSort}
+      canSelect={canSelect}
+      canResize={canResize}
+      actionColumn={actionColumn}
+      showGlobalFilter={showGlobalFilter}
+      showFilter={showFilter}
+      showColumnIcon={showColumnIcon}
+      filterActive={filterActive}
+      setLocalFilterActive={setLocalFilterActive}
+      customJsxSideFilterButton={customJsxSideFilterButton}
+      onClick={onClick}
+      elevationTable={elevationTable}
+      minHeight={minHeight}
+      maxHeight={maxHeight}
+    />
+    // </I18nextProvider>
   );
 }
