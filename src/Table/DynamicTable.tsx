@@ -38,7 +38,6 @@ export interface DynamicTableProps {
   customJsxSideFilterButton?: React.ReactNode;
   arrayOfCustomColumns?: customColumnProps[] | undefined;
   setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
-  i18config?: any;
 }
 
 type DataType = {

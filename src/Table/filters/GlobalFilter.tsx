@@ -32,6 +32,7 @@ export default function GlobalFilter({
         onChange(e.target.value);
       }}
       placeholder="Rechercher"
+      // placeholder={t('Search')}
       // placeholder={`Rechercher ${count} records...`}
     />
   );
