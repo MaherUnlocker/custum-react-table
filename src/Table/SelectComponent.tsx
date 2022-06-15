@@ -21,6 +21,7 @@ export function SelectComponent({
   setAllFilters,
 }: selectComponentType): JSX.Element {
   // const { t } = useTranslation();
+  const [selectInputRef, setSelectInputRef] = React.useState<any | null>(null);
   const onInputChange = (
     inputValue: string,
     { action, prevInputValue }: InputActionMeta
@@ -46,7 +47,6 @@ export function SelectComponent({
       setAllFilters([]);
     }
   };
-  const [selectInputRef, setSelectInputRef] = React.useState<any | null>(null);
 
   React.useEffect(() => {
     if (designationFilter === '') {
