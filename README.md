@@ -142,6 +142,8 @@ export default function App(): JSX.Element {
         // when you update your backend set dataIsUpdated to true to render table
         setDataIsUpdated={setDataIsUpdated}
         dataIsUpdated={dataIsUpdated}
+        // request header to use custom fetching data like language
+        requestHeader={{"string":"string"}}
         // if you need your table is elevated in his parent 
         elevationTable={8}
         //this for let you modify the height of the table and min height you can put number or string  or calc() function of css
