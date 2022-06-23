@@ -38,6 +38,7 @@ export interface DynamicTableProps {
   customJsxSideFilterButton?: React.ReactNode;
   arrayOfCustomColumns?: customColumnProps[] | undefined;
   setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  requestHeader?: Record<string, string>;
 }
 
 type DataType = {
@@ -90,6 +91,7 @@ export function DynamicTable({
   dataIsUpdated,
   minHeight,
   maxHeight,
+  requestHeader,
 }: DynamicTableProps): React.ReactElement {
   const [apiResult, setApiResult] = React.useState<apiResultProps>();
 
@@ -98,7 +100,9 @@ export function DynamicTable({
   const classes = useStyles();
   async function fetchData(url: string) {
     await axios
-      .get(url)
+      .get(url, {
+        headers: requestHeader,
+      })
       .then((response: { data: apiResultProps }) => {
         setApiResult(response.data);
       })

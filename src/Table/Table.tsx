@@ -582,6 +582,7 @@ export function Table<T extends Record<string, unknown>>({
                 </Box>
 
                 <CrossIcon
+                  style={{ cursor: 'pointer' }}
                   height={11}
                   width={25}
                   onClick={() => {

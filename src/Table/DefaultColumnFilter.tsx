@@ -6,6 +6,7 @@ import { FilterProps } from 'react-table';
 import { findFirstColumn } from './Table';
 import { StyledLabel } from '../components/assets/StyledLabel';
 import { StyledSelectInput } from '../components/assets/StyledSelectInput';
+import NoOptionsMessage from './NoOptionsMessage';
 
 export default function DefaultColumnFilter<T extends Record<string, unknown>>({
   columns,
@@ -72,6 +73,7 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
         onChange={handleSelectOnChangeEvent}
         // onInputChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}
+        components={{ NoOptionsMessage }}
       />
     </React.Fragment>
   );

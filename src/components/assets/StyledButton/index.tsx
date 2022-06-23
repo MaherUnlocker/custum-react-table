@@ -1,20 +1,10 @@
-import { ButtonProps } from 'reactstrap';
 import React from 'react';
+import { ButtonProps } from 'reactstrap';
+
 import styled from 'styled-components';
 
-type Variant =
-  | 'primary'
-  | 'secondary'
-  | 'danger'
-  | 'reminder'
-  | 'success'
-  | 'info'
-  | 'warning'
-  | 'light'
-  | 'link';
-
 export type StyledButtonPropsType = {
-  variant: Variant;
+  variant: string;
   children: React.ReactNode;
   rounded?: boolean;
   outline?: boolean;
@@ -44,7 +34,7 @@ export const StyledButton = styled.button<StyledButtonPropsType>`
       ? '#f8f9fa'
       : variant === 'link'
       ? 'transparent'
-      : '#F8F8FB'};
+      : variant};
 
   color: ${({ variant, outline }: StyledButtonPropsType) =>
     outline
@@ -66,11 +56,7 @@ export const StyledButton = styled.button<StyledButtonPropsType>`
         ? '#000'
         : variant === 'link'
         ? '#007bff'
-        : '#F8F8FB'
-      : variant === 'light'
-      ? '#000'
-      : variant === 'link'
-      ? '#007bff'
+        : variant
       : '#fff'};
 
   border: ${({ variant, outline }: StyledButtonPropsType) =>
@@ -95,7 +81,7 @@ export const StyledButton = styled.button<StyledButtonPropsType>`
       ? '#C6C6C6'
       : variant === 'link'
       ? 'transparent'
-      : '#F8F8FB'};
+      : variant};
 
   ${({ rounded }: StyledButtonPropsType) =>
     rounded ? `border-radius: 6px;` : `border-radius: 0;`}
@@ -142,7 +128,7 @@ export const StyledButton = styled.button<StyledButtonPropsType>`
         ? '#f9fafb'
         : variant === 'link'
         ? 'transparent'
-        : '#F8F8FB'};
+        : variant};
     color: ${({ variant, outline }: StyledButtonPropsType) =>
       outline
         ? ['primary', 'secondary', 'danger', 'reminder', 'success'].includes(
@@ -178,7 +164,7 @@ export const StyledButton = styled.button<StyledButtonPropsType>`
         ? '#F1B44C'
         : variant === 'light'
         ? '#C6C6C6'
-        : '#F8F8FB'};
+        : variant};
 
     text-decoration: ${({ variant }: StyledButtonPropsType) =>
       variant === 'link' ? `underline` : ``};

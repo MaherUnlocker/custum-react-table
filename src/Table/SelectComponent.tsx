@@ -1,6 +1,8 @@
 import React from 'react';
 // import { useTranslation } from 'react-i18next';
 import Select, { InputActionMeta } from 'react-select';
+
+import NoOptionsMessage from './NoOptionsMessage';
 type optionType = {
   label: string;
   value: string;
@@ -67,6 +69,7 @@ export function SelectComponent({
       options={options}
       placeholder={'Selectionner...'}
       onChange={onChange}
+      components={{ NoOptionsMessage }}
     />
   );
 }
