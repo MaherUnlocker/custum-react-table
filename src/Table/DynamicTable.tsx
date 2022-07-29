@@ -21,7 +21,7 @@ export interface DynamicTableProps {
   name?: string;
   minHeight?: number | string;
   maxHeight?: number | string;
-
+  customSelect?: boolean;
   canGroupBy?: boolean;
   canSort?: boolean;
   canSelect?: boolean;
@@ -76,6 +76,7 @@ export function DynamicTable({
   canResize,
   canExpand,
   canSelect,
+  customSelect,
   showGlobalFilter,
   showFilter,
   showColumnIcon,
@@ -188,8 +189,8 @@ export function DynamicTable({
           // Build our expander column
           id: 'expander', // Make sure it has an ID
           Header: '',
-          minWidth: 50,
-          width: 60,
+          // minWidth: 50,
+          // width: 60,
           disableResizing: true,
           disableGroupBy: true,
           canFilter: false,
@@ -309,6 +310,7 @@ export function DynamicTable({
       canGroupBy={canGroupBy}
       canSort={canSort}
       canSelect={canSelect}
+      customSelect={customSelect}
       canResize={canResize}
       actionColumn={actionColumn}
       showGlobalFilter={showGlobalFilter}

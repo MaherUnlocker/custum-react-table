@@ -68,6 +68,7 @@ import { TablePagination } from './TablePagination';
 import { TableToolbar } from './TableToolbar';
 import { TooltipCellRenderer } from './TooltipCell';
 import DefaultColumnFilter from './DefaultColumnFilter';
+import ControlledCheckbox from '../components/ControlledCheckbox';
 
 export interface TableProperties<T extends Record<string, unknown>>
   extends TableOptions<T>,
@@ -150,12 +151,70 @@ const selectionHook = (hooks: Hooks<any>) => {
   ]);
 };
 
+const customSelectionHook = (hooks: Hooks<any>) => {
+  hooks.allColumns.push((columns) => [
+    // Let's make a column for selection
+
+    {
+      id: '_selector',
+      disableResizing: true,
+      disableGroupBy: true,
+      minWidth: 45,
+      width: 45,
+      maxWidth: 45,
+      Aggregated: undefined,
+      // The header can use the table's getToggleAllRowsSelectedProps method
+      // to render a checkbox
+      Header: ({
+        row,
+        dispatch,
+        flatRows,
+        isAllRowsSelected,
+        state,
+        toggleAllRowsSelected,
+      }: any) => (
+        <ControlledCheckbox
+          isHeader={true}
+          toggleAllRowsSelected={toggleAllRowsSelected}
+          row={row}
+          dispatchSelectedRows={dispatch}
+          selectedFlatRows={flatRows}
+          isAllRowsSelected={isAllRowsSelected}
+          selectedRows={state.customSelectedRows}
+        />
+      ),
+      // The cell can use the individual row's getToggleRowSelectedProps method
+      // to the render a checkbox
+      Cell: ({
+        row,
+        dispatch,
+        flatRows,
+        isAllRowsSelected,
+        state,
+        toggleAllRowsSelected,
+        selectedFlatRows,
+      }: any) => (
+        <ControlledCheckbox
+          isHeader={false}
+          row={row}
+          dispatchSelectedRows={dispatch}
+          selectedFlatRows={selectedFlatRows}
+          isAllRowsSelected={isAllRowsSelected}
+          selectedRows={state.customSelectedRows}
+        />
+      ),
+    },
+    ...columns,
+  ]);
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const headerProps = <T extends Record<string, unknown>>(
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   props: any,
   { column }: Meta<T, { column: HeaderGroup<T> }>
 ) => getStyles(props, column && column.disableResizing, column && column.align);
+
 export function Table<T extends Record<string, unknown>>({
   name,
   columns,
@@ -163,6 +222,7 @@ export function Table<T extends Record<string, unknown>>({
   canGroupBy,
   canSort,
   canSelect,
+  customSelect,
   canResize,
   actionColumn,
   showGlobalFilter,
@@ -240,7 +300,9 @@ export function Table<T extends Record<string, unknown>>({
   let localHooks = hooks;
 
   if (canSelect) {
-    localHooks.push(selectionHook as any);
+    customSelect
+      ? localHooks.push(customSelectionHook as any)
+      : localHooks.push(selectionHook as any);
   }
   if (actionColumn !== undefined) {
     localHooks.push(customHooks as any);
@@ -257,10 +319,52 @@ export function Table<T extends Record<string, unknown>>({
       globalFilter: (rows, columnIds, filterValue) =>
         DefaultGlobalFilter(rows, columnIds, filterValue, filterOptions),
 
-      initialState,
+      initialState: { ...initialState, customSelectedRows: [] },
+      stateReducer: (newState, action, prevState) => {
+        switch (action.type) {
+          case 'customSelectRow':
+            return {
+              ...newState,
+              customSelectedRows: [
+                ...newState.customSelectedRows,
+                action.payload,
+              ],
+            };
+          case 'customUnSelectRow':
+            return {
+              ...newState,
+              customSelectedRows: [
+                ...newState.customSelectedRows.filter(
+                  (elm: any) => elm.id !== action.payload
+                ),
+              ],
+            };
+          case 'customSelectAll':
+            return {
+              ...newState,
+              customSelectedRows: action.payload,
+            };
+          case 'customUnSelectAll':
+            return {
+              ...newState,
+              customSelectedRows: [],
+            };
+          default:
+            return newState;
+        }
+      },
     },
     ...localHooks
   );
+
+  const cellClickHandler = (cell: Cell<T>) => () => {
+    onClick &&
+      !cell.column.isGrouped &&
+      !cell.row.isGrouped &&
+      cell.column.id !== '_selector' &&
+      onClick(cell.row);
+  };
+
   const {
     headerGroups,
     getTableBodyProps,
@@ -272,29 +376,53 @@ export function Table<T extends Record<string, unknown>>({
   const debouncedState = useDebounce(state, 200);
 
   React.useEffect(() => {
-    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } =
-      debouncedState;
+    const {
+      sortBy,
+      filters,
+      pageSize,
+      columnResizing,
+      hiddenColumns,
+      customSelectedRows,
+    } = debouncedState;
     setInitialState({
       sortBy,
       filters,
       pageSize,
       columnResizing,
       hiddenColumns,
+      customSelectedRows,
     });
 
-    if (setSelectedRows !== undefined) {
-      setSelectedRows!(selectedFlatRows.map((row: any) => row.original));
-    }
     // eslint-disable-next-line
   }, [setInitialState, debouncedState]);
 
-  const cellClickHandler = (cell: Cell<T>) => () => {
-    onClick &&
-      !cell.column.isGrouped &&
-      !cell.row.isGrouped &&
-      cell.column.id !== '_selector' &&
-      onClick(cell.row);
-  };
+  React.useEffect(() => {
+    if (setSelectedRows !== undefined) {
+      if (instance.isAllRowsSelected) {
+        setSelectedRows!(
+          instance.flatRows.map((row: any) => ({
+            ...row.original,
+            depth: row.depth,
+          }))
+        );
+      } else if (customSelect !== undefined) {
+        setSelectedRows!(
+          state.customSelectedRows.map((row: any) => ({
+            ...row.original,
+            depth: row.depth,
+          }))
+        );
+      } else {
+        setSelectedRows!(
+          selectedFlatRows.map((row: any) => ({
+            ...row.original,
+            depth: row.depth,
+          }))
+        );
+      }
+    }
+    // eslint-disable-next-line
+  }, [state.customSelectedRows, instance.isAllRowsSelected]);
 
   const isMobile = IsMobileView();
   return (

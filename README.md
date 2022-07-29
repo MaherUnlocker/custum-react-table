@@ -3,21 +3,14 @@
 **Custom-react-table** is based on <code>React-Table v7</code>: collection of hooks for **building powerful tables and datagrid experiences**. These hooks are lightweight, composable, and ultra-extensible, but **do not render any markup or styles for you**. This effectively means that React Table is a "headless" UI library.
 
 **Desktop Version:**
- 
+
 ![alt text](https://user-images.githubusercontent.com/30791819/157678784-2e49fddd-5766-4185-a816-2e36b2a60037.png)
 
 **Mobile Version:**
 
-
-
-
 ![alt text](https://user-images.githubusercontent.com/30791819/157678930-6004a305-fac9-40de-b549-68a6e7798d8e.png)
 
-
-
-
-
-## greets to 
+## greets to
 
 > https://github.com/atefBB
 
@@ -41,13 +34,7 @@ yarn add @maherunlocker/custom-react-table
 
 This package is compatible with React v16.8+ and works with ReactDOM.
 
-
-
 ### How to use
-
-
-
-
 
 ```jsx
 
@@ -57,9 +44,9 @@ import { DynamicTable } from @maherunlocker/custom-react-table
 
 //this the format of object if you need to add custom columns to table with your personal jsx
 interface customColumnProps {
-  indexOFColumn: number;  //position of column to insert it 
-  columnName: string;    //name of column 
-  customJsx:  React.ReactNode;;   //react componant 
+  indexOFColumn: number;  //position of column to insert it
+  columnName: string;    //name of column
+  customJsx:  React.ReactNode;;   //react componant
 }
 
 let arrayOfCustomColumns: customColumnProps[] = [];
@@ -104,7 +91,7 @@ export default function App(): JSX.Element {
     <>
       <DynamicTable
         //put your backed api url it's obligation  to get your date from api
-        
+
         url='http://localhost:4000/client'
         // url='http://localhost:4000/cards'
 
@@ -125,6 +112,9 @@ export default function App(): JSX.Element {
         // --->here showing checkbox in the begin of RowTable with return you the checked rows
         canSelect
         setSelectedRows={setSelectedRows}
+
+        // --->here add custom checkbox without only checked row or subrow without depend his parent row
+        customSelect
         // --->here showing global filter input on the top of table
         showGlobalFilter
         // --->here showing  filter button  on the top of table
@@ -133,7 +123,7 @@ export default function App(): JSX.Element {
         setLocalFilterActive={setLocalFilterActive}
         // --->here add action header with delete and duplicate
         canDeleteOrDuplicate
-        
+
         // --->here you can add any column to the table in the specified place with custom name and customjsx
         arrayOfCustomColumns={arrayOfCustomColumns}
         // --->here  if you don't have any other click in row you can use to get clicked row details
@@ -144,10 +134,10 @@ export default function App(): JSX.Element {
         dataIsUpdated={dataIsUpdated}
         // request header to use custom fetching data like language
         requestHeader={{"string":"string"}}
-        // if you need your table is elevated in his parent 
+        // if you need your table is elevated in his parent
         elevationTable={8}
         //this for let you modify the height of the table and min height you can put number or string  or calc() function of css
-       [ NB: for maxHeight must be less than 100%] 
+       [ NB: for maxHeight must be less than 100%]
         minHeight='calc(100% - 276px)'
         maxHeight={'200px'}
 
@@ -171,16 +161,18 @@ export default function App(): JSX.Element {
 ```
 
 ### other info
-<span style="color:red">if you use vitejs` project  add thisto main  :</span>.
+
+<span style="color:red">if you use vitejs` project add thisto main :</span>.
+
 ```sh
  import "regenerator-runtime/runtime";
 ```
----> if you need click on row and click on custom cell add to your custom jsx  `onClick={(e) => {
-             put here your function;
-              e.stopPropagation(); 
-            }}`
---->            
+
+---> if you need click on row and click on custom cell add to your custom jsx `onClick={(e) => { put here your function; e.stopPropagation(); }}`
+--->
+
 ### Example for data with expand
+
 . type of response must be like this:
 
 ```js
@@ -192,7 +184,7 @@ export default function App(): JSX.Element {
       "lastName"
       "age"
     ],
-    //here your data 
+    //here your data
     "data": [
       {
         "id": 1,
@@ -231,15 +223,13 @@ export default function App(): JSX.Element {
 
 `tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
 
-
 ## This example uses:
 
-
-  * `useGroupBy` to enable header groups
-  * `useFilters` for per-column filters.  Note that filters are displayed in a separate filter dropdown rather than being embedded in each column header.
-  * `useSortBy` for column sorting
-  * `useExpanded` to allow expansion of grouped columns
-  * `useFlexLayout` for a scalable full width table
-  * `usePagination` for pagination
-  * `useResizeColumns` for resizable columns
-  * `useRowSelect` for row selection
+- `useGroupBy` to enable header groups
+- `useFilters` for per-column filters. Note that filters are displayed in a separate filter dropdown rather than being embedded in each column header.
+- `useSortBy` for column sorting
+- `useExpanded` to allow expansion of grouped columns
+- `useFlexLayout` for a scalable full width table
+- `usePagination` for pagination
+- `useResizeColumns` for resizable columns
+- `useRowSelect` for row selection

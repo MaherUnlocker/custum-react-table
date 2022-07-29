@@ -92,7 +92,8 @@ declare module 'react-table' {
     UseResizeColumnsState<D>,
     UseRowSelectState<D>,
     UseSortByState<D> {
-    rowCount: number
+    rowCount: number,
+    customSelectedRows: any[]
   }
 
   export interface ColumnInterface<D extends Record<string, unknown> = Record<string, unknown>>
