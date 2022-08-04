@@ -144,7 +144,8 @@ export function DynamicTable({
                     <img
                       src={value.cell.value}
                       style={{ height: '50px' }}
-                      alt=""
+                      alt={key}
+                      id="tablepicture"
                     />
                   ),
                 };
@@ -207,6 +208,7 @@ export function DynamicTable({
                     // of the row
                     paddingLeft: `${row.depth * 2}rem`,
                   },
+                  title: '',
                 })}
               >
                 {row.isExpanded ? (

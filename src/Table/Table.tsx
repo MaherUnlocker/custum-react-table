@@ -48,7 +48,12 @@ import {
   TableRow,
   useStyles,
 } from './TableStyle';
-import { camelToWords, useDebounce, useLocalStorage } from '../utils';
+import {
+  camelToWords,
+  useDebounce,
+  useLocalStorage,
+  filterByReference,
+} from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 import ChoiceIcon from './Choice';
 import CollapsibleTable from './CollapsibleTable';
@@ -177,10 +182,17 @@ const customSelectionHook = (hooks: Hooks<any>) => {
           isHeader={true}
           toggleAllRowsSelected={toggleAllRowsSelected}
           row={row}
+          allRows={flatRows}
           dispatchSelectedRows={dispatch}
           selectedFlatRows={flatRows}
           isAllRowsSelected={isAllRowsSelected}
           selectedRows={state.customSelectedRows}
+          indeterminate={
+            isAllRowsSelected ||
+            flatRows.length === state.customSelectedRows.length
+              ? false
+              : state.customSelectedRows.length > 0
+          }
         />
       ),
       // The cell can use the individual row's getToggleRowSelectedProps method
@@ -197,10 +209,12 @@ const customSelectionHook = (hooks: Hooks<any>) => {
         <ControlledCheckbox
           isHeader={false}
           row={row}
+          allRows={flatRows}
           dispatchSelectedRows={dispatch}
           selectedFlatRows={selectedFlatRows}
           isAllRowsSelected={isAllRowsSelected}
           selectedRows={state.customSelectedRows}
+          indeterminate={false}
         />
       ),
     },
@@ -339,6 +353,25 @@ export function Table<T extends Record<string, unknown>>({
                 ),
               ],
             };
+          case 'unSelectedNestedRows':
+            const filteredRows = filterByReference(
+              newState.customSelectedRows,
+              action.payload,
+              false
+            );
+
+            return {
+              ...newState,
+              customSelectedRows: filteredRows,
+            };
+          case 'selectedNestedRows':
+            return {
+              ...newState,
+              customSelectedRows: [
+                ...newState.customSelectedRows,
+                ...action.payload,
+              ],
+            };
           case 'customSelectAll':
             return {
               ...newState,
@@ -393,10 +426,6 @@ export function Table<T extends Record<string, unknown>>({
       customSelectedRows,
     });
 
-    // eslint-disable-next-line
-  }, [setInitialState, debouncedState]);
-
-  React.useEffect(() => {
     if (setSelectedRows !== undefined) {
       if (instance.isAllRowsSelected) {
         setSelectedRows!(
@@ -421,8 +450,9 @@ export function Table<T extends Record<string, unknown>>({
         );
       }
     }
+
     // eslint-disable-next-line
-  }, [state.customSelectedRows, instance.isAllRowsSelected]);
+  }, [setInitialState, debouncedState, state.customSelectedRows]);
 
   const isMobile = IsMobileView();
   return (
@@ -433,6 +463,7 @@ export function Table<T extends Record<string, unknown>>({
             display: 'grid',
             gridTemplateColumns: filterActive ? '2fr 1fr ' : 'auto',
             gridColumnGap: '4px',
+            fontFamily: 'Segoe UI, -apple-system, Helvetica Neue, Arial',
           }}
         >
           <Card style={{ border: '0px' }}>
@@ -536,7 +567,9 @@ export function Table<T extends Record<string, unknown>>({
                               const {
                                 title: sortTitle = '',
                                 ...columnSortByProps
-                              } = column.getSortByToggleProps();
+                              } = column.getSortByToggleProps({
+                                title: 'Trier',
+                              });
 
                               return (
                                 <TableHeadCell
@@ -683,7 +716,12 @@ export function Table<T extends Record<string, unknown>>({
           </Card>
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
-            <Card style={{ border: '0px' }}>
+            <Card
+              style={{
+                border: '0px',
+                fontFamily: 'Segoe UI, -apple-system, Helvetica Neue, Arial',
+              }}
+            >
               <CardHeader
                 style={{
                   display: 'flex',

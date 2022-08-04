@@ -42,6 +42,7 @@ import {
   UseSortByInstanceProps,
   UseSortByOptions,
   UseSortByState,
+  TableDispatch
 } from 'react-table'
 
 declare module 'react-table' {
@@ -144,4 +145,17 @@ export type canSelectProps =
   | {
     canSelect: false;
   };
+
+export type ControlledCheckboxPropsType = {
+  isHeader: boolean;
+  indeterminate: boolean;
+  row: any;
+  dispatchSelectedRows: TableDispatch<any>;
+  selectedRows: any[];
+  allRows?: any[];
+  selectedFlatRows: any[];
+  isAllRowsSelected: boolean;
+  toggleAllRowsSelected?: any;
+};
+
 export type TableMouseEventHandler = (instance: TableInstance<T>) => MouseEventHandler
