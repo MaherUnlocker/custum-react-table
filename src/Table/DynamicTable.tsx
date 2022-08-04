@@ -236,9 +236,10 @@ export function DynamicTable({
             <elm.customJsx
               selectedRow={{
                 ...cell.row.original,
+                depth: cell.row.depth,
                 selectedRows:
-                  cell.selectedFlatRows.length > 0
-                    ? cell.selectedFlatRows.map(
+                  cell.state.customSelectedRows.length > 0
+                    ? cell.state.customSelectedRows.map(
                         (select: any) => select.original
                       )
                     : [],

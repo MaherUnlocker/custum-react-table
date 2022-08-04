@@ -95,7 +95,7 @@ export default function ControlledCheckbox({
       onClick={clickHandler}
       checked={checked}
       title={
-        row?.subRows.length > 0
+        row?.subRows?.length > 0
           ? `Double-cliquer pour sélectionner l'élément et ses sous-éléments`
           : 'sélectionner/Désélectionner'
       }
