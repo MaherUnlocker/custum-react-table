@@ -77,7 +77,10 @@ export default function ControlledCheckbox({
   React.useEffect(() => {
     isHeader
       ? setChecked(
-          isAllRowsSelected || allRows?.length === selectedRows?.length
+          isAllRowsSelected ||
+            (allRows &&
+              allRows?.length > 0 &&
+              allRows?.length === selectedRows?.length)
             ? true
             : false
         )

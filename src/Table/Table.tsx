@@ -189,7 +189,8 @@ const customSelectionHook = (hooks: Hooks<any>) => {
           selectedRows={state.customSelectedRows}
           indeterminate={
             isAllRowsSelected ||
-            flatRows.length === state.customSelectedRows.length
+            (flatRows.length > 0 &&
+              flatRows.length === state.customSelectedRows.length)
               ? false
               : state.customSelectedRows.length > 0
           }
@@ -409,21 +410,14 @@ export function Table<T extends Record<string, unknown>>({
   const debouncedState = useDebounce(state, 200);
 
   React.useEffect(() => {
-    const {
-      sortBy,
-      filters,
-      pageSize,
-      columnResizing,
-      hiddenColumns,
-      customSelectedRows,
-    } = debouncedState;
+    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } =
+      debouncedState;
     setInitialState({
       sortBy,
       filters,
       pageSize,
       columnResizing,
       hiddenColumns,
-      customSelectedRows,
     });
 
     if (setSelectedRows !== undefined) {
@@ -452,7 +446,7 @@ export function Table<T extends Record<string, unknown>>({
     }
 
     // eslint-disable-next-line
-  }, [setInitialState, debouncedState, state.customSelectedRows]);
+  }, [setInitialState, state.customSelectedRows]);
 
   const isMobile = IsMobileView();
   return (
