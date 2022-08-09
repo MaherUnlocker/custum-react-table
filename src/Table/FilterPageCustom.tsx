@@ -189,7 +189,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       setShowMore(document.getElementById('maher')!.offsetHeight! > 120);
       setCurrentHeight(document.getElementById('maher')!.offsetHeight!);
     }
-  }, []);
+  }, [designationFilter, instance.state.filters]);
 
   return (
     <div
