@@ -87,6 +87,7 @@ export default function App(): JSX.Element {
   const [filterActive, setLocalFilterActive] = React.useState<boolean>(false);
   const [selectedRows, setSelectedRows] = React.useState<any[]>([]);
   const [dataIsUpdated, setDataIsUpdated] = React.useState<boolean | number>(false);
+  const [data, setData] = React.useState<any[]>([]);
   return (
     <>
       <DynamicTable
@@ -94,7 +95,7 @@ export default function App(): JSX.Element {
 
         url='http://localhost:4000/client'
         // url='http://localhost:4000/cards'
-
+setData={setData}
         //optionnal props
          name="mytable"
         // --->here for add custom component in the end of table

@@ -384,7 +384,10 @@ export function Table<T extends Record<string, unknown>>({
               customSelectedRows: [],
             };
           default:
-            return newState;
+            return {
+              ...newState,
+              customSelectedRows: [],
+            };
         }
       },
     },

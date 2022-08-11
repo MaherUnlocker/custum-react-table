@@ -102,6 +102,7 @@ export default function ControlledCheckbox({
           ? `Double-cliquer pour sélectionner l'élément et ses sous-éléments`
           : 'sélectionner/Désélectionner'
       }
+      style={{ paddingLeft: `${row?.depth * 1.5}rem` }}
       indeterminate={indeterminate}
     />
   );

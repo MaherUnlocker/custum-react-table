@@ -18,6 +18,7 @@ export interface DynamicTableProps {
   onClick?: (row: any) => void;
   setDataIsUpdated?: React.Dispatch<React.SetStateAction<boolean | number>>;
   dataIsUpdated?: boolean | number;
+  setData?: React.Dispatch<React.SetStateAction<any[]>>;
   name?: string;
   minHeight?: number | string;
   maxHeight?: number | string;
@@ -93,6 +94,7 @@ export function DynamicTable({
   minHeight,
   maxHeight,
   requestHeader,
+  setData,
 }: DynamicTableProps): React.ReactElement {
   const [apiResult, setApiResult] = React.useState<apiResultProps>();
 
@@ -106,6 +108,7 @@ export function DynamicTable({
       })
       .then((response: { data: apiResultProps }) => {
         setApiResult(response.data);
+        setData!(data);
       })
       .catch((err: any) => {
         setError(err);
