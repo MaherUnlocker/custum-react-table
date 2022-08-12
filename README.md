@@ -95,9 +95,9 @@ export default function App(): JSX.Element {
 
         url='http://localhost:4000/client'
         // url='http://localhost:4000/cards'
-setData={setData}
         //optionnal props
          name="mytable"
+        setData={setData}  //--->here to return fetched data only
         // --->here for add custom component in the end of table
         actionColumn={SelectAccountDropdown}
         // --->here you can add component side Filter Button
