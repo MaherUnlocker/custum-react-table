@@ -108,7 +108,7 @@ export function DynamicTable({
       })
       .then((response: { data: apiResultProps }) => {
         setApiResult(response.data);
-        setData !== undefined && setData!(data);
+        setData !== undefined && setData!(response.data.data);
       })
       .catch((err: any) => {
         setError(err);
