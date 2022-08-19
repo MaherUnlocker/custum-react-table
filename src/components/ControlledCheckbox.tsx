@@ -17,6 +17,7 @@ export default function ControlledCheckbox({
   isAllRowsSelected,
   toggleAllRowsSelected,
   indeterminate,
+  movedLeft,
 }: ControlledCheckboxPropsType): JSX.Element {
   const [checked, setChecked] = React.useState<boolean>(false);
 
@@ -103,7 +104,10 @@ export default function ControlledCheckbox({
           : 'sélectionner/Désélectionner'
       }
       style={{
-        paddingLeft: row?.depth === 0 ? '9px' : `${row?.depth * 1.5}rem`,
+        paddingLeft:
+          row?.depth === 0 || movedLeft === undefined
+            ? '9px'
+            : `${row?.depth * 1.5}rem`,
       }}
       indeterminate={indeterminate}
     />
