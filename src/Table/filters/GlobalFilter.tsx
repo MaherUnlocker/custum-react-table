@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { useAsyncDebounce } from 'react-table';
 
 import { StyledSearchInput } from '../../components/assets/StyledSearchInput';
@@ -16,7 +16,7 @@ export default function GlobalFilter({
   setGlobalFilter,
   style,
 }: GlobalFilterProps): React.ReactElement {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   // const count = preGlobalFilteredRows.length;
   const [value, setValue] = React.useState<string>('');
   const onChange = useAsyncDebounce((value) => {

@@ -156,6 +156,7 @@ export type ControlledCheckboxPropsType = {
   selectedFlatRows: any[];
   isAllRowsSelected: boolean;
   toggleAllRowsSelected?: any;
+  movedLeft?: boolean
 };
 
 export type TableMouseEventHandler = (instance: TableInstance<T>) => MouseEventHandler
