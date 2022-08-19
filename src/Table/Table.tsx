@@ -222,7 +222,73 @@ const customSelectionHook = (hooks: Hooks<any>) => {
     ...columns,
   ]);
 };
+const customSelectionHookWithMoveleft = (hooks: Hooks<any>) => {
+  hooks.allColumns.push((columns) => [
+    // Let's make a column for selection
 
+    {
+      id: '_selector',
+      disableResizing: true,
+      disableGroupBy: true,
+      minWidth: 45,
+      width: 45,
+      maxWidth: 45,
+      Aggregated: undefined,
+      // The header can use the table's getToggleAllRowsSelectedProps method
+      // to render a checkbox
+      Header: ({
+        row,
+        dispatch,
+        flatRows,
+        isAllRowsSelected,
+        state,
+        toggleAllRowsSelected,
+      }: any) => (
+        <ControlledCheckbox
+          isHeader={true}
+          toggleAllRowsSelected={toggleAllRowsSelected}
+          row={row}
+          allRows={flatRows}
+          dispatchSelectedRows={dispatch}
+          selectedFlatRows={flatRows}
+          isAllRowsSelected={isAllRowsSelected}
+          selectedRows={state.customSelectedRows}
+          indeterminate={
+            isAllRowsSelected ||
+            (flatRows.length > 0 &&
+              flatRows.length === state.customSelectedRows.length)
+              ? false
+              : state.customSelectedRows.length > 0
+          }
+          movedLeft
+        />
+      ),
+
+      Cell: ({
+        row,
+        dispatch,
+        flatRows,
+        isAllRowsSelected,
+        state,
+        toggleAllRowsSelected,
+        selectedFlatRows,
+      }: any) => (
+        <ControlledCheckbox
+          isHeader={false}
+          row={row}
+          allRows={flatRows}
+          dispatchSelectedRows={dispatch}
+          selectedFlatRows={selectedFlatRows}
+          isAllRowsSelected={isAllRowsSelected}
+          selectedRows={state.customSelectedRows}
+          indeterminate={false}
+          movedLeft
+        />
+      ),
+    },
+    ...columns,
+  ]);
+};
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const headerProps = <T extends Record<string, unknown>>(
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -250,6 +316,7 @@ export function Table<T extends Record<string, unknown>>({
   elevationTable,
   minHeight,
   maxHeight,
+  canMovedCheckboxLeftOnExpand,
   ...props
 }: React.PropsWithChildren<TableProperties<T>>): React.ReactElement {
   const { t } = useTranslation();
@@ -315,9 +382,13 @@ export function Table<T extends Record<string, unknown>>({
   let localHooks = hooks;
 
   if (canSelect) {
-    customSelect
-      ? localHooks.push(customSelectionHook as any)
-      : localHooks.push(selectionHook as any);
+    if (customSelect) {
+      canMovedCheckboxLeftOnExpand !== undefined && canMovedCheckboxLeftOnExpand
+        ? localHooks.push(customSelectionHookWithMoveleft as any)
+        : localHooks.push(customSelectionHook as any);
+    } else {
+      localHooks.push(selectionHook as any);
+    }
   }
   if (actionColumn !== undefined) {
     localHooks.push(customHooks as any);
@@ -448,6 +519,10 @@ export function Table<T extends Record<string, unknown>>({
     // eslint-disable-next-line
   }, [setInitialState, state.customSelectedRows]);
 
+  React.useEffect(() => {
+    instance.dispatch({ type: 'customUnSelectAll', payload: [] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instance.data]);
   const isMobile = IsMobileView();
   return (
     <>
