@@ -39,6 +39,7 @@ export interface DynamicTableProps {
   customJsxSideFilterButton?: React.ReactNode;
   arrayOfCustomColumns?: customColumnProps[] | undefined;
   setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
+  canMovedCheckboxLeftOnExpand?: boolean;
   requestHeader?: Record<string, string>;
 }
 
@@ -94,6 +95,7 @@ export function DynamicTable({
   minHeight,
   maxHeight,
   requestHeader,
+  canMovedCheckboxLeftOnExpand,
   setData,
 }: DynamicTableProps): React.ReactElement {
   const [apiResult, setApiResult] = React.useState<apiResultProps>();
@@ -329,6 +331,7 @@ export function DynamicTable({
       elevationTable={elevationTable}
       minHeight={minHeight}
       maxHeight={maxHeight}
+      canMovedCheckboxLeftOnExpand={canMovedCheckboxLeftOnExpand}
     />
     // </I18nextProvider>
   );
