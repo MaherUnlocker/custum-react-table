@@ -118,6 +118,10 @@ export default function App(): JSX.Element {
         customSelect
         // --->here showing global filter input on the top of table
         showGlobalFilter
+
+        //----> the props for decaling checkbox on expand mode
+        canMovedCheckboxLeftOnExpand
+
         // --->here showing  filter button  on the top of table
         showFilter
         filterActive={filterActive}
