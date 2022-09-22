@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 
 import { FilterIcon } from '../components/assets/FilterIcon';
@@ -14,14 +14,16 @@ type FilterModalMobileProps = {
   onClose?: () => void;
   setLocalFilterActive: any;
   filterActive?: boolean;
+  tableName: string;
 };
 
 export default function FilterModalMobile({
   instance,
   filterActive,
   setLocalFilterActive,
+  tableName,
 }: FilterModalMobileProps): JSX.Element {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const classes = useStyles();
   return (
     <Modal
@@ -53,6 +55,7 @@ export default function FilterModalMobile({
           instance={instance}
           setLocalFilterActive={setLocalFilterActive}
           filterActive={filterActive}
+          tableName={tableName}
         />
       </ModalBody>
     </Modal>

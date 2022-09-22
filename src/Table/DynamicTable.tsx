@@ -145,10 +145,16 @@ export function DynamicTable({
                   accessor: key,
                   disableFilters: true,
                   canFilter: false,
+                  disableResizing: true,
+                  width: 120,
                   Cell: (value: any) => (
                     <img
                       src={value.cell.value}
-                      style={{ height: '50px' }}
+                      style={{
+                        height: '50px',
+                        width: '100px',
+                        objectFit: 'contain',
+                      }}
                       alt={key}
                       id="tablepicture"
                     />

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Chip, Collapse } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import {
   ColumnInstance,
   FilterValue,
@@ -41,6 +41,7 @@ type FilterChipBarProps<T extends Record<string, unknown>> = {
   instance: TableInstance<T>;
   showMore: boolean;
   currentHeight: number;
+  setDesignationFilter: any;
 };
 
 const getFilterValue = (
@@ -59,8 +60,9 @@ const getFilterValue = (
 export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
   instance,
   showMore,
+  setDesignationFilter,
 }: FilterChipBarProps<T>): React.ReactElement | null {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const classes = useStyles({});
   const {
     allColumns,
@@ -78,6 +80,8 @@ export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
 
   const resetFilters = React.useCallback(() => {
     setAllFilters([]);
+    setDesignationFilter('');
+    // eslint-disable-next-line
   }, [setAllFilters]);
 
   const [expanded, setExpanded] = React.useState(false);

@@ -11,7 +11,6 @@ import {
 } from '@mui/material';
 import { Card, CardBody, CardFooter, CardHeader } from 'reactstrap';
 import cx from 'classnames';
-import { useTranslation } from 'react-i18next';
 import {
   Cell,
   CellProps,
@@ -20,7 +19,6 @@ import {
   HeaderProps,
   Hooks,
   Meta,
-  Row,
   TableInstance,
   TableOptions,
   useColumnOrder,
@@ -50,9 +48,9 @@ import {
 } from './TableStyle';
 import {
   camelToWords,
+  filterByReference,
   useDebounce,
   useLocalStorage,
-  filterByReference,
 } from '../utils';
 import { fuzzyTextFilter, numericTextFilter } from './filters';
 import ChoiceIcon from './Choice';
@@ -81,7 +79,7 @@ export interface TableProperties<T extends Record<string, unknown>>
   onAdd?: (instance: TableInstance<T>) => React.MouseEventHandler;
   onDelete?: (instance: TableInstance<T>) => React.MouseEventHandler;
   onEdit?: (instance: TableInstance<T>) => React.MouseEventHandler;
-  onClick?: (row: Row<T>) => void;
+  onClick?: (row: any) => void;
 }
 
 function DefaultHeader({ column }: HeaderProps<any>) {
@@ -129,6 +127,7 @@ const filterTypes: any = {
   fuzzyText: fuzzyTextFilter,
   numeric: numericTextFilter,
 };
+
 const selectionHook = (hooks: Hooks<any>) => {
   hooks.allColumns.push((columns) => [
     // Let's make a column for selection
@@ -196,8 +195,7 @@ const customSelectionHook = (hooks: Hooks<any>) => {
           }
         />
       ),
-      // The cell can use the individual row's getToggleRowSelectedProps method
-      // to the render a checkbox
+
       Cell: ({
         row,
         dispatch,
@@ -251,7 +249,10 @@ const customSelectionHookWithMoveleft = (hooks: Hooks<any>) => {
           allRows={flatRows}
           dispatchSelectedRows={dispatch}
           selectedFlatRows={flatRows}
-          isAllRowsSelected={isAllRowsSelected}
+          isAllRowsSelected={
+            flatRows.length > 0 &&
+            flatRows.length === state.customSelectedRows.length
+          }
           selectedRows={state.customSelectedRows}
           indeterminate={
             isAllRowsSelected ||
@@ -260,7 +261,6 @@ const customSelectionHookWithMoveleft = (hooks: Hooks<any>) => {
               ? false
               : state.customSelectedRows.length > 0
           }
-          movedLeft
         />
       ),
 
@@ -282,27 +282,29 @@ const customSelectionHookWithMoveleft = (hooks: Hooks<any>) => {
           isAllRowsSelected={isAllRowsSelected}
           selectedRows={state.customSelectedRows}
           indeterminate={false}
-          movedLeft
+          movedLeft={true}
         />
       ),
     },
     ...columns,
   ]);
 };
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const headerProps = <T extends Record<string, unknown>>(
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   props: any,
   { column }: Meta<T, { column: HeaderGroup<T> }>
 ) => getStyles(props, column && column.disableResizing, column && column.align);
-
 export function Table<T extends Record<string, unknown>>({
   name,
   columns,
+  canMovedCheckboxLeftOnExpand,
   onClick,
   canGroupBy,
   canSort,
   canSelect,
+  setSelectedRows,
   customSelect,
   canResize,
   actionColumn,
@@ -312,20 +314,19 @@ export function Table<T extends Record<string, unknown>>({
   filterActive,
   setLocalFilterActive,
   customJsxSideFilterButton,
-  setSelectedRows,
   elevationTable,
   minHeight,
   maxHeight,
-  canMovedCheckboxLeftOnExpand,
   ...props
 }: React.PropsWithChildren<TableProperties<T>>): React.ReactElement {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const classes = useStyles();
   if (name === undefined || name === null) {
     name = 'mytable';
   }
+  const isMobile = IsMobileView();
   const [initialState, setInitialState] = useLocalStorage(
-    `tableState:${name}`,
+    `tableState2:${name}`,
     {}
   );
 
@@ -393,22 +394,41 @@ export function Table<T extends Record<string, unknown>>({
   if (actionColumn !== undefined) {
     localHooks.push(customHooks as any);
   }
-  const filterOptions = { filteredIds: [] };
 
+  const filterOptions = { filteredIds: [] };
+  const [tata, setTata] = React.useState([]);
   const instance = useTable<T>(
     {
       ...props,
       columns,
       filterTypes,
       defaultColumn,
+      // styledRows: [],
       getSubRows: (row: any) => row.subRows,
       globalFilter: (rows, columnIds, filterValue) =>
         DefaultGlobalFilter(rows, columnIds, filterValue, filterOptions),
 
       initialState: { ...initialState, customSelectedRows: [] },
+      /*  in test mode wip */
+      // useControlledState: (state) =>
+      //   React.useMemo(
+      //     () => ({
+      //       ...state,
+      //       selectedFlatRows: tata,
+      //       //  selectedRowIds: [...state.customSelectedRows.map((elm: any) => ({ [elm.id as Record<IdType<T> ]: true }))],
+      //       //  pageIndex: controlledPageIndex,
+      //     }),
+
+      //     [state]
+      //   ),
+
       stateReducer: (newState, action, prevState) => {
         switch (action.type) {
           case 'customSelectRow':
+            setTata([
+              ...(newState.customSelectedRows as never),
+              action.payload as never,
+            ]);
             return {
               ...newState,
               customSelectedRows: [
@@ -431,7 +451,6 @@ export function Table<T extends Record<string, unknown>>({
               action.payload,
               false
             );
-
             return {
               ...newState,
               customSelectedRows: filteredRows,
@@ -454,21 +473,15 @@ export function Table<T extends Record<string, unknown>>({
               ...newState,
               customSelectedRows: [],
             };
+
           default:
             return newState;
         }
       },
     },
+
     ...localHooks
   );
-
-  const cellClickHandler = (cell: Cell<T>) => () => {
-    onClick &&
-      !cell.column.isGrouped &&
-      !cell.row.isGrouped &&
-      cell.column.id !== '_selector' &&
-      onClick(cell.row);
-  };
 
   const {
     headerGroups,
@@ -478,19 +491,34 @@ export function Table<T extends Record<string, unknown>>({
     state,
     selectedFlatRows,
   } = instance;
+
   const debouncedState = useDebounce(state, 200);
 
+  const cellClickHandler = (cell: Cell<T>) => () => {
+    onClick &&
+      !cell.column.isGrouped &&
+      !cell.row.isGrouped &&
+      cell.column.id !== '_selector' &&
+      onClick(cell.row);
+  };
+
   React.useEffect(() => {
-    const { sortBy, filters, pageSize, columnResizing, hiddenColumns } =
-      debouncedState;
+    const {
+      sortBy,
+      filters,
+      pageSize,
+      columnResizing,
+      hiddenColumns,
+      selectedRowIds,
+    } = debouncedState;
     setInitialState({
       sortBy,
       filters,
       pageSize,
       columnResizing,
       hiddenColumns,
+      selectedRowIds,
     });
-
     if (setSelectedRows !== undefined) {
       if (instance.isAllRowsSelected) {
         setSelectedRows!(
@@ -520,10 +548,18 @@ export function Table<T extends Record<string, unknown>>({
   }, [setInitialState, state.customSelectedRows]);
 
   React.useEffect(() => {
-    instance.dispatch({ type: 'customUnSelectAll', payload: [] });
+    !instance.isAllRowsSelected &&
+      instance.dispatch({ type: 'customUnSelectAll', payload: [] });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [instance.data]);
-  const isMobile = IsMobileView();
+  }, [instance.isAllRowsSelected]);
+
+  React.useEffect(() => {
+    instance.dispatch({ type: 'customUnSelectAll', payload: [] });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [instance.data, instance]);
+
   return (
     <>
       {!isMobile ? (
@@ -585,7 +621,7 @@ export function Table<T extends Record<string, unknown>>({
                     width: '100%',
                     WebkitOverflowScrolling: 'touch',
                     MsOverflowStyle: '-ms-autohiding-scrollbar',
-                    flex: '1 1 auto',
+                    // flex: '1 1 auto',
                     paddingBottom: '1rem',
                     marginTop: '0 !important',
                     paddingTop: '0 !important',
@@ -606,7 +642,7 @@ export function Table<T extends Record<string, unknown>>({
                 >
                   <RawTable>
                     <TableHead>
-                      {headerGroups.map((headerGroup) => {
+                      {headerGroups.map((headerGroup: any) => {
                         const {
                           key: headerGroupKey,
                           title: headerGroupTitle,
@@ -618,7 +654,7 @@ export function Table<T extends Record<string, unknown>>({
                             key={headerGroupKey}
                             {...getHeaderGroupProps}
                           >
-                            {headerGroup.headers.map((column) => {
+                            {headerGroup.headers.map((column: any) => {
                               const style = {
                                 textAlign: column.align
                                   ? column.align
@@ -695,7 +731,7 @@ export function Table<T extends Record<string, unknown>>({
                       className={page.length === 0 ? classes.SvgNoDataCss : ''}
                     >
                       {page.length !== 0
-                        ? page.map((row) => {
+                        ? page.map((row: any) => {
                             prepareRow(row);
                             const {
                               key: rowKey,
@@ -712,7 +748,7 @@ export function Table<T extends Record<string, unknown>>({
                                   clickable: onClick,
                                 })}
                               >
-                                {row.cells.map((cell) => {
+                                {row.cells.map((cell: any) => {
                                   const {
                                     key: cellKey,
                                     role: cellRole,
@@ -785,12 +821,7 @@ export function Table<T extends Record<string, unknown>>({
           </Card>
           {/* here the filter component is always in the right place*/}
           {filterActive ? (
-            <Card
-              style={{
-                border: '0px',
-                fontFamily: 'Segoe UI, -apple-system, Helvetica Neue, Arial',
-              }}
-            >
+            <Card style={{ border: '0px' }}>
               <CardHeader
                 style={{
                   display: 'flex',
@@ -843,6 +874,7 @@ export function Table<T extends Record<string, unknown>>({
                   instance={instance}
                   setLocalFilterActive={setLocalFilterActive}
                   filterActive={filterActive}
+                  tableName={name}
                 />
               </CardBody>
             </Card>
@@ -881,6 +913,7 @@ export function Table<T extends Record<string, unknown>>({
               padding: 0,
               paddingTop: '4px ',
               minHeight: '100vh',
+              fontFamily: 'Segoe UI, -apple-system, Helvetica Neue, Arial',
             }}
           >
             <CollapsibleTable props={instance} />
@@ -896,6 +929,7 @@ export function Table<T extends Record<string, unknown>>({
               instance={instance}
               setLocalFilterActive={setLocalFilterActive}
               filterActive={filterActive}
+              tableName={name}
             />
           ) : null}
         </React.Fragment>

@@ -3,7 +3,7 @@ import React from 'react';
 
 import { TableInstance } from 'react-table';
 import { createStyles, makeStyles } from '@mui/styles';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 
 import { DiskIcon } from '../components/assets/DiskIcon';
@@ -65,6 +65,7 @@ type FilterPageCustomProps<T extends Record<string, unknown>> = {
   show?: boolean;
   setLocalFilterActive: any;
   filterActive?: boolean;
+  tableName: string;
 };
 
 export function FilterPageCustom<T extends Record<string, unknown>>({
@@ -72,6 +73,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
   onClose,
   filterActive,
   setLocalFilterActive,
+  tableName,
 }: FilterPageCustomProps<T>): React.ReactElement {
   // const { t } = useTranslation();
   const classes = useStyles({});
@@ -90,7 +92,10 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
 
   // for adding  selected filter
 
-  const [savedFilters, setSavedFilters] = useLocalStorage(`SavedFilters`, []);
+  const [savedFilters, setSavedFilters] = useLocalStorage(
+    `${tableName}_SavedFilters`,
+    []
+  );
   const [designationFilter, setDesignationFilter] = React.useState('');
   // eslint-disable-next-line
   const [oldFilterName, setOldFilterName] = React.useState('');
@@ -104,34 +109,42 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       ErrorToast('Merci de saisir une designation pour votre filtre');
       return;
     }
-    if (filters.length === 0) {
+    if (Object.keys(instance.state.filters).length === 0) {
       ErrorToast('Merci de  choisir au moins un  filtre');
       return;
     }
 
-    if (filters.length > 0) {
+    if (Object.keys(instance.state.filters).length > 0) {
       const found = savedFilters.find(
         (f: any) => f.label === designationFilter
       );
 
-      found
-        ? (savedFilters[
-            savedFilters.findIndex((f: any) => f.label === designationFilter)
-          ] = {
-            label: designationFilter,
-            value: filters,
-          })
-        : setSavedFilters([
-            ...savedFilters,
-            { label: designationFilter, value: filters },
-          ]);
-      found
-        ? SuccessToast('Filtre modifié  avec succès')
-        : SuccessToast('Filtre ajouté  avec succès');
+      if (found) {
+        savedFilters[
+          savedFilters.findIndex((f: any) => f.label === designationFilter)
+        ] = {
+          label: designationFilter,
+          value: instance.state.filters,
+        };
+        setSavedFilters(savedFilters);
+        SuccessToast('Filtre modifié  avec succès');
+      } else {
+        setSavedFilters([
+          ...savedFilters,
+          { label: designationFilter, value: instance.state.filters },
+        ]);
+        SuccessToast('Filtre ajouté  avec succès');
+      }
+
       // found ? SuccessToast(t('Filter successfully added')) : SuccessToast(t('Filter successfully added'));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [designationFilter, filters, setSavedFilters, savedFilters]);
+  }, [
+    designationFilter,
+    instance.state.filters,
+    setSavedFilters,
+    savedFilters,
+  ]);
 
   // const handleModifyFilter = React.useCallback(() => {
   //   const found = savedFilters.find((f: any) => f.label === oldFilterName);
@@ -320,6 +333,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
             instance={instance}
             showMore={showMore}
             currentHeight={currentHeight}
+            setDesignationFilter={setDesignationFilter}
           />
         </Box>
       ) : (
@@ -342,6 +356,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
             (it) =>
               it.canFilter &&
               it.isVisible &&
+              it.id !== '_selector' &&
               it.id !== 'delete' &&
               it.id !== '_Actions' &&
               it.id !== 'expander' &&
