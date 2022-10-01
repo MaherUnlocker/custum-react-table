@@ -33,20 +33,23 @@ export function SelectComponent({
         setDesignationFilter(inputValue);
         return inputValue;
       case 'menu-close':
-        return prevInputValue;
+        return !designationFilter ? designationFilter : inputValue;
       case 'set-value':
         return inputValue;
+      case 'input-blur':
+        return !designationFilter ? designationFilter : inputValue;
       default:
         return prevInputValue;
     }
   };
 
   const onChange = (option: any, { action }: any) => {
-    setDesignationFilter(option);
+    setDesignationFilter(option ? option.label : '');
     handleSavedFiltersSelect(option);
 
     if (action === 'clear') {
       setAllFilters([]);
+      setDesignationFilter('');
     }
   };
 
