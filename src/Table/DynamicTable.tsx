@@ -1,32 +1,45 @@
 import 'regenerator-runtime/runtime';
 import React from 'react';
 
-import { FilterValue, IdType, Row, customColumnProps } from 'react-table';
 import axios from 'axios';
+import { FilterValue, IdType, Row, customColumnProps } from 'react-table';
 
 import { AngleSmallRightIcon } from '../components/assets/AngleSmallRightIcon';
 import { DuplicateIcon } from '../components/assets/DuplicateIcon';
 import LoadingDataAnimation from '../components/LoadingDataAnimation';
 import LoadingErrorAnimation from '../components/LoadingDataAnimation/LoadingErrorAnimation';
+// import { Table } from './Table test subrow';
 import { Table } from './Table';
 import { TrashIcon } from '../components/assets/TrashIcon';
 import { useStyles } from './TableStyle';
 
 import 'react-toastify/dist/ReactToastify.css';
+
+type DynamicTableContextType = {
+  setSelectedRows?: React.Dispatch<React.SetStateAction<any[]>>;
+  selectedRows?: any[];
+};
+
+export const DynamicTableContext =
+  React.createContext<DynamicTableContextType | null>(null);
+
 export interface DynamicTableProps {
   url?: string;
   onClick?: (row: any) => void;
   setDataIsUpdated?: React.Dispatch<React.SetStateAction<boolean | number>>;
   dataIsUpdated?: boolean | number;
-  setData?: React.Dispatch<React.SetStateAction<any[]>>;
   name?: string;
   minHeight?: number | string;
   maxHeight?: number | string;
+
   customSelect?: boolean;
   canGroupBy?: boolean;
   canSort?: boolean;
   canSelect?: boolean;
+  canMovedCheckboxLeftOnExpand?: boolean;
   setSelectedRows?: React.Dispatch<React.SetStateAction<any[]>>;
+
+  setData?: React.Dispatch<React.SetStateAction<any[]>>;
   canResize?: boolean;
   showGlobalFilter?: boolean;
   showFilter?: boolean;
@@ -39,7 +52,6 @@ export interface DynamicTableProps {
   customJsxSideFilterButton?: React.ReactNode;
   arrayOfCustomColumns?: customColumnProps[] | undefined;
   setLocalFilterActive?: React.Dispatch<React.SetStateAction<boolean>>;
-  canMovedCheckboxLeftOnExpand?: boolean;
   requestHeader?: Record<string, string>;
 }
 
@@ -95,14 +107,19 @@ export function DynamicTable({
   minHeight,
   maxHeight,
   requestHeader,
-  canMovedCheckboxLeftOnExpand,
   setData,
+  canMovedCheckboxLeftOnExpand,
 }: DynamicTableProps): React.ReactElement {
   const [apiResult, setApiResult] = React.useState<apiResultProps>();
 
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<null | any>(null);
   const classes = useStyles();
+
+  const defaultContext: DynamicTableContextType = {
+    setSelectedRows,
+  };
+
   async function fetchData(url: string) {
     await axios
       .get(url, {
@@ -110,7 +127,7 @@ export function DynamicTable({
       })
       .then((response: { data: apiResultProps }) => {
         setApiResult(response.data);
-        setData !== undefined && setData!(response.data.data);
+        setData !== undefined && setData(response.data.data);
       })
       .catch((err: any) => {
         setError(err);
@@ -123,6 +140,7 @@ export function DynamicTable({
   if (elevationTable === undefined) {
     elevationTable = 0;
   }
+
   const apiResultColumns = React.useMemo(
     () =>
       apiResult !== undefined &&
@@ -144,9 +162,11 @@ export function DynamicTable({
                   Header: key,
                   accessor: key,
                   disableFilters: true,
-                  canFilter: false,
                   disableResizing: true,
+                  canFilter: false,
                   width: 120,
+
+                  //minWidth: 120,
                   Cell: (value: any) => (
                     <img
                       src={value.cell.value}
@@ -155,8 +175,7 @@ export function DynamicTable({
                         width: '100px',
                         objectFit: 'contain',
                       }}
-                      alt={key}
-                      id="tablepicture"
+                      alt=""
                     />
                   ),
                 };
@@ -166,8 +185,10 @@ export function DynamicTable({
                 id: key,
                 Header: key,
                 accessor: key,
-                aggregate: 'multiSelect',
+                aggregate: 'count',
+                primary: false,
                 canFilter: true,
+                filter: 'multiSelect',
                 Aggregated: ({ cell: { value } }: any) => `${value} `,
               };
             })
@@ -199,16 +220,32 @@ export function DynamicTable({
         {
           // Build our expander column
           id: 'expander', // Make sure it has an ID
-          Header: '',
-          // minWidth: 50,
+          Header: ({
+            getToggleAllRowsExpandedProps,
+            isAllRowsExpanded,
+          }: any) => (
+            <span {...getToggleAllRowsExpandedProps({ title: 'expand all' })}>
+              {isAllRowsExpanded ? (
+                <AngleSmallRightIcon
+                  height={25}
+                  width={25}
+                  className={classes.iconDirectionAsc}
+                />
+              ) : (
+                <AngleSmallRightIcon height={25} width={25} />
+              )}
+            </span>
+          ),
+          minWidth: 30,
           // width: 60,
-          disableResizing: true,
-          disableGroupBy: true,
+          // disableResizing: true,
+          // disableGroupBy: true,
           canFilter: false,
           disableFilters: true,
           Cell: ({ row }: any) =>
             // Use the row.canExpand and row.getToggleRowExpandedProps prop getter
             // to build the toggle for expanding a row
+
             row.canExpand ? (
               <span
                 {...row.getToggleRowExpandedProps({
@@ -315,29 +352,32 @@ export function DynamicTable({
 
   return (
     // <I18nextProvider i18n={i18nConfig}>
-    <Table
-      name={name}
-      columns={columns}
-      setSelectedRows={setSelectedRows}
-      data={data as any}
-      canGroupBy={canGroupBy}
-      canSort={canSort}
-      canSelect={canSelect}
-      customSelect={customSelect}
-      canResize={canResize}
-      actionColumn={actionColumn}
-      showGlobalFilter={showGlobalFilter}
-      showFilter={showFilter}
-      showColumnIcon={showColumnIcon}
-      filterActive={filterActive}
-      setLocalFilterActive={setLocalFilterActive}
-      customJsxSideFilterButton={customJsxSideFilterButton}
-      onClick={onClick}
-      elevationTable={elevationTable}
-      minHeight={minHeight}
-      maxHeight={maxHeight}
-      canMovedCheckboxLeftOnExpand={canMovedCheckboxLeftOnExpand}
-    />
+
+    <DynamicTableContext.Provider value={defaultContext}>
+      <Table
+        name={name}
+        columns={columns}
+        setSelectedRows={setSelectedRows}
+        data={data as any}
+        canGroupBy={canGroupBy}
+        canSort={canSort}
+        canSelect={canSelect}
+        canResize={canResize}
+        actionColumn={actionColumn}
+        showGlobalFilter={showGlobalFilter}
+        showFilter={showFilter}
+        showColumnIcon={showColumnIcon}
+        filterActive={filterActive}
+        setLocalFilterActive={setLocalFilterActive}
+        customJsxSideFilterButton={customJsxSideFilterButton}
+        onClick={onClick}
+        elevationTable={elevationTable}
+        minHeight={minHeight}
+        maxHeight={maxHeight}
+        customSelect={customSelect}
+        canMovedCheckboxLeftOnExpand={canMovedCheckboxLeftOnExpand}
+      />
+    </DynamicTableContext.Provider>
     // </I18nextProvider>
   );
 }

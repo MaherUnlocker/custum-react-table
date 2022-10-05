@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { TableInstance } from 'react-table';
 
 import { AngleDoubleSmallLeftIcon } from '../components/assets/AngleDoubleSmallLeftIcon';
@@ -51,7 +51,7 @@ export function TablePagination<T extends Record<string, unknown>>({
 
   function TablePaginationActions(props: TablePaginationActionsProps) {
     const { count, page, rowsPerPage, onPageChange } = props;
-    const { t } = useTranslation();
+    // const { t } = useTranslation();
 
     const handleFirstPageButtonClick = (
       event: React.MouseEvent<HTMLButtonElement>

@@ -29,7 +29,7 @@ export const TooltipCell: React.FC<TooltipProps> = ({
 }) => {
   const classes = useStyles({});
   return (
-    <React.Fragment>
+    <>
       {tooltip !== null && tooltip !== '' && (
         <MuiTooltip
           title={tooltip !== null ? tooltip : ' '}
@@ -40,6 +40,6 @@ export const TooltipCell: React.FC<TooltipProps> = ({
           <span>{text}</span>
         </MuiTooltip>
       )}
-    </React.Fragment>
+    </>
   );
 };

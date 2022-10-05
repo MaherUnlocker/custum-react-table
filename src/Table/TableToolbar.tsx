@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, IconButton, Theme, Toolbar, Tooltip } from '@mui/material';
 import { createStyles, makeStyles } from '@mui/styles';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import { TableInstance } from 'react-table';
 import ViewColumnsIcon from '@mui/icons-material/ViewColumn';
 import classnames from 'classnames';
@@ -172,7 +172,7 @@ export function TableToolbar<T extends Record<string, unknown>>({
   customJsxSideFilterButton,
 }: React.PropsWithChildren<TableToolbarProps<T>>): React.ReactElement | null {
   const { columns } = instance;
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<Element | undefined>(
     undefined

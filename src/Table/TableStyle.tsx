@@ -48,13 +48,12 @@ export const useStyles = makeStyles({
   tableHeadCell: {
     padding: '16px 1px 16px 16px',
     fontSize: '0.875rem',
-    fontFamily: `"Segoe UI", "-apple-system", "Helvetica Neue", "Arial"`,
     // textAlign: 'center',
     maxHeight: 45,
     verticalAlign: 'inherit',
     justifyContent: 'center !important',
     display: 'flex',
-    // color: theme.palette.text.primary,
+    fontFamily: `"Segoe UI", "-apple-system", "Helvetica Neue", "Arial"`,
     fontWeight: '700 !important',
     lineHeight: '1.5rem',
     borderRight: '1px solid rgba(224, 224, 224, 1)',
@@ -69,9 +68,9 @@ export const useStyles = makeStyles({
 
   tableRow: {
     color: 'inherit',
-    fontFamily: `"Segoe UI", "-apple-system", "Helvetica Neue", "Arial"`,
     maxHeight: 60,
     outline: 0,
+    fontFamily: `"Segoe UI", "-apple-system", "Helvetica Neue", "Arial"`,
     verticalAlign: 'middle',
     '&:hover': {
       backgroundColor: 'rgba(0, 0, 0, 0.07)',
@@ -97,6 +96,7 @@ export const useStyles = makeStyles({
   tableLabel: {},
   tableCell: {
     padding: '8px 16px',
+    fontFamily: `"Segoe UI", "-apple-system", "Helvetica Neue", "Arial"`,
     fontSize: '0.875rem',
     textAlign: 'center',
     fontWeight: 300,

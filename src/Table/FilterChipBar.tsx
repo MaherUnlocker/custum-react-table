@@ -1,6 +1,11 @@
 import React from 'react';
 
-import { IdType, TableInstance } from 'react-table';
+import {
+  ColumnInstance,
+  FilterValue,
+  IdType,
+  TableInstance,
+} from 'react-table';
 import { createStyles, makeStyles } from '@mui/styles';
 // import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';

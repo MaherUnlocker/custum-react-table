@@ -58,6 +58,7 @@ export function SelectComponent({
       selectInputRef?.clearValue();
     }
   }, [designationFilter, selectInputRef]);
+
   return (
     <Select
       ref={(ref: any) => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import React from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Collapse from '@mui/material/Collapse';
@@ -11,7 +12,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { motion } from 'framer-motion/dist/framer-motion';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 import { useStyles } from './TableStyle';
 import { headerProps } from './Table';
@@ -151,7 +152,7 @@ export default function CollapsibleTable(
   instance: any,
   cellClickHandler: any
 ): React.ReactElement {
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const classes = useStyles();
   const { headerGroups, page, prepareRow } = instance.props;
   return (

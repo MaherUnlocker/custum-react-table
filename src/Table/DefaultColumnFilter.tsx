@@ -13,6 +13,8 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
   columns,
   column,
   setFilter,
+  prepareRow,
+  state: { filters },
 }: FilterProps<T>): React.ReactElement {
   // const { t } = useTranslation();
   const { filterValue, render, preFilteredRows, id } = column;
