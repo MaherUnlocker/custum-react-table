@@ -199,8 +199,10 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
 
   React.useEffect(() => {
     if (heightRef.current !== null) {
-      setShowMore(document.getElementById('maher')!.offsetHeight! > 120);
-      setCurrentHeight(document.getElementById('maher')!.offsetHeight!);
+      setShowMore(
+        document.getElementById('FilterChipBar')!.offsetHeight! > 120
+      );
+      setCurrentHeight(document.getElementById('FilterChipBar')!.offsetHeight!);
     }
   }, [designationFilter, instance.state.filters]);
 
