@@ -12,7 +12,7 @@
 
 ## greets to
 
-> https://github.com/atefBB
+> https://github.com/atefBB > https://github.com/Iyadchafroud
 
 > If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
 
@@ -46,7 +46,9 @@ import { DynamicTable } from @maherunlocker/custom-react-table
 interface customColumnProps {
   indexOFColumn: number;  //position of column to insert it
   columnName: string;    //name of column
-  customJsx:  React.ReactNode;;   //react componant
+  customJsx:  React.ReactNode;   //react componant
+  filterName?: string;
+  canFilter?: boolean ;
 }
 
 let arrayOfCustomColumns: customColumnProps[] = [];
@@ -76,9 +78,15 @@ function customJsxComponent(props: any) {
 
 
 arrayOfCustomColumns.push(
-  { indexOFColumn: 0, columnName: 'columnName1', customJsx: SelectAccountDropdown2 },
-  { indexOFColumn: 2, columnName: 'columnName2', customJsx: SelectAccountDropdown }
-);
+
+    {
+      indexOFColumn: 1,
+      columnName: 'custom Cell',
+      customJsx: SelectAccountDropdown,
+      filterName: 'Désignation',
+      canFilter: true,
+    }
+  );
 
 
 

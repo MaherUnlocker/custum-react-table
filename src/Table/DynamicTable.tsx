@@ -279,6 +279,10 @@ export function DynamicTable({
         modifiedColumns.splice(elm.indexOFColumn, 0, {
           id: elm.columnName,
           Header: elm.columnName,
+          accessor: (props: any) => props[`${elm.filterName}`],
+          aggregate: 'count',
+          canFilter: true,
+          filter: 'multiSelect',
           Cell: (cell: any) => (
             <elm.customJsx
               selectedRow={{
