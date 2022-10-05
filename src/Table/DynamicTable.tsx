@@ -166,8 +166,7 @@ export function DynamicTable({
                 id: key,
                 Header: key,
                 accessor: key,
-                aggregate: 'count',
-                primary: false,
+                aggregate: 'multiSelect',
                 canFilter: true,
                 Aggregated: ({ cell: { value } }: any) => `${value} `,
               };

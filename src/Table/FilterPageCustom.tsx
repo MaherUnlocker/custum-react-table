@@ -225,10 +225,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
         sx={{ display: 'flex', justifyContent: 'space-between' }}
       >
         <div style={{ width: ' 100%', marginTop: 10 }}>
-          <StyledLabel htmlFor="savedFilter">
-            {/* {t('Select a filter')} */}
-            Sélectionner un filtre
-          </StyledLabel>
+          {/* <StyledLabel htmlFor='savedFilter'>{t('Select a filter')}</StyledLabel> */}
           <div
             style={{
               display: 'grid',
@@ -328,7 +325,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
         {/* {t('Filter')} */}
       </StyledLabel>
       {Object.keys(instance.state.filters).length > 0 ? (
-        <Box id="maher" component="div" ref={heightRef}>
+        <Box id="FilterChipBar" component="div" ref={heightRef}>
           <FilterChipBarCollapsible
             instance={instance}
             showMore={showMore}

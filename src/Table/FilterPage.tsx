@@ -53,7 +53,7 @@ export function FilterPage<T extends Record<string, unknown>>({
   show,
 }: FilterPageProps<T>): React.ReactElement {
   const classes = useStyles({});
-  const { allColumns, setAllFilters } = instance;
+  const { allColumns } = instance;
 
   const onSubmit = React.useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {

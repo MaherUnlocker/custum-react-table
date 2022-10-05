@@ -72,10 +72,14 @@ export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
   } = instance;
 
   const handleDelete = React.useCallback(
-    (id: string | number) => {
-      setFilter(id as IdType<T>, undefined);
+    (id: string | number, selectedFilterValue: string | number) => {
+      const filtered = filters.find((f) => f.id === id);
+      const newValues =
+        filtered !== undefined &&
+        filtered?.value.filter((f: any) => f !== selectedFilterValue);
+      setFilter(id as IdType<T>, newValues?.length > 0 ? newValues : undefined);
     },
-    [setFilter]
+    [setFilter, filters]
   );
 
   const resetFilters = React.useCallback(() => {
@@ -111,34 +115,33 @@ export function FilterChipBarCollapsible<T extends Record<string, unknown>>({
         {allColumns.map((column: ColumnInstance<T>) => {
           const filter = filtersToShow.find((f) => f.id === column.id);
 
-          const value = filter && filter.value;
+          const filterValues = filter && filter.value;
           return (
-            value && (
+            filterValues &&
+            filterValues.map((Filtervalue: any) => (
               <Chip
                 className={classes.filterChip}
-                key={column.id}
+                key={Filtervalue}
                 deleteIcon={<CrossIcon height={10} width={10} fill="#2B2828" />}
                 label={
                   <React.Fragment>
                     <span className={classes.chipLabel}>
                       {column.render('Header')}:{' '}
                     </span>
-                    <span className={classes.chipLabel}>
-                      {getFilterValue(column, value)}{' '}
-                    </span>
+                    <span className={classes.chipLabel}>{Filtervalue} </span>
                   </React.Fragment>
                 }
-                onDelete={() => handleDelete(column.id)}
+                onDelete={() => handleDelete(column.id, Filtervalue)}
                 variant="outlined"
               />
-            )
+            ))
           );
         })}
       </React.Fragment>
     );
   }
 
-  return Object.keys(filters).length > 0 ? (
+  return filters.some((filterValue: any) => filterValue.value.length > 0) ? (
     <div className={classes.chipZone}>
       <span
         className={classes.filtersActiveLabel}

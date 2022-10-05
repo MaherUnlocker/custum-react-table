@@ -1,7 +1,8 @@
 import React from 'react';
+
 import _uniqby from 'lodash.uniqby';
-import { useTranslation } from 'react-i18next';
-import { FilterProps } from 'react-table';
+// import { useTranslation } from 'react-i18next';
+import { FilterProps, IdType } from 'react-table';
 
 import { findFirstColumn } from './Table';
 import { StyledLabel } from '../components/assets/StyledLabel';
@@ -11,54 +12,57 @@ import NoOptionsMessage from './NoOptionsMessage';
 export default function DefaultColumnFilter<T extends Record<string, unknown>>({
   columns,
   column,
-  rows,
-  prepareRow,
+  setFilter,
 }: FilterProps<T>): React.ReactElement {
-  const { t } = useTranslation();
-  const { filterValue, setFilter, render } = column;
+  // const { t } = useTranslation();
+  const { filterValue, render, preFilteredRows, id } = column;
   const [, setValue] = React.useState(filterValue || '');
 
-  // ensure that reset loads the new value
-  React.useEffect(() => {
-    setValue(filterValue || '');
-  }, [filterValue]);
+  const listOptions = React.useMemo(() => {
+    const options = new Set();
 
-  const FilterArray: any[] = rows.map((row: any) => {
-    prepareRow(row);
-    return (
-      row.cells
-        .filter((cel: any) => {
-          const { key: cellKey } = cel.getCellProps();
-          // eslint-disable-next-line
-          return (
-            (cellKey as string).replace(/([^\_]*\_){2}/, '') ===
-            (column.id as string)
-          );
-        })
-        // eslint-disable-next-line
-        .map((cell: any) => {
-          return { label: String(cell.value), value: String(cell.value) };
-        })[0]
-    );
-  });
+    preFilteredRows.forEach((row: any) => {
+      row.values[id] !== undefined &&
+        row.values[id] !== '' &&
+        row.values[id] !== null &&
+        options.add({ value: row.values[id], label: row.values[id] });
+    });
+    return [...options.values()];
+  }, [id, preFilteredRows]);
 
   // his uniquby from lodash for get unique array of object
-  const unique: any = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
+  const unique: any = _uniqby(listOptions, 'label'); //using lodash function to filter and get unique opjects
 
   // this uniquby from lodash for get unique array of object
   // FilterArray = _uniqby(FilterArray, 'label'); //using lodash function to filter and get unique opjects
   // let unique: any = [...new Set(_without(FilterArray, undefined, null, 'null', 'undefined'))]; // FilterArray.filter((v, i, a) => a.indexOf(v) === i);
 
   const isFirstColumn = findFirstColumn(columns) === column;
-  const [, setSelectedValueState] = React.useState<any[]>([]);
+  const [selecteFiltersColumn, setSelectedValueState] = React.useState<any[]>(
+    []
+  );
 
-  function handleSelectOnChangeEvent(selectedValue: any) {
-    if (selectedValue) {
-      setSelectedValueState(selectedValue);
-      //  add selected filter
-      setFilter(selectedValue.value);
-    }
+  function handleSelectOnChangeEvent(selectedOption: any, action: any) {
+    //setFilter((prevState: any) => selectedOption.map((elm: any) => elm.value));
+    setFilter(
+      id as IdType<T>,
+      selectedOption.length > 0
+        ? selectedOption.map((elm: any) => elm.value)
+        : []
+    );
+    setSelectedValueState(selectedOption);
   }
+  // ensure that reset loads the new value
+  React.useEffect(() => {
+    setValue(filterValue || '');
+    setSelectedValueState((prev: any[]) => {
+      let newState = [];
+      if (filterValue && filterValue.length > 0) {
+        newState = filterValue.map((elm: any) => ({ label: elm, value: elm }));
+      }
+      return newState;
+    });
+  }, [filterValue]);
 
   return (
     <React.Fragment>
@@ -66,10 +70,13 @@ export default function DefaultColumnFilter<T extends Record<string, unknown>>({
       <StyledSelectInput
         menuPlacement="auto"
         menuPosition="fixed"
+        isMulti
+        closeMenuOnSelect={false}
+        value={selecteFiltersColumn}
         id={column.id}
         name={column.id}
         options={unique}
-        placeholder={unique.length > 0 ? 'Sélectionner...' : 'Aucune'}
+        placeholder={listOptions.length > 0 ? 'Sélectionner...' : 'Aucune'}
         onChange={handleSelectOnChangeEvent}
         // onInputChange={handleSelectOnChangeEvent}
         autoFocus={isFirstColumn}

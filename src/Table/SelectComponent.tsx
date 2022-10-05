@@ -70,7 +70,7 @@ export function SelectComponent({
       onInputChange={onInputChange}
       name="savefilterinput"
       options={options}
-      placeholder={'Selectionner...'}
+      placeholder={'Sélectionner / Ajouter'}
       onChange={onChange}
       components={{ NoOptionsMessage }}
     />

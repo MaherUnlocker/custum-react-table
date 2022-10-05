@@ -126,6 +126,10 @@ const defaultColumn = {
 const filterTypes: any = {
   fuzzyText: fuzzyTextFilter,
   numeric: numericTextFilter,
+  multiSelect: (rows: any, id: any, filterValues: any) => {
+    if (filterValues.length === 0) return rows;
+    return rows.filter((r: any) => filterValues.includes(r.values[id]));
+  },
 };
 
 const selectionHook = (hooks: Hooks<any>) => {
@@ -202,7 +206,6 @@ const customSelectionHook = (hooks: Hooks<any>) => {
         flatRows,
         isAllRowsSelected,
         state,
-        toggleAllRowsSelected,
         selectedFlatRows,
       }: any) => (
         <ControlledCheckbox
@@ -396,7 +399,6 @@ export function Table<T extends Record<string, unknown>>({
   }
 
   const filterOptions = { filteredIds: [] };
-  const [tata, setTata] = React.useState([]);
   const instance = useTable<T>(
     {
       ...props,
@@ -409,26 +411,10 @@ export function Table<T extends Record<string, unknown>>({
         DefaultGlobalFilter(rows, columnIds, filterValue, filterOptions),
 
       initialState: { ...initialState, customSelectedRows: [] },
-      /*  in test mode wip */
-      // useControlledState: (state) =>
-      //   React.useMemo(
-      //     () => ({
-      //       ...state,
-      //       selectedFlatRows: tata,
-      //       //  selectedRowIds: [...state.customSelectedRows.map((elm: any) => ({ [elm.id as Record<IdType<T> ]: true }))],
-      //       //  pageIndex: controlledPageIndex,
-      //     }),
-
-      //     [state]
-      //   ),
 
       stateReducer: (newState, action, prevState) => {
         switch (action.type) {
           case 'customSelectRow':
-            setTata([
-              ...(newState.customSelectedRows as never),
-              action.payload as never,
-            ]);
             return {
               ...newState,
               customSelectedRows: [
