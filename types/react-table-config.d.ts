@@ -136,7 +136,7 @@ declare module 'react-table' {
     columnName: string;
     customJsx: React.ReactNode;
     filterName?: string;
-    canFilter?: boolean = true;
+    disableFilter?: boolean = true;
 
   }
 }
