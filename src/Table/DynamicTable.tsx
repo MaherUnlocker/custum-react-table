@@ -220,22 +220,23 @@ export function DynamicTable({
         {
           // Build our expander column
           id: 'expander', // Make sure it has an ID
-          Header: ({
-            getToggleAllRowsExpandedProps,
-            isAllRowsExpanded,
-          }: any) => (
-            <span {...getToggleAllRowsExpandedProps({ title: 'expand all' })}>
-              {isAllRowsExpanded ? (
-                <AngleSmallRightIcon
-                  height={25}
-                  width={25}
-                  className={classes.iconDirectionAsc}
-                />
-              ) : (
-                <AngleSmallRightIcon height={25} width={25} />
-              )}
-            </span>
-          ),
+          Header: '',
+          // Header: ({
+          //   getToggleAllRowsExpandedProps,
+          //   isAllRowsExpanded,
+          // }: any) => (
+          //   <span {...getToggleAllRowsExpandedProps({ title: 'expand all' })}>
+          //     {isAllRowsExpanded ? (
+          //       <AngleSmallRightIcon
+          //         height={25}
+          //         width={25}
+          //         className={classes.iconDirectionAsc}
+          //       />
+          //     ) : (
+          //       <AngleSmallRightIcon height={25} width={25} />
+          //     )}
+          //   </span>
+          // ),
           minWidth: 30,
           // width: 60,
           // disableResizing: true,
@@ -279,9 +280,10 @@ export function DynamicTable({
         modifiedColumns.splice(elm.indexOFColumn, 0, {
           id: elm.columnName,
           Header: elm.columnName,
-          accessor: (props: any) => props[`${elm.filterName}`],
+          accessor: elm.filterName,
           aggregate: 'count',
-          canFilter: true,
+          disableFilters:
+            elm.disableFilter === undefined ? false : elm.disableFilter,
           filter: 'multiSelect',
           Cell: (cell: any) => (
             <elm.customJsx
