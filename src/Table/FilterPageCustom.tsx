@@ -78,11 +78,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
   // const { t } = useTranslation();
   const classes = useStyles({});
   const isMobile = IsMobileView();
-  const {
-    allColumns,
-    setAllFilters,
-    state: { filters },
-  } = instance;
+  const { allColumns, setAllFilters } = instance;
 
   const heightRef = React.useRef(null);
   // eslint-disable-next-line

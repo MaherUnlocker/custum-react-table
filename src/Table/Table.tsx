@@ -72,7 +72,7 @@ import { TableToolbar } from './TableToolbar';
 import { TooltipCellRenderer } from './TooltipCell';
 import DefaultColumnFilter from './DefaultColumnFilter';
 import ControlledCheckbox from '../components/ControlledCheckbox';
-import MultiSelectColumnFilter from './MultipleSelectCo';
+// import MultiSelectColumnFilter from './MultipleSelectCo';
 
 export interface TableProperties<T extends Record<string, unknown>>
   extends TableOptions<T>,
