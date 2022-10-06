@@ -106,11 +106,11 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       designationFilter === undefined ||
       designationFilter === ''
     ) {
-      ErrorToast('Merci de saisir une designation pour votre filtre');
+      ErrorToast('Merci de saisir une désignation pour votre filtre.');
       return;
     }
     if (Object.keys(instance.state.filters).length === 0) {
-      ErrorToast('Merci de  choisir au moins un  filtre');
+      ErrorToast('Merci de  choisir au moins un  filtre.');
       return;
     }
 
@@ -127,13 +127,13 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
           value: instance.state.filters,
         };
         setSavedFilters(savedFilters);
-        SuccessToast('Filtre modifié  avec succès');
+        SuccessToast('Filtre modifié  avec succès.');
       } else {
         setSavedFilters([
           ...savedFilters,
           { label: designationFilter, value: instance.state.filters },
         ]);
-        SuccessToast('Filtre ajouté  avec succès');
+        SuccessToast('Filtre ajouté  avec succès.');
       }
 
       // found ? SuccessToast(t('Filter successfully added')) : SuccessToast(t('Filter successfully added'));
@@ -180,7 +180,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       designationFilter === undefined ||
       designationFilter === ''
     ) {
-      ErrorToast('Merci de selectionner un filtre pour la suppression');
+      ErrorToast('Merci de sélectionner un filtre pour la suppression.');
       return;
     }
     const found = savedFilters.find((f: any) => f.label === designationFilter);
@@ -193,7 +193,7 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
       setSavedFilters(savedFilters);
       setAllFilters([]);
       setDesignationFilter('');
-      SuccessToast('Filtre supprimé avec succès');
+      SuccessToast('Filtre supprimé avec succès.');
     }
   }
 
