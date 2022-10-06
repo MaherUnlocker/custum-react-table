@@ -336,7 +336,11 @@ export function FilterPageCustom<T extends Record<string, unknown>>({
           />
         </Box>
       ) : (
-        <StyledButton rounded variant="light" style={{ width: '100%' }}>
+        <StyledButton
+          rounded
+          variant="light"
+          style={{ width: '100%', color: '#000' }}
+        >
           Aucun filtre actif
           {/* {t('No active filter')} */}
         </StyledButton>

@@ -57,7 +57,7 @@ export const StyledButton = styled.button<StyledButtonPropsType>`
         : variant === 'link'
         ? '#007bff'
         : variant
-      : '#000'};
+      : '#fff'};
 
   border: ${({ variant, outline }: StyledButtonPropsType) =>
     outline ? '1px solid' : variant !== 'light' ? 'none' : '1px solid'};
