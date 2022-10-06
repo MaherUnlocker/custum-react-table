@@ -30,7 +30,7 @@ export const TooltipCell: React.FC<TooltipProps> = ({
   const classes = useStyles({});
   return (
     <>
-      {tooltip !== null && tooltip !== '' && (
+      {tooltip !== undefined && tooltip !== null && tooltip !== '' && (
         <MuiTooltip
           title={tooltip !== null ? tooltip : ' '}
           className={classes.truncated}
