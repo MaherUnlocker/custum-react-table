@@ -63,32 +63,36 @@ export function ColumnHidePageCustom<T extends Record<string, unknown>>({
         />
       </div>
       <Divider className={classes.DividerCss} />
-
-      {hideableColumns.map((column: any) => (
-        <div
-          key={column.id}
-          className="  my-1 mx-2 d-flex align-items-center justify-content-between"
-        >
-          <label
-            style={{
-              font: 'normal normal normal 13px/17px Segoe UI',
-              letterSpacing: '0px',
-              color: '#495057 ',
-            }}
+      <div
+        id="listhidedcolumn"
+        style={{ overflowY: 'auto', maxHeight: '40vh' }}
+      >
+        {hideableColumns.map((column: any) => (
+          <div
+            key={column.id}
+            className="  my-1 mx-2 d-flex align-items-center justify-content-between"
           >
-            {column.id}
-          </label>
-          <input
-            type="checkbox"
-            // {...column.getToggleHiddenProps()}
-            onChange={() => {
-              toggleHideColumn(column.id, column.isVisible);
-            }}
-            disabled={column.isVisible && onlyOneOptionLeft}
-            checked={column.isVisible}
-          />
-        </div>
-      ))}
+            <label
+              style={{
+                font: 'normal normal normal 13px/17px Segoe UI',
+                letterSpacing: '0px',
+                color: '#495057 ',
+              }}
+            >
+              {column.id}
+            </label>
+            <input
+              type="checkbox"
+              // {...column.getToggleHiddenProps()}
+              onChange={() => {
+                toggleHideColumn(column.id, column.isVisible);
+              }}
+              disabled={column.isVisible && onlyOneOptionLeft}
+              checked={column.isVisible}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   ) : null;
 }
